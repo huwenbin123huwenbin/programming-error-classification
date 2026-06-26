@@ -1,0 +1,69 @@
+{
+  "overall_accuracy": 0.9502245508982036,
+  "groups": {
+    "novice": {
+      "n_samples": 1853,
+      "accuracy": 0.9600647598488937,
+      "macro_f1": 0.8767000797151949,
+      "class_distribution": {
+        "WA": 1483,
+        "TLE": 158,
+        "CE": 137,
+        "RE": 67,
+        "MLE": 8
+      },
+      "class_f1": {
+        "CE": 0.88,
+        "MLE": 0.9411764705882353,
+        "RE": 0.5849056603773585,
+        "TLE": 1.0,
+        "WA": 0.9774182676103809
+      }
+    },
+    "intermediate": {
+      "n_samples": 522,
+      "accuracy": 0.9521072796934866,
+      "macro_f1": 0.8640669186216045,
+      "class_distribution": {
+        "WA": 404,
+        "TLE": 53,
+        "RE": 26,
+        "CE": 25,
+        "MLE": 14
+      },
+      "class_f1": {
+        "CE": 0.8620689655172413,
+        "MLE": 1.0,
+        "RE": 0.4864864864864865,
+        "TLE": 1.0,
+        "WA": 0.9717791411042945
+      }
+    },
+    "advanced": {
+      "n_samples": 288,
+      "accuracy": 0.8854166666666666,
+      "macro_f1": 0.8609185281413241,
+      "class_distribution": {
+        "WA": 156,
+        "TLE": 47,
+        "RE": 38,
+        "CE": 34,
+        "MLE": 13
+      },
+      "class_f1": {
+        "CE": 0.9850746268656716,
+        "MLE": 0.96,
+        "RE": 0.4745762711864407,
+        "TLE": 0.9791666666666666,
+        "WA": 0.9057750759878419
+      }
+    }
+  },
+  "rating_thresholds": {
+    "novice": "<1400",
+    "intermediate": "1400-1999",
+    "advanced": ">=2000"
+  },
+  "n_users_total": 4005,
+  "n_users_with_rating": 13305
+}

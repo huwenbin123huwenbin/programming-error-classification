@@ -1,0 +1,231 @@
+{
+  "core_comparison": {
+    "all_features": {
+      "Random Forest": {
+        "accuracy": 86.1,
+        "f1_macro": 75.8,
+        "f1_weighted": 84.8,
+        "cv_mean": 88.8,
+        "cv_std": 1.6
+      },
+      "Gradient Boosting": {
+        "accuracy": 89.1,
+        "f1_macro": 80.3,
+        "f1_weighted": 87.6,
+        "cv_mean": 89.8,
+        "cv_std": 1.4
+      },
+      "Logistic Regression": {
+        "accuracy": 67.3,
+        "f1_macro": 66.0,
+        "f1_weighted": 72.1,
+        "cv_mean": 70.1,
+        "cv_std": 4.3
+      }
+    },
+    "behavioral_features": {
+      "Random Forest": {
+        "accuracy": 66.3,
+        "f1_macro": 51.2,
+        "f1_weighted": 65.1,
+        "cv_mean": 67.6,
+        "cv_std": 4.0
+      },
+      "Gradient Boosting": {
+        "accuracy": 67.3,
+        "f1_macro": 49.2,
+        "f1_weighted": 64.4,
+        "cv_mean": 72.1,
+        "cv_std": 3.9
+      },
+      "Logistic Regression": {
+        "accuracy": 32.7,
+        "f1_macro": 28.2,
+        "f1_weighted": 35.6,
+        "cv_mean": 42.4,
+        "cv_std": 5.2
+      }
+    },
+    "core_behavioral_features": {
+      "Random Forest": {
+        "accuracy": 66.3,
+        "f1_macro": 51.1,
+        "f1_weighted": 64.2,
+        "cv_mean": 65.1,
+        "cv_std": 5.7
+      },
+      "Gradient Boosting": {
+        "accuracy": 68.3,
+        "f1_macro": 50.1,
+        "f1_weighted": 65.1,
+        "cv_mean": 71.1,
+        "cv_std": 5.6
+      },
+      "Logistic Regression": {
+        "accuracy": 33.7,
+        "f1_macro": 30.1,
+        "f1_weighted": 36.7,
+        "cv_mean": 39.7,
+        "cv_std": 7.1
+      }
+    }
+  },
+  "feature_importance": {
+    "all_features": {
+      "time_consumed_ms": 30.6,
+      "memory_kb": 21.4,
+      "passed_test_count": 15.5,
+      "problem_rating": 8.6,
+      "user_success_rate": 7.2,
+      "problem_type": 7.1,
+      "hour": 5.0,
+      "language_encoded": 4.7
+    },
+    "behavioral_features": {
+      "passed_test_count": 28.1,
+      "problem_rating": 18.2,
+      "user_success_rate": 15.8,
+      "problem_type": 15.1,
+      "hour": 12.5,
+      "language_encoded": 10.4
+    }
+  },
+  "ablation": {
+    "time_consumed_ms": {
+      "accuracy": 63.4,
+      "drop_pp": 22.7
+    },
+    "problem_rating": {
+      "accuracy": 87.1,
+      "drop_pp": 1.0
+    },
+    "passed_test_count": {
+      "accuracy": 87.1,
+      "drop_pp": 1.0
+    },
+    "hour": {
+      "accuracy": 85.1,
+      "drop_pp": 1.0
+    },
+    "language_encoded": {
+      "accuracy": 86.1,
+      "drop_pp": 0.0
+    },
+    "memory_kb": {
+      "accuracy": 86.1,
+      "drop_pp": 0.0
+    },
+    "problem_type": {
+      "accuracy": 86.1,
+      "drop_pp": 0.0
+    },
+    "user_success_rate": {
+      "accuracy": 86.1,
+      "drop_pp": 0.0
+    }
+  },
+  "mcnemar": [
+    {
+      "comparison": "RF vs GB",
+      "b": 1,
+      "c": 4,
+      "p": 0.375,
+      "significant": false
+    },
+    {
+      "comparison": "RF vs LR",
+      "b": 25,
+      "c": 6,
+      "p": 0.0009,
+      "significant": true
+    },
+    {
+      "comparison": "GB vs LR",
+      "b": 27,
+      "c": 5,
+      "p": 0.0001,
+      "significant": true
+    },
+    {
+      "comparison": "RF(All) vs RF(Behav)",
+      "b": 21,
+      "c": 1,
+      "p": 0.0,
+      "significant": true
+    }
+  ],
+  "computational_cost": {
+    "Random Forest": {
+      "train_time_s": 0.823,
+      "inference_time_ms": 66.24,
+      "accuracy": 86.1
+    },
+    "Gradient Boosting": {
+      "train_time_s": 3.442,
+      "inference_time_ms": 17.92,
+      "accuracy": 89.1
+    },
+    "Logistic Regression": {
+      "train_time_s": 0.359,
+      "inference_time_ms": 0.26,
+      "accuracy": 67.3
+    },
+    "GPT-4 Few-Shot": {
+      "train_time_s": 0,
+      "inference_time_ms": 2500,
+      "accuracy": 90.0,
+      "cost_per_100_samples_usd": 0.15
+    },
+    "CodeBERT": {
+      "train_time_s": 120,
+      "inference_time_ms": 50,
+      "accuracy": 88.0
+    }
+  },
+  "per_class_all_features": {
+    "Random Forest": {
+      "WA": 0.91,
+      "TLE": 0.92,
+      "RE": 0.31,
+      "CE": 0.86,
+      "MLE": 0.8
+    },
+    "Gradient Boosting": {
+      "WA": 0.92,
+      "TLE": 0.97,
+      "RE": 0.31,
+      "CE": 0.92,
+      "MLE": 0.89
+    },
+    "Logistic Regression": {
+      "WA": 0.74,
+      "TLE": 0.86,
+      "RE": 0.23,
+      "CE": 0.86,
+      "MLE": 0.62
+    }
+  },
+  "per_class_behavioral_features": {
+    "Random Forest": {
+      "WA": 0.79,
+      "TLE": 0.48,
+      "RE": 0.25,
+      "CE": 0.31,
+      "MLE": 0.73
+    },
+    "Gradient Boosting": {
+      "WA": 0.79,
+      "TLE": 0.47,
+      "RE": 0.25,
+      "CE": 0.22,
+      "MLE": 0.73
+    },
+    "Logistic Regression": {
+      "WA": 0.43,
+      "TLE": 0.24,
+      "RE": 0.15,
+      "CE": 0.31,
+      "MLE": 0.27
+    }
+  }
+}

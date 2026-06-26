@@ -1,0 +1,728 @@
+{
+  "leave_one_user_out": {
+    "experiment": "Leave-One-User-Out CV",
+    "n_users": 130,
+    "mean_accuracy": 0.8246286386284858,
+    "std_accuracy": 0.2260946236406311,
+    "ci95_lower": 0.7857622104823866,
+    "ci95_upper": 0.863495066774585,
+    "min_accuracy": 0.0,
+    "max_accuracy": 1.0,
+    "per_user_results": [
+      {
+        "user": "1397613813",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "1qaz0plm",
+        "n_samples": 11,
+        "accuracy": 1.0
+      },
+      {
+        "user": "AK47_CP",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "ALEXPLORE",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Aar2011",
+        "n_samples": 12,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Abdulla_Bin_AH",
+        "n_samples": 11,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Aksenov239",
+        "n_samples": 9,
+        "accuracy": 0.5555555555555556
+      },
+      {
+        "user": "AnanaySharma42",
+        "n_samples": 5,
+        "accuracy": 0.8
+      },
+      {
+        "user": "Benq",
+        "n_samples": 34,
+        "accuracy": 0.6764705882352942
+      },
+      {
+        "user": "Beta_Monk",
+        "n_samples": 11,
+        "accuracy": 0.8181818181818182
+      },
+      {
+        "user": "Bluuue",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "CF_xjy",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "CaptainAJ_7",
+        "n_samples": 10,
+        "accuracy": 0.7
+      },
+      {
+        "user": "DanielKrilov",
+        "n_samples": 10,
+        "accuracy": 0.8
+      },
+      {
+        "user": "DarkSoul_1414",
+        "n_samples": 6,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "user": "Deemo",
+        "n_samples": 2,
+        "accuracy": 0.0
+      },
+      {
+        "user": "DragonChess233",
+        "n_samples": 8,
+        "accuracy": 0.5
+      },
+      {
+        "user": "Egor",
+        "n_samples": 42,
+        "accuracy": 0.5714285714285714
+      },
+      {
+        "user": "Errichto",
+        "n_samples": 12,
+        "accuracy": 0.9166666666666666
+      },
+      {
+        "user": "Fl0w",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "GenniSP",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Greninja_658",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Hikolakita",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Inverted_Hyperbola",
+        "n_samples": 7,
+        "accuracy": 0.8571428571428571
+      },
+      {
+        "user": "JATC",
+        "n_samples": 11,
+        "accuracy": 0.9090909090909091
+      },
+      {
+        "user": "Ji_Go_Denn_Sya",
+        "n_samples": 5,
+        "accuracy": 0.8
+      },
+      {
+        "user": "KevW",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "LogicsLord",
+        "n_samples": 5,
+        "accuracy": 0.6
+      },
+      {
+        "user": "Lozhkaa",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Mamedov",
+        "n_samples": 19,
+        "accuracy": 0.2631578947368421
+      },
+      {
+        "user": "Manoor08",
+        "n_samples": 12,
+        "accuracy": 0.9166666666666666
+      },
+      {
+        "user": "Mateus.A.O",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "MehrbodPoir",
+        "n_samples": 6,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "user": "Misha",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "MrRob",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "NgChiPhat",
+        "n_samples": 5,
+        "accuracy": 0.6
+      },
+      {
+        "user": "Niminraj",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Nishaa_S",
+        "n_samples": 4,
+        "accuracy": 0.25
+      },
+      {
+        "user": "NishantCantCode",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "NoaAcademicTest",
+        "n_samples": 19,
+        "accuracy": 0.9473684210526315
+      },
+      {
+        "user": "Petr",
+        "n_samples": 134,
+        "accuracy": 0.7238805970149254
+      },
+      {
+        "user": "Portlyscorn",
+        "n_samples": 6,
+        "accuracy": 0.5
+      },
+      {
+        "user": "QWErtyxD",
+        "n_samples": 10,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Radewoosh",
+        "n_samples": 104,
+        "accuracy": 0.7019230769230769
+      },
+      {
+        "user": "Rensi",
+        "n_samples": 5,
+        "accuracy": 0.6
+      },
+      {
+        "user": "S.kumar6",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "SMAAAS",
+        "n_samples": 8,
+        "accuracy": 1.0
+      },
+      {
+        "user": "SantiaxD",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "SecondThread",
+        "n_samples": 89,
+        "accuracy": 0.5955056179775281
+      },
+      {
+        "user": "Shiva_Jadaun",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Stardome",
+        "n_samples": 5,
+        "accuracy": 0.8
+      },
+      {
+        "user": "Still_Theory",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Suyash6",
+        "n_samples": 5,
+        "accuracy": 0.8
+      },
+      {
+        "user": "Suzuran",
+        "n_samples": 5,
+        "accuracy": 0.2
+      },
+      {
+        "user": "TDI",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Tularim",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "Um_nik",
+        "n_samples": 59,
+        "accuracy": 0.8305084745762712
+      },
+      {
+        "user": "UongAI",
+        "n_samples": 7,
+        "accuracy": 0.8571428571428571
+      },
+      {
+        "user": "__kalpesh__",
+        "n_samples": 12,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "user": "_dev_18912",
+        "n_samples": 6,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "user": "aanya_bhatt26",
+        "n_samples": 11,
+        "accuracy": 0.36363636363636365
+      },
+      {
+        "user": "adnan110",
+        "n_samples": 9,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "user": "akshatkansal",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "alt_middle-guarantee-777",
+        "n_samples": 13,
+        "accuracy": 0.7692307692307693
+      },
+      {
+        "user": "andreyv",
+        "n_samples": 18,
+        "accuracy": 0.3888888888888889
+      },
+      {
+        "user": "ankan_kargupta",
+        "n_samples": 9,
+        "accuracy": 0.8888888888888888
+      },
+      {
+        "user": "annshikaa16",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "antontrygubO_o",
+        "n_samples": 5,
+        "accuracy": 0.8
+      },
+      {
+        "user": "arnavneginsut",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "aryanc403",
+        "n_samples": 46,
+        "accuracy": 0.3695652173913043
+      },
+      {
+        "user": "awoo",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "bright610",
+        "n_samples": 10,
+        "accuracy": 0.9
+      },
+      {
+        "user": "codehjkun",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "divyanshusamadhiya115",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "ecnerwala",
+        "n_samples": 70,
+        "accuracy": 0.7
+      },
+      {
+        "user": "fahadsyed",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "feecie6418",
+        "n_samples": 54,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "user": "fsouza",
+        "n_samples": 17,
+        "accuracy": 0.47058823529411764
+      },
+      {
+        "user": "godfathersub1729",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "happySword111",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "hirparadhruv",
+        "n_samples": 6,
+        "accuracy": 0.6666666666666666
+      },
+      {
+        "user": "huanluo",
+        "n_samples": 7,
+        "accuracy": 0.5714285714285714
+      },
+      {
+        "user": "ilikturtles",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "jaindaksh655",
+        "n_samples": 7,
+        "accuracy": 0.8571428571428571
+      },
+      {
+        "user": "jaysatya52",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "jeroenodb",
+        "n_samples": 6,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "user": "jiangly",
+        "n_samples": 9,
+        "accuracy": 0.4444444444444444
+      },
+      {
+        "user": "jjksfhv7o348",
+        "n_samples": 14,
+        "accuracy": 1.0
+      },
+      {
+        "user": "jxy2234604343",
+        "n_samples": 5,
+        "accuracy": 0.8
+      },
+      {
+        "user": "kailash.exe",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "kashishkumari335",
+        "n_samples": 8,
+        "accuracy": 1.0
+      },
+      {
+        "user": "kaushikmishra_",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "khanhkhanhkhanh123",
+        "n_samples": 5,
+        "accuracy": 0.8
+      },
+      {
+        "user": "kimia.gh.1",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "kritically_challenged",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "kushagrabaingaha",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "lucaperju",
+        "n_samples": 67,
+        "accuracy": 0.9104477611940298
+      },
+      {
+        "user": "mikhail",
+        "n_samples": 3,
+        "accuracy": 1.0
+      },
+      {
+        "user": "misaka18931",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "mishgan",
+        "n_samples": 10,
+        "accuracy": 0.3
+      },
+      {
+        "user": "mnbvmar",
+        "n_samples": 48,
+        "accuracy": 0.6458333333333334
+      },
+      {
+        "user": "mrrishi373",
+        "n_samples": 11,
+        "accuracy": 1.0
+      },
+      {
+        "user": "namchak",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "neal",
+        "n_samples": 18,
+        "accuracy": 0.8888888888888888
+      },
+      {
+        "user": "nishantpandey3640",
+        "n_samples": 5,
+        "accuracy": 0.8
+      },
+      {
+        "user": "ojas001",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "optimus_maximus",
+        "n_samples": 6,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "user": "paul.",
+        "n_samples": 9,
+        "accuracy": 0.5555555555555556
+      },
+      {
+        "user": "prachiiiiii",
+        "n_samples": 7,
+        "accuracy": 0.8571428571428571
+      },
+      {
+        "user": "practicecp80",
+        "n_samples": 8,
+        "accuracy": 0.625
+      },
+      {
+        "user": "rousbk11sans",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "rshvm9",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "sakshamchopra",
+        "n_samples": 6,
+        "accuracy": 1.0
+      },
+      {
+        "user": "sethumadhav21",
+        "n_samples": 8,
+        "accuracy": 1.0
+      },
+      {
+        "user": "shadyggs",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "shrutipant",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "snaps4015",
+        "n_samples": 7,
+        "accuracy": 0.5714285714285714
+      },
+      {
+        "user": "starsoda",
+        "n_samples": 9,
+        "accuracy": 0.0
+      },
+      {
+        "user": "sum",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "swayam12",
+        "n_samples": 6,
+        "accuracy": 0.8333333333333334
+      },
+      {
+        "user": "tangpingintime",
+        "n_samples": 8,
+        "accuracy": 0.875
+      },
+      {
+        "user": "tourist",
+        "n_samples": 112,
+        "accuracy": 0.8303571428571429
+      },
+      {
+        "user": "ts3681",
+        "n_samples": 16,
+        "accuracy": 0.875
+      },
+      {
+        "user": "uchihasanji",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "urvijagulati_",
+        "n_samples": 7,
+        "accuracy": 1.0
+      },
+      {
+        "user": "valluri4496",
+        "n_samples": 13,
+        "accuracy": 0.7692307692307693
+      },
+      {
+        "user": "vasuganesha1",
+        "n_samples": 8,
+        "accuracy": 0.75
+      },
+      {
+        "user": "vimaurya",
+        "n_samples": 5,
+        "accuracy": 1.0
+      },
+      {
+        "user": "zhaomm",
+        "n_samples": 6,
+        "accuracy": 0.5
+      },
+      {
+        "user": "zscoder",
+        "n_samples": 10,
+        "accuracy": 0.9
+      }
+    ]
+  },
+  "cross_difficulty": {
+    "experiment": "Cross-Difficulty Generalization",
+    "in_dist_accuracy": [
+      {
+        "Difficulty": "Easy",
+        "N": 665,
+        "Accuracy": "90.1%"
+      },
+      {
+        "Difficulty": "Medium",
+        "N": 487,
+        "Accuracy": "93.4%"
+      },
+      {
+        "Difficulty": "Hard",
+        "N": 582,
+        "Accuracy": "93.6%"
+      }
+    ],
+    "leave_difficulty_out": [
+      {
+        "Train": "Easy",
+        "Test": "Medium",
+        "N_train": 665,
+        "N_test": 487,
+        "Accuracy": 0.6960985626283368
+      },
+      {
+        "Train": "Easy",
+        "Test": "Hard",
+        "N_train": 665,
+        "N_test": 582,
+        "Accuracy": 0.7130584192439863
+      },
+      {
+        "Train": "Medium",
+        "Test": "Easy",
+        "N_train": 487,
+        "N_test": 665,
+        "Accuracy": 0.8586466165413534
+      },
+      {
+        "Train": "Medium",
+        "Test": "Hard",
+        "N_train": 487,
+        "N_test": 582,
+        "Accuracy": 0.7044673539518901
+      },
+      {
+        "Train": "Hard",
+        "Test": "Easy",
+        "N_train": 582,
+        "N_test": 665,
+        "Accuracy": 0.8225563909774436
+      },
+      {
+        "Train": "Hard",
+        "Test": "Medium",
+        "N_train": 582,
+        "N_test": 487,
+        "Accuracy": 0.731006160164271
+      }
+    ]
+  }
+}
