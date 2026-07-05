@@ -32,7 +32,9 @@ This research directly addresses the "CS1 problem" by providing educators with p
 
 ## Data and Code Availability
 
-All data, code, and experimental results will be made publicly available on GitHub upon acceptance.
+All data, code, and experimental results are publicly available at: https://github.com/huwenbin123huwenbin/programming-error-classification
+
+The repository includes the full dataset (13,360 samples), all experimental code, and complete results for reproducibility.
 
 ## Previous Presentation
 
