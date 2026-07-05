@@ -12,7 +12,7 @@
 
 5. **Practical selection guidelines** for educators and developers choosing between ML and LLM approaches
 
-6. **Open dataset and code** (13,360 Codeforces samples) for reproducibility and future research
+6. **Open dataset and code** available at github.com/huwenbin123huwenbin/programming-error-classification
 
 ---
 

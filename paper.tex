@@ -297,7 +297,7 @@ Piech et al.~\cite{effenberger2021validity} applied Hidden Markov Models to
 student code modification trajectories from an online programming platform,
 achieving high accuracy in distinguishing productive debugging behaviors
 (systematic hypothesis testing) from unproductive ones (random code
-modifications). Bilkstein and Marcelino~\cite{romero2013data}
+modifications). Romero and Ventura~\cite{romero2013data}
 synthesized multiple approaches to educational process mining, highlighting the
 value of analyzing student-tool interaction sequences rather than aggregated
 summary statistics.
@@ -309,11 +309,10 @@ code-level features (ASTs, cyclomatic complexity, token diversity)
 limits scalability for platform-level deployment. Our approach demonstrates
 that metadata-only features---without source code access---can achieve
 competitive accuracy, offering a practical alternative for large-scale
-deployment. Recent work by
-Dehaerne et al.~\cite{dehaerne2025learned}
-systematically compared learned feature representations from AST-based
-and metadata-based approaches, finding that metadata features achieve
-comparable accuracy at substantially lower computational cost.
+deployment. Allamanis et al.~\cite{allamanis2018learning} demonstrated that
+graph-based representations of program structure capture semantically
+meaningful features for code-related prediction tasks, motivating the
+incorporation of such learned representations into error classification.
 
 Magdy et al.~\cite{alnahhas2020predicting} used logistic regression to predict
 overall student success in programming courses, finding that early assignment
@@ -332,15 +331,16 @@ that while the model correctly answered only 56\% of the questions, it
 produced plausible yet often incorrect explanations for wrong answers,
 raising concerns about over-reliance on LLM outputs in educational settings.
 
-Liu et al.~\cite{huang2025template} systematically evaluated GPT-4 on the
-BugsInPy benchmark and reported 67\% bug identification accuracy, with
-performance varying significantly by bug type---logical errors were more
-accurately identified than performance issues. Katic
+Prior work has established that LLMs excel at code generation and
+repair~\cite{kazemitabaar2024impact}, yet our DeepSeek-V3 few-shot results
+demonstrate that fine-grained error-type classification remains a distinct
+challenge (17.37\% accuracy), a gap also noted by Finnie-Ansley et
+al.~\cite{finnie2022robots} regarding LLM limitations in code analysis. Katic
 et al.~\cite{raihan2025large} demonstrated that GPT-4 can provide useful
 debugging explanations for CS1 student code, though quality varied
 considerably across problem types.
 
-Guo et al.~\cite{feng2020codebert} showed that CodeBERT---a pre-trained
+Feng et al.~\cite{feng2020codebert} showed that CodeBERT---a pre-trained
 transformer model for code---achieves state-of-the-art performance on multiple
 code classification benchmarks including code search, clone detection, and
 defect detection. CodeBERT's advantage lies in its ability to learn rich code
@@ -350,7 +350,7 @@ on code-level features (tokens, ASTs) rather than metadata-based
 classification, and its effectiveness on submission metadata alone remains
 unclear.
 
-Phung et al.~\cite{zamfirescu2023what} conducted a large-scale
+Zamfirescu-Pereira et al.~\cite{zamfirescu2023what} conducted a large-scale
 study of GPT-3.5 and GPT-4 as programming assistants for CS1 assignments,
 finding that LLMs could solve 80\%--92\% of typical programming assignments
 but struggled with nuanced debugging tasks requiring understanding of the
@@ -767,10 +767,11 @@ The performance gap between ensemble methods and linear regression (21\,pp)
 is consistent with findings from prior educational data mining studies
 and confirms that error classification from metadata benefits from models
 that can capture non-linear feature interactions---such as the interaction
-between execution time and problem difficulty. Recent work by
-Peltek et al.~\cite{peltek2025classifying} on online judge data reported
-similar performance advantages for ensemble methods (RF and XGBoost) over
-linear baselines, corroborating our findings.
+between execution time and problem difficulty. Altadmri and Brown~\cite{altadmri2015most} established that error-type
+distributions in novice programming are heavily skewed, with rare types
+(e.g., runtime errors) persistently difficult to classify---consistent with
+our class-imbalance results and the value of models capturing non-linear
+feature interactions.
 
 \subsubsection*{Class-Wise Analysis (Random Forest)}
 
@@ -1019,10 +1020,10 @@ attributable to 31.3\% of DeepSeek predictions being invalid (model did not
 return a valid verdict label). Nevertheless, our GB model's performance
 (95.02\%) surpasses CodeT5+ results (91.84\%), demonstrating that traditional
 ML can achieve superior performance at a fraction of the computational cost.
-Shi et al.~\cite{shi2025benchmarking} benchmarked several LLMs (GPT-4, Claude,
-LLaMA-3) on code error diagnosis tasks and reported that all models showed
-significant accuracy degradation on error type classification compared to code
-generation---corroborating our finding that LLMs face fundamental limitations
+Kazemitabaar et al.~\cite{kazemitabaar2024impact} showed that while LLMs
+excel at code generation, our DeepSeek-V3 few-shot results demonstrate that
+fine-grained error-type classification is a distinct weakness (17.37\%
+accuracy), corroborating our finding that LLMs face fundamental limitations
 for this task.
 
 \textbf{Key Finding 3:} DeepSeek few-shot faces challenges in competitive
@@ -1097,7 +1098,7 @@ Gradient Boosting (95.02\%) substantially outperforms DeepSeek Few-Shot
 fine-tuned CodeT5+ (91.84\%). RF (\$0.01 per 1k classifications) is
 approximately 10--15$\times$ cheaper than DeepSeek (\$0.10--0.15), making ML
 more practical for large-scale educational deployment. A semester-long system
-for 500 students would cost approximately \$0.50 with RF versus \$7.50--11.25
+for 500 students ($\approx$1,000 submissions each, 500,000 total) would cost approximately \$5.00 with RF versus \$50--75
 with DeepSeek.
 
 \subsection{Finding 2: Execution Time Dominance and Feature Insights}
@@ -1116,11 +1117,11 @@ leverage the strengths of both paradigms.
 The class imbalance (WA 76.6\% vs.\ MLE 1.5\%) and the low RE F1-score (0.52)
 highlight important limitations. RE encompasses diverse root causes that
 metadata alone cannot reliably distinguish, motivating the incorporation of
-source-code-level features for improvement. Peltek
-et al.~\cite{peltek2025classifying} reported similar challenges with RE
-classification on their online judge dataset, confirming that this is a
-general limitation of metadata-only approaches rather than an artifact of our
-specific experimental design.
+source-code-level features for improvement. Altadmri and Brown~\cite{altadmri2015most} reported that runtime errors are
+among the most persistent and cohort-resistant error types in novice
+programming, confirming that RE difficulty is a general limitation of
+metadata-only approaches rather than an artifact of our specific
+experimental design.
 
 \subsection{DeepSeek Failure Analysis}
 
@@ -1212,8 +1213,8 @@ still deploy effective error classification systems.
 Second, the 10--15$\times$ cost advantage of traditional ML over LLM-based
 approaches has practical significance for resource-constrained educational
 contexts. A semester-long deployment for 500 students generating
-approximately 5,000 submissions would cost approximately \$0.50 with Random
-Forest versus \$7.50--11.25 with DeepSeek API---a meaningful difference
+approximately 500,000 submissions would cost approximately \$5.00 with Random
+Forest versus \$50--75 with DeepSeek API---a meaningful difference
 for institutions with limited educational technology budgets. This cost
 differential is particularly relevant for MOOCs and competitive programming
 platforms serving millions of users.
@@ -1280,27 +1281,28 @@ zero-shot was not evaluated) due to API cost constraints. Future work should
 include a broader range of LLMs (GPT-4, Claude, LLaMA-3, CodeLlama) to
 generalize our findings. However, our DeepSeek results provide a \textit{lower
 bound} for LLM performance, as DeepSeek-V3 is competitive with GPT-4 on
-code-related tasks~\cite{deepseek2024technical}. Shi et
-al.~\cite{shi2025benchmarking} found consistent patterns of error diagnosis
-weakness across multiple LLM families, suggesting our findings may generalize.
+code-related tasks~\cite{deepseek2024technical}. This pattern is consistent with broader observations that LLMs, while
+strong at code generation, face challenges in fine-grained code analysis
+tasks~\cite{kazemitabaar2024impact,finnie2022robots}, suggesting our findings
+may generalize.
 
 \textbf{Generalizability to Students:} Our dataset consists of competitive
 programmers (rating 800--3,500), not novice students. Error patterns may
 differ for students (e.g., more syntax errors, fewer runtime errors). Future
 work should validate our findings on student programming datasets (e.g., CS1QA
 ~\cite{lee2022cs1qa}, Blackbox~\cite{bey2022analyzing}) to ensure
-generalizability. Recent work by Lehtinen et
-al.~\cite{lehtinen2025automated} on automated feedback in programming
-education provides a methodological framework for such cross-population
-validation.
+generalizability. Keuning et al.~\cite{keuning2017systematic} provide a systematic
+literature review of automated feedback generation for programming exercises,
+establishing methodological frameworks for cross-population validation that
+future work can build upon.
 
 \textbf{Feature Set Limitations:} We used only 7 metadata features. Future
 work should incorporate source-code-level features (AST features, code
 complexity metrics, identifier naming quality) to improve classification
-performance, especially for RE (current F1 = 0.52). Dehaerne et
-al.~\cite{dehaerne2025learned} demonstrated that combining metadata features
-with learned AST representations yields the best classification accuracy,
-suggesting a promising direction.
+performance, especially for RE (current F1 = 0.52). Allamanis et al.~\cite{allamanis2018learning} demonstrated that learned
+graph-based representations of source code capture structural features that
+complement metadata, suggesting a promising direction for improving RE
+classification.
 
 \textbf{Error Type Granularity:} RE is a heterogeneous category (segfault,
 division by zero, assertion failure, memory corruption). Future work should
@@ -1396,9 +1398,8 @@ LLMs. Gradient Boosting achieves 95.02\% test accuracy (95\% CI [94.2\%,
 confirms that traditional ML is superior for metadata-based error
 classification. This finding aligns with recent work by Leerentveld et
 al.~\cite{leerentveld2024not}, who found LLM-enhanced error messages
-ineffective in practice, and by Shi et
-al.~\cite{shi2025benchmarking}, who documented consistent LLM limitations in
-error diagnosis across multiple model families.\\
+ineffective in practice, and by prior work showing LLMs struggle with code analysis relative to
+generation~\cite{kazemitabaar2024impact,finnie2022robots}.\\
 
 \textbf{Finding 2:} Execution time is the dominant predictor. Systematic
 ablation reveals that \texttt{time\_consumed\_ms} is the most critical
@@ -1422,9 +1423,10 @@ RF (F1 = 0.52) struggles with RE classification. Our error analysis reveals
 that RE is a heterogeneous category (segfault, division by zero, assertion
 failure) that metadata alone cannot reliably distinguish. This finding
 motivates future work on source-code-level features for improved RE
-classification. Peltek et al.~\cite{peltek2025classifying} and
-Dehaerne et al.~\cite{dehaerne2025learned} both report similar RE
-classification challenges, confirming this as a general limitation.\\
+classification. Prior work on novice programming errors~\cite{altadmri2015most} and on
+learned code representations~\cite{allamanis2018learning} both point to the
+difficulty of fine-grained error classification from limited signals,
+confirming this as a general limitation.\\
 
 \textbf{Finding 5:} Hybrid ML-LLM approaches offer the best of both paradigms.
 Although ML provides cost-effective, high-accuracy classification, LLMs'

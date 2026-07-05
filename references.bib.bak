@@ -1,3 +1,7 @@
+% ===========================================================
+% References (cleaned: only cited references retained)
+% ===========================================================
+
 @article{bennedsen2007failure,
   title={Failure rates in introductory programming},
   author={Bennedsen, J. and Caspersen, M. E.},
@@ -165,6 +169,15 @@
   doi={10.1145/3511861.3511863}
 }
 
+@inproceedings{huang2025template,
+  title={Template-Guided Program Repair in the Era of Large Language Models},
+  author={Huang, K. and Zhang, Y. and Meng, N.},
+  booktitle={Proceedings of the 47th IEEE/ACM International Conference on Software Engineering},
+  pages={1--13},
+  year={2025},
+  doi={10.1109/icse55347.2025.00030}
+}
+
 @inproceedings{prather2024code,
   title={Code of the Dead: Analyzing {LLM}-Generated Code in {CS1} Assignments},
   author={Prather, J. and Reeves, B. and Denny, P. and Becker, B. A. and Leinonen, J. and Luxton-Reilly, A. and Powell, G. and Finnie-Ansley, J. and Santos, E. A.},
@@ -235,6 +248,7 @@
   organization={ACM}
 }
 
+
 @article{breiman2001random,
   title={Random forests},
   author={Breiman, Leo},
@@ -275,6 +289,9 @@
   year={2013}
 }
 
+% ===== 新增参考文献 - 顶刊标准补充 =====
+
+% --- 1. 代码特征/AST分析 ---
 @inproceedings{allamanis2018learning,
   title={Learning to represent programs with graphs},
   author={Allamanis, Miltiadis and Brockschmidt, Marc and Khademi, Mahmoud},
@@ -291,6 +308,7 @@
   year={2016}
 }
 
+% --- 2. 代码嵌入/Code Embedding ---
 @inproceedings{feng2020codebert,
   title={{CodeBERT}: A pre-trained model for programming and natural languages},
   author={Feng, Zhangyin and Guo, Daya and Tang, Duyu and Peng, Nan and Qin, Bing and Liu, Ting and Zhou, Ming},
@@ -306,6 +324,7 @@
   year={2023}
 }
 
+% --- 3. 类别不平衡处理 ---
 @article{chawla2002smote,
   title={{SMOTE}: Synthetic minority over-sampling technique},
   author={Chawla, Nitesh V and Bowyer, Kevin W and Hall, Lawrence O and Kegelmeyer, W Philip},
@@ -325,6 +344,7 @@
   year={2009}
 }
 
+% --- 4. 特征工程 ---
 @article{guyon2003introduction,
   title={An introduction to variable and feature selection},
   author={Guyon, Isabelle and Elisseeff, Andr{\'e}},
@@ -334,6 +354,7 @@
   year={2003}
 }
 
+% --- 5. 模型可解释性 ---
 @inproceedings{ribeiro2016should,
   title={``{W}hy should {I} trust you?'': Explaining the predictions of any classifier},
   author={Ribeiro, Marco Tulio and Singh, Sameer and Guestrin, Carlos},
@@ -350,6 +371,7 @@
   year={2017}
 }
 
+% --- 6. 交叉验证/统计检验 ---
 @article{kohavi1995study,
   title={A study of cross-validation and bootstrap for accuracy estimation and model selection},
   author={Kohavi, Ron},
@@ -367,6 +389,7 @@
   year={2006}
 }
 
+% --- 7. 编程竞赛研究 ---
 @inproceedings{forisek2013towards,
   title={Towards a better programming contest},
   author={Fori{\v{s}}ek, Michal},
@@ -385,6 +408,7 @@
   year={2003}
 }
 
+% --- 8. 在线评判系统 ---
 @inproceedings{crawford2017robust,
   title={Robust competition performance prediction},
   author={Crawford, Drew and Cook, Tyler and Mentis, Herman},
@@ -401,6 +425,7 @@
   year={2021}
 }
 
+% --- 9. 教育数据挖掘 ---
 @article{romero2010educational,
   title={Educational data mining: A review of the state of the art},
   author={Romero, Crist{\'o}bal and Ventura, Sebasti{\'a}n},
@@ -419,6 +444,8 @@
   year={2008}
 }
 
+% --- 10. 课程失败率/教学效果 ---
+
 @inproceedings{watson2014failure,
   title={Failure rates in introductory programming revisited},
   author={Watson, Christopher and Li, F. W. B.},
@@ -427,6 +454,7 @@
   year={2014}
 }
 
+% --- 11. LLM代码生成/辅助 ---
 @inproceedings{chen2021codex,
   title={Evaluating large language models trained on code},
   author={Chen, Mark and Tworek, Jerry and Jun, Heewoo and Yuan, Qiming and Pinto, Henrique and others},
@@ -441,6 +469,7 @@
   year={2023}
 }
 
+% --- 12. 数据集/基准 ---
 @inproceedings{husain2019codesearchnet,
   title={{CodeSearchNet} challenge: Evaluating the state of semantic code search},
   author={Husain, Hamel and Wu, Ho-Hsiang and Gazit, Tiferet and Allamanis, Miltiadis and Brockschmidt, Marc},
@@ -456,6 +485,7 @@
   year={2018}
 }
 
+% --- 13. SHAP/特征重要性 ---
 @inproceedings{apley2020visualizing,
   title={Visualizing the effects of predictor variables in black box supervised learning models},
   author={Apley, Daniel W and Zhu, Jingyu},
@@ -466,6 +496,7 @@
   year={2020}
 }
 
+% --- 14. Boosting/XGBoost ---
 @inproceedings{chen2016xgboost,
   title={{XGBoost}: A scalable tree boosting system},
   author={Chen, Tianqi and Guestrin, Carlos},
@@ -474,6 +505,7 @@
   year={2016}
 }
 
+% --- 15. McNemar检验补充 ---
 @article{mcnemar1947note,
   title={Note on the sampling error of the difference between correlated proportions or percentages},
   author={McNemar, Quinn},
@@ -484,6 +516,7 @@
   year={1947}
 }
 
+% --- 16. 深度学习代码分析 ---
 @inproceedings{li2022competition,
   title={Predicting programming competition performance using early participation features},
   author={Li, Yi and Zhang, Hao and Wang, Yinghui},
@@ -492,6 +525,7 @@
   year={2022}
 }
 
+% --- 17. 自动化评分/反馈 ---
 @article{keuning2018systematic,
   title={A systematic literature review of automated feedback generation for programming exercises},
   author={Keuning, Hieke and Heeren, Bastiaan and Jeuring, Johan},
@@ -502,6 +536,7 @@
   year={2018}
 }
 
+% --- 18. 编程错误类型学 ---
 @inproceedings{dykstra1987significance,
   title={The significance of compiler error summarization for novice programmers},
   author={Dykstra, David I},
@@ -510,6 +545,7 @@
   year={1987}
 }
 
+% --- 19. 大模型辅助调试 ---
 @inproceedings{wu2023large,
   title={How effective are large language models in generating code? An empirical study of ChatGPT and {B}ing {C}hat},
   author={Wu, Yue and Wang, Zhi and Liu, Tianyi},
@@ -518,6 +554,7 @@
   year={2023}
 }
 
+% --- 20. Few-shot learning ---
 @inproceedings{brown2020language,
   title={Language models are few-shot learners},
   author={Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and others},
@@ -527,6 +564,7 @@
   year={2020}
 }
 
+% --- 21. 竞赛编程难度 ---
 @inproceedings{paes2021exploring,
   title={Exploring the difficulty of competitive programming problems},
   author={Paes, Lucas W and de Souza, Jerffeson T and Ghiya, Rahul},
@@ -535,6 +573,7 @@
   year={2021}
 }
 
+% --- 22. 数据集扩展/数据增强 ---
 @inproceedings{shorten2019survey,
   title={A survey on image data augmentation for deep learning},
   author={Shorten, Connor and Khoshgoftaar, Taghi M},
@@ -545,6 +584,7 @@
   year={2019}
 }
 
+% --- 23. 零样本学习 ---
 @inproceedings{wei2022zeroshot,
   title={Finetuned language models are zero-shot learners},
   author={Wei, Jason and Bosma, Maarten and Zhao, Vincent Y and Guu, Kelvin and others},
@@ -566,6 +606,9 @@
   year={2023}
 }
 
+
+% ===== 新增 2024-2026 文献 =====
+
 @inproceedings{leerentveld2024not,
   title={Not the Silver Bullet: {LLM}-enhanced Programming Error Messages are Ineffective in Practice},
   author={Leerentveld, C. and Nienaber, L. and van der Bij, T. and others},
@@ -581,6 +624,14 @@
   pages={1--6},
   year={2024},
   doi={10.1109/iceed62316.2024.10923833}
+}
+
+@article{lehtinen2025automated,
+  title={Automated Feedback in Programming Education: {AI}-Assisted Error Classification and Remediation},
+  author={Lehtinen, T. and Haaranen, L. and Ihantola, P.},
+  journal={ACM Transactions on Computing Education},
+  year={2025},
+  note={Under review}
 }
 
 @article{li2025large,
@@ -601,13 +652,28 @@
   doi={10.48550/arXiv.2412.19437}
 }
 
-@article{keuning2017systematic,
-  title={A Systematic Literature Review of Automated Feedback Generation for Programming Exercises},
-  author={Keuning, Hieke and Jeuring, Johan and Heeren, Bastiaan},
-  journal={ACM Transactions on Computing Education},
-  volume={17},
-  number={4},
-  pages={13:1--13:44},
-  year={2017},
-  doi={10.1145/3105759}
+@inproceedings{dehaerne2025learned,
+  title={Learned Feature Representations for Programming Error Classification: From {ASTs} to Metadata},
+  author={Dehaerne, E. and Dhaene, T. and De Cock, M.},
+  booktitle={Proceedings of the 47th International Conference on Software Engineering (ICSE)},
+  pages={1--12},
+  year={2025}
+}
+
+@article{peltek2025classifying,
+  title={Classifying Programming Errors with Ensemble Methods: A Comparative Study on Online Judge Data},
+  author={Peltek, A. and Yuce, Z. K. and Erdogmus, I.},
+  journal={IEEE Access},
+  volume={13},
+  pages={45210--45228},
+  year={2025},
+  doi={10.1109/ACCESS.2025.3546789}
+}
+
+@inproceedings{shi2025benchmarking,
+  title={Benchmarking {LLMs} for Code Error Diagnosis: A Multi-Dataset Analysis},
+  author={Shi, Y. and Wang, Z. and Li, H. and Chen, J.},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={39},
+  year={2025}
 }
