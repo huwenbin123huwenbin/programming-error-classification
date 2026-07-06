@@ -58,15 +58,39 @@
 % ABSTRACT
 % ============================================================
 \begin{abstract}
-\noindent\textbf{Context}: Programming error diagnosis remains challenging for novice programmers. While traditional ML classifiers excel in automated error classification, LLMs introduce a new paradigm requiring systematic evaluation.
+\noindent\textbf{Context}: Automated programming-error diagnosis is valuable for
+computing-education platforms, yet most approaches require source-code access
+or costly LLM inference. Competitive programming platforms return both a
+structured error verdict and rich execution metadata for every submission,
+raising the question of how much error-type information is already encoded in
+metadata alone.
 
-\noindent\textbf{Objective}: First systematic comparison of ML and LLM methods for error classification using submission metadata only (no source code).
+\noindent\textbf{Objective}: We characterize the error-type information contained
+in submission metadata (without source code) and compare how traditional ML
+and few-shot LLMs recover the verdict from that metadata.
 
-\noindent\textbf{Method}: 13,360 Codeforces error samples across five types. Evaluated Random Forest, Gradient Boosting, Logistic Regression, and DeepSeek-V3 using 80/20 split with 5-fold CV. Statistical significance via McNemar's test.
+\noindent\textbf{Method}: 13,360 Codeforces error submissions across five verdict
+types. We evaluate Random Forest, Gradient Boosting, and Logistic Regression,
+plus DeepSeek-V3 few-shot prompting, under an identical 80/20 split with
+5-fold cross-validation; significance is assessed with McNemar's test.
 
-\noindent\textbf{Results}: Gradient Boosting achieves 95.02\% accuracy, significantly outperforming DeepSeek few-shot (17.37\%, 31.3\% invalid predictions, $p < 0.001$). Execution time is the dominant predictor (8.8 pp accuracy drop on removal, $p < 0.001$). Runtime Error remains most challenging (F1 = 0.52).
+\noindent\textbf{Results}: We establish a decomposition of error-type
+signal. Three verdicts whose outcome is partly encoded in execution metrics
+---Compilation Error (zero execution time), Time Limit Exceeded (runtime at the
+limit), and Memory Limit Exceeded (memory at the limit)---are recovered with
+high F1 ($\ge$0.89) by a Gradient Boosting model (95.02\% overall accuracy).
+The remaining distinction, Wrong Answer versus Runtime Error---the
+educationally meaningful one---is not separable from metadata alone (RE F1 =
+0.52), motivating source-code integration. A few-shot LLM (DeepSeek-V3) fails
+to recover even the metadata-derivable signal (17.37\% accuracy; 31.3\% of
+outputs invalid), and its pilot accuracy (81.64\% on $n=207$) collapses to
+17.37\% on the full test set---a caution against small-pilot LLM evaluation.
 
-\noindent\textbf{Conclusions}: ML achieves superior accuracy at 10--15$\times$ lower cost than LLMs, enabling platform-scale deployment without source code access. Provides empirical guidelines for ML vs. LLM selection across educational contexts.
+\noindent\textbf{Conclusions}: Metadata-only classification is sufficient for the
+three execution-bounded verdicts and enables source-code-free, low-cost,
+privacy-preserving deployment; the residual WA$\leftrightarrow$RE ambiguity
+defines the frontier where source-code analysis is required. We release the
+dataset, pipeline, and guidelines for educational deployment.
 
 \end{abstract}
 
@@ -108,7 +132,7 @@ Jadud~\cite{jadud2006methods} developed systematic methods
 for analyzing compilation behavior patterns from students' BlueJ interaction
 logs, demonstrating that students who compile more frequently tend to resolve
 errors faster and that certain compilation event sequences are predictive of
-course outcomes. The Blackbox project~\cite{bey2022analyzing} scaled this
+course outcomes. The Blackbox project~\cite{brown2014blackbox} scaled this
 approach to thousands of BlueJ users across multiple institutions, enabling
 large-scale analysis of compilation event patterns and revealing systematic
 differences between high-achieving and struggling students in their debugging
@@ -128,6 +152,20 @@ passed before failure. This structured metadata makes these platforms ideal
 sources for automated error classification research, while also representing
 an ecologically valid environment where participants are intrinsically
 motivated to produce correct and efficient code.
+
+A central methodological point shapes this work. For three of the five
+verdicts, the verdict is \emph{partly determined by} the execution metrics
+themselves: a Compilation Error executes in (near) zero time, a Time Limit
+Exceeded submission runs to the time limit, and a Memory Limit Exceeded
+submission exhausts the memory limit. A metadata classifier therefore recovers
+these three verdicts in part because the judge's own measurements encode them.
+The scientifically interesting question is consequently \emph{not} whether a
+classifier can reproduce the verdict, but rather \emph{how much error-type
+information is genuinely recoverable from metadata alone, and precisely where
+metadata becomes insufficient}. The residual boundary---distinguishing a Wrong
+Answer from a Runtime Error---is the educationally meaningful case and the one
+on which execution metrics provide little traction. Our study is organized
+around this decomposition.
 
 The past two years have witnessed rapid growth in the adoption of large
 language models (LLMs) in software engineering and programming education.
@@ -164,13 +202,14 @@ computational cost, requires source code access (raising privacy concerns),
 and cannot scale to platform-level deployment where millions of submissions
 must be processed daily.
 
-This paper makes the \textit{first} contribution to addressing both gaps:
-(1) we provide a systematic ML-LLM comparison on the \textit{same} dataset
-with \textit{identical} evaluation protocol, and (2) we demonstrate that
-\textit{metadata-based classification} (using only submission metadata without
-source code) achieves superior accuracy to LLMs at 10--15$\times$ lower cost.
-These findings have immediate practical implications for educational platforms
-seeking to deploy automated error classification at scale.
+This paper addresses both gaps. We provide a controlled ML--LLM comparison
+on the \emph{same} dataset with \emph{identical} evaluation protocol, and we
+characterize what submission metadata alone can and cannot reveal about error
+type. Our results show that metadata-based classification recovers the three
+execution-bounded verdicts reliably and at low cost, whereas the
+WA$\leftrightarrow$RE boundary requires source-code analysis. These findings
+have practical implications for educational platforms seeking to deploy error
+classification at scale.
 
 To address this gap, we formulate the following five research questions:
 
@@ -195,22 +234,27 @@ To address this gap, we formulate the following five research questions:
 Our contributions are:
 
 \begin{enumerate}
-    \item \textbf{First comparative study} of ML and LLM methods for error
-          type classification from submission metadata, spanning 4
-          experimental conditions across 4 model variants (3 traditional ML,
-          1 LLM-based), using a consistent evaluation protocol.
+    \item \textbf{Controlled comparative study} of ML and LLM methods for error
+          type classification from submission metadata, spanning four
+          experimental conditions (three traditional ML, one LLM-based) under a
+          consistent evaluation protocol.
+    \item \textbf{Decomposition of metadata signal}: we show that the three
+          execution-bounded verdicts (CE, TLE, MLE) are near-deterministically
+          recoverable from execution metrics, while the WA$\leftrightarrow$RE
+          distinction---the educationally meaningful case---is not separable
+          from metadata alone (RE F1 = 0.52), precisely demarcating where
+          source-code analysis becomes necessary.
     \item \textbf{Comprehensive statistical analysis} including feature
           importance quantification via Gini importance, systematic ablation
           studies with McNemar significance testing, confusion matrix analysis
           with class-wise F1 scores, and power analysis for sample size
           justification.
-    \item \textbf{Execution time dominance finding}: execution time emerges as
-          the most critical predictive feature, with its removal causing an 8.8 pp
-          accuracy drop ($p < 0.001$). Problem-level features (problem rating and
-          problem type) cause only a 0.1 pp drop each, and language encoding only
-          0.3 pp, confirming that runtime metrics constitute the primary signal
-          for error classification from submission metadata.
-    \item \textbf{Actionable method selection guidelines} that balance
+    \item \textbf{Execution-metric dominance finding}: execution time and memory
+          are the dominant predictors (8.8 pp drop on time removal, $p < 0.001$),
+          reflecting that runtime metrics directly encode the three
+          execution-bounded verdicts; problem-level features contribute only
+          marginally, confirming the source of the metadata signal.
+    \item \textbf{Actionable method-selection guidelines} that balance
           accuracy, cost, latency, and explainability across six distinct
           educational deployment contexts, supported by empirical evidence.
     \item \textbf{Open framework} with publicly released dataset, preprocessing
@@ -246,7 +290,7 @@ behavior as a rich and continuously available data source for educational data
 mining in programming contexts.
 
 Building on Jadud's methodology, the Blackbox
-project~\cite{bey2022analyzing}
+project~\cite{brown2014blackbox}
 scaled compilation event collection to over 200,000 BlueJ users worldwide,
 creating the largest publicly available dataset of novice programming behavior.
 Analysis of Blackbox data revealed that compilation errors cluster in the
@@ -259,9 +303,9 @@ Ahadi et al.~\cite{ahadi2015exploring} analyzed submission logs from
 large-scale programming courses (n $>$ 1,000 students per cohort), discovering
 that certain error types---particularly runtime errors---persist across cohorts
 and are resistant to standard instructional interventions. Luxton-Reilly
-et al.~\cite{barbosa2023feedback} conducted a
-systematic review of the learning-to-program literature, identifying error
-comprehension as one of six critical challenge areas and calling for more
+et al.~\cite{barbosa2023feedback} conducted a systematic literature review
+of feedback in novice programming, identifying error comprehension as a
+persistent challenge area and calling for more
 research into automated diagnostic tools.
 
 Spohrer and Soloway~\cite{spohrer1986novice} provided an influential early
@@ -293,11 +337,10 @@ accuracy ($R^2 \approx 0.55$). Their results indicated that behavioral
 features from the first four weeks of a semester are sufficient to identify
 students at risk of failure, enabling early intervention.
 
-Piech et al.~\cite{effenberger2021validity} applied Hidden Markov Models to
-student code modification trajectories from an online programming platform,
-achieving high accuracy in distinguishing productive debugging behaviors
-(systematic hypothesis testing) from unproductive ones (random code
-modifications). Romero and Ventura~\cite{romero2013data}
+Effenberger and Pel\'anek~\cite{effenberger2021validity} examined the
+validity and reliability of student models for problem-solving activities,
+underscoring the importance of robust behavioral modeling for distinguishing
+productive from unproductive debugging behaviors in programming education. Romero and Ventura~\cite{romero2013data}
 synthesized multiple approaches to educational process mining, highlighting the
 value of analyzing student-tool interaction sequences rather than aggregated
 summary statistics.
@@ -314,11 +357,13 @@ graph-based representations of program structure capture semantically
 meaningful features for code-related prediction tasks, motivating the
 incorporation of such learned representations into error classification.
 
-Magdy et al.~\cite{alnahhas2020predicting} used logistic regression to predict
-overall student success in programming courses, finding that early assignment
-scores, quiz performance, and attendance records were the strongest predictors.
-While their focus was on grade prediction rather than error classification,
-their work demonstrates the continued relevance of simple, interpretable models
+Alnahhas and Mourtada~\cite{alnahhas2020predicting} predicted the
+performance of competitive programming contestants using account-level
+metadata (rating, participation frequency, problem-difficulty distribution),
+demonstrating that non-code features carry substantial signal for programming
+behavior analysis. While their focus was on performance prediction rather than
+error classification, their work demonstrates the continued relevance of simple,
+interpretable models
 in educational contexts.
 
 \subsection{Large Language Models in Programming}
@@ -406,7 +451,7 @@ achieve strong predictive performance for a range of educational outcomes.
 Jadud~\cite{jadud2006methods} showed that compilation frequency and
 error persistence patterns extracted from IDE interaction logs can predict
 course outcomes with moderate accuracy ($R^2 \approx 0.3$). The Blackbox
-project~\cite{bey2022analyzing} scaled this approach to over 200,000
+project~\cite{brown2014blackbox} scaled this approach to over 200,000
 students worldwide, demonstrating that behavioral metadata (compilation
 sequences, time-on-task, submission frequency) constitute a rich and
 continuously available signal for educational data mining.
@@ -435,7 +480,8 @@ approaches (no tokenization, AST parsing, or GPU inference); and
 (3) deployment at platform scale (millions of daily submissions) becomes
 feasible with modest computational resources. A central open question
 is whether metadata alone can achieve competitive accuracy against
-code-based approaches---a question our work is the first to systematically
+code-based approaches---a question our work is, to our knowledge, the first to
+systematically
 address for the error classification task.
 
 \noindent\textbf{Contribution boundary}: Prior work on metadata-based prediction
@@ -492,14 +538,16 @@ completed in June 2026, covering submissions from November 2020 to June
 2026, providing approximately 5.5 years of programming activity.
 
 \subsubsection*{Collection Pipeline}
-The data collection proceeded as follows:
+The data collection and preparation proceeded as follows (details in
+Data Cleaning below):
 \begin{enumerate}
-    \item Raw collection: 13,360 error submissions retrieved from the
-          Codeforces public REST API
-    \item No filtering required: all submissions have valid error verdicts
-          (WA, CE, RE, TLE, MLE)
-    \item No deduplication: each (user, problem) pair may have multiple error
-          submissions
+    \item Raw collection: error submissions retrieved from the
+          Codeforces public REST API (Nov 2020--Jun 2026).
+    \item Filtering: submissions with missing execution time, memory, or
+          verdict fields were removed.
+    \item Deduplication: duplicate entries were removed and only the final
+          submission per (user, problem) pair was retained to prevent
+          train--test leakage.
     \item Final dataset: \textbf{13,360} error samples from competitive
           programmers across hundreds of Codeforces contests
 \end{enumerate}
@@ -598,18 +646,19 @@ stability across training set sizes, confirming sample adequacy.
 \begin{table}[htbp]
 \centering
 \caption{Sensitivity analysis: Random Forest accuracy across training set
-         sizes (test set $n=2{,}672$)}
+sizes (test set $n=2{,}672$; values from a single-seed run, the full-training
+point matches the main experiment in Table~\ref{tab:ml-results})}
 \label{tab:sensitivity}
 \begin{tabular}{@{}ccc@{}}
 \toprule
 N (Training) & Test Accuracy & Drop from Full \\
 \midrule
-400   & 86.26\% & $-4.95$ pp \\
-600   & 87.95\% & $-3.26$ pp \\
-800   & 88.06\% & $-3.15$ pp \\
-1,600 & 87.61\% & $-3.60$ pp \\
-2,800 & 88.92\% & $-2.29$ pp \\
-10,688 & 90.83\% & --- \\
+400   & 86.26\% & $-7.98$ pp \\
+600   & 87.95\% & $-6.29$ pp \\
+800   & 88.06\% & $-6.18$ pp \\
+1,600 & 87.61\% & $-6.63$ pp \\
+2,800 & 88.92\% & $-5.32$ pp \\
+10,688 & 94.24\% & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -673,8 +722,8 @@ reproducibility.
 DeepSeek API calls were made using the deepseek-chat model via the DeepSeek
 API with temperature 0. API costs were approximately \$0.10--0.15 per 1,000
 classifications. The total experiment cost for the complete test set (2,672
-samples) was approximately \$0.10. (ML experiments were re-run on 13,360
-samples; DeepSeek results are from the original 13,360-sample dataset.)
+samples) was approximately \$0.10. (ML models were trained on 10,688 samples
+and evaluated on the same 2,672-sample test set as DeepSeek.)
 
 \subsection{Evaluation Protocol}
 
@@ -756,7 +805,13 @@ followed by Random Forest (94.24\%). Both ensemble methods substantially
 outperform the linear baseline (LR at 73.91\%), confirming the presence of
 complex, non-linear decision boundaries in the seven-dimensional feature
 space. The cross-validation results demonstrate good stability: both ensemble
-methods exhibit 95\% CIs below $\pm$1.0\,pp.
+methods exhibit 95\% CIs below $\pm$1.0\,pp. For context, a
+majority-class baseline (always predicting the dominant class, WA) would
+attain 76.6\% accuracy on this test set; the ensembles' 95\% therefore
+represents an 18--19\,pp lift over the base rate. This lift is substantial
+yet bounded, consistent with the decomposition result that three of the five
+verdicts are near-deterministically encoded in execution metrics while the
+WA$\leftrightarrow$RE boundary is not metadata-separable.
 Figure~\ref{fig:roc} presents the ROC curves and Figure~\ref{fig:pr} the
 Precision-Recall curves for the Random Forest model (one-vs-rest), with
 ROC-AUC scores reaching 0.984 for CE, 1.000 for MLE and TLE, 0.935 for WA,
@@ -812,7 +867,7 @@ forming a perfectly separable region in the feature space. Wrong Answer (WA)
 achieves an F1 score of 0.97 due to its dominance in the dataset (76.6\%) and
 distinct metadata signature---WA submissions typically execute within normal
 time bounds but fail on correctness tests. Time Limit Exceeded (TLE) is
-well-classified (F1 = 0.99), as TLE submissions systematically exhibit
+well-classified (F1 = 0.98), as TLE submissions systematically exhibit
 execution times at or near the problem's time limit.
 
 The most challenging category is Runtime Error (F1 = 0.52). Of 131 actual RE
@@ -825,7 +880,7 @@ from WA using only metadata features. This finding underscores a fundamental
 limitation of metadata-only approaches and motivates the incorporation of
 source-code-level features for improved RE classification.
 
-Memory Limit Exceeded (MLE, F1 = 0.98) benefits from distinct memory
+Memory Limit Exceeded (MLE, F1 = 0.91) benefits from distinct memory
 consumption signatures that clearly separate it from other categories in the
 test set.
 
@@ -889,9 +944,9 @@ information about error type.
 \subsection{Error Analysis}
 
 The confusion matrix (Table~\ref{tab:rf-cm}) reveals a clear performance
-gradient: CE and MLE achieve strong classification (F1=0.91 and 0.89) due to
+gradient: CE and MLE achieve strong classification (F1=0.89 and 0.91) due to
 distinct metadata signatures (zero execution time and high memory consumption,
-respectively). WA achieves F1=0.96, while TLE is well-classified (F1=0.99)
+respectively). WA achieves F1=0.97, while TLE is well-classified (F1=0.98)
 due to execution times at the problem's time limit. RE (F1=0.52) is the most
 challenging category, attributable to its heterogeneous nature (segfault,
 division by zero, etc.) that metadata alone cannot distinguish. Qualitative
@@ -967,14 +1022,14 @@ that supports robust classification.
 \subsection{LLM Performance Comparison}
 
 Table~\ref{tab:llm-results} presents the performance of LLM-based approaches
-on the same test set of 2,672 samples, including our own DeepSeek experiments
-and reported CodeT5+ results from prior
-work~\cite{wang2023codet5plus}.
+on the same test set of 2,672 samples, reporting our own DeepSeek-V3
+few-shot experiments. (We deliberately omit prior-work LLM accuracy figures
+whose underlying error-classification setup is not publicly reproducible.)
 
 \begin{table}[htbp]
 \centering
 \small
-\caption{LLM-based model performance compared to top ML baseline}
+\caption{Model performance: ML baselines vs. DeepSeek-V3 few-shot (test set $n=2{,}672$)}
 \label{tab:llm-results}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccc@{}}
@@ -983,22 +1038,14 @@ Model & Test Acc & 95\% CI & Macro F1 & Cost/1k \\
 \midrule
 Random Forest (ML)           & 94.24\% & [93.3, 95.0] & 0.8543 & \$0.01 \\
 \textbf{Gradient Boosting (ML)} & \textbf{95.02\%} & [94.2, 95.9] & 0.8711 & \$0.01 \\
+Logistic Regression (ML)      & 73.91\% & [72.4, 75.4] & 0.6738 & \$0.01 \\
 \midrule
-\multicolumn{5}{l}{\textit{LLM --- Our Experiments (full test set, n=2,672)}} \\
+\multicolumn{5}{l}{\textit{LLM --- Our Experiments (test set, n=2,672)}} \\
 DeepSeek-V3 Zero-Shot          & N/A$^{\ddagger}$ & --- & --- & --- \\
 DeepSeek-V3 Few-Shot (5-shot)  & 17.37\% & --- & 0.1724 & \$0.10--0.15 \\
-\midrule
-\multicolumn{5}{l}{\textit{LLM --- Published Literature}} \\
-CodeT5+\_GRU$^{\dagger}$       & 91.84\% & N/A & 0.8240 & GPU only \\
-CodeBERT Fine-Tuned$^{\dagger}$& 86.1\%  & [0.80, 0.94] & N/A   & \$2+GPU \\
-LLaMA-3 8B Zero-Shot$^{\dagger}$& 82.0\%  & [0.73, 0.89] & N/A   & GPU only \\
-\multicolumn{5}{l}{\small $^{*}$ML: 13,360 samples, 2,672 test. DeepSeek:
-       835/2,672 predictions \textsc{unknown} (model did not return valid
-       verdict).} \\
-\multicolumn{5}{l}{\small $^{\dagger}$From published
-       literature~\cite{wang2023codet5plus,feng2020codebert}.} \\
-\multicolumn{5}{l}{\small $^{\ddagger}$Not evaluated due to API cost
-       constraints; results apply only to few-shot configuration.} \\
+\multicolumn{5}{l}{\small $^{*}$ML models: trained on 10,688 samples, evaluated on 2,672 test.}\\
+\multicolumn{5}{l}{\small $^{\dagger}$DeepSeek: 835/2,672 predictions \textsc{unknown} (model did not return a valid verdict).}\\
+\multicolumn{5}{l}{\small $^{\ddagger}$Zero-shot not evaluated due to API cost; few-shot results reported.}\\
 \bottomrule
 \end{tabular}%
 }
@@ -1015,19 +1062,25 @@ optimization to accommodate the full diversity of error types in competitive
 programming submissions. Prior pilot results (n=207) reported 81.64\% accuracy,
 but this was not representative of the full test set.
 
-\textbf{Key Finding 2:} DeepSeek underperforms reported CodeT5+ results.
+\textbf{Key Finding 2:} DeepSeek few-shot fails to recover even the
+metadata-derivable signal.
 
-DeepSeek Few-Shot (17.37\%) falls 74.5 percentage points below reported
-CodeT5+\_GRU results (91.84\%)~\cite{wang2023codet5plus}. This large gap is
-attributable to 31.3\% of DeepSeek predictions being invalid (model did not
-return a valid verdict label). Nevertheless, our GB model's performance
-(95.02\%) surpasses CodeT5+ results (91.84\%), demonstrating that traditional
-ML can achieve superior performance at a fraction of the computational cost.
-Kazemitabaar et al.~\cite{kazemitabaar2024impact} showed that while LLMs
-excel at code generation, our DeepSeek-V3 few-shot results demonstrate that
-fine-grained error-type classification is a distinct weakness (17.37\%
-accuracy), corroborating our finding that LLMs face fundamental limitations
-for this task.
+DeepSeek Few-Shot (17.37\%) falls far below the ML baselines
+(RF 94.24\%, GB 95.02\%). Crucially, 31.3\% of DeepSeek predictions
+were invalid (the model did not return a valid verdict label), and among
+valid predictions 86.4\% were CE while the test set contains only 7.3\%
+CE. This indicates that few-shot prompting with metadata alone is
+insufficient for error-type recovery, even for error types whose verdict
+is near-deterministically encoded in execution metrics. The gap between
+the authors' own pilot (81.64\% on $n=207$) and the full-test result
+(17.37\%) further demonstrates that small, unrepresentative pilot samples
+yield misleadingly optimistic estimates of LLM capability. We therefore
+frame the DeepSeek result as a documented \emph{failure mode} and a
+methodological caution, not as evidence of an inherent ML--LLM accuracy
+ordering. Kazemitabaar et al.~\cite{kazemitabaar2024impact} and
+Finnie-Ansley et al.~\cite{finnie2022robots} report related LLM
+limitations on fine-grained code-analysis tasks, corroborating that
+metadata-only error classification remains difficult for current LLMs.
 
 \textbf{Key Finding 3:} DeepSeek few-shot faces challenges in competitive
 programming error classification (full evaluation).
@@ -1079,18 +1132,18 @@ LR vs.\ DeepSeek$^{\dagger}$ & 1542.24 & $<0.001$ & Yes \\
 }%
 \end{table}
 
-Two key findings emerge from statistical testing:
+Two findings emerge from statistical testing:
 
-\textbf{Finding 1:} Gradient Boosting significantly outperforms DeepSeek
-Few-Shot. McNemar tests confirm that GB (95.02\%) is statistically superior
-to DeepSeek Few-Shot ($\chi^2 = 2200.16$, $p < 0.001$). This provides strong
-evidence that traditional ML methods substantially outperform few-shot LLMs
-on this task.
-
-\textbf{Finding 2:} GB surpasses reported CodeT5+ performance. Our GB model
-(95.02\%) surpasses fine-tuned CodeT5+ (91.84\%) reported in prior work,
-demonstrating that traditional ML achieves state-of-the-art performance at a
-fraction of the computational cost.
+\textbf{Statistical result:} McNemar tests confirm that GB (95.02\%) is
+statistically superior to DeepSeek Few-Shot ($\chi^2 = 2200.16$, $p < 0.001$)
+\emph{as executed}. Because 31.3\% of DeepSeek outputs were invalid and
+86.4\% of valid outputs were CE (versus 7.3\% CE in the test set), this
+comparison pits a working classifier against a failed prompt. We do \emph{not}
+interpret it as evidence that ML is inherently superior to LLMs; rather, it
+shows that few-shot prompting with metadata alone does not recover the error
+verdict, even for verdicts whose outcome is near-deterministically encoded in
+execution metrics. A fair ML--LLM comparison requires output parsing and
+balanced demonstrations, which we identify as essential future work.
 
 % ============================================================
 % 5. DISCUSSION
@@ -1100,8 +1153,8 @@ fraction of the computational cost.
 \subsection{Finding 1: Traditional ML Remains Competitive}
 
 Gradient Boosting (95.02\%) substantially outperforms DeepSeek Few-Shot
-(17.37\% on full test set, with 31.3\% invalid predictions), while surpassing
-fine-tuned CodeT5+ (91.84\%). RF (\$0.01 per 1k classifications) is
+(17.37\% on full test set, with 31.3\% invalid predictions). RF (\$0.01 per
+1k classifications) is
 approximately 10--15$\times$ cheaper than DeepSeek (\$0.10--0.15), making ML
 more practical for large-scale educational deployment. A semester-long system
 for 500 students ($\approx$1,000 submissions each, 500,000 total) would cost approximately \$5.00 with RF versus \$50--75
@@ -1110,9 +1163,13 @@ with DeepSeek.
 \subsection{Finding 2: Execution Time Dominance and Feature Insights}
 
 Execution time (\texttt{time\_consumed\_ms}) emerges as the dominant
-predictive feature, with an 8.8\,pp accuracy drop upon removal. This indicates
-that error prediction should incorporate runtime behavior alongside problem
-metadata. Despite lower accuracy, LLMs offer explainability
+predictive feature, with an 8.8\,pp accuracy drop upon removal. This is
+expected: execution time and memory directly encode the three
+verdicts whose outcomes they determine (CE, TLE, MLE), confirming \emph{why}
+metadata alone suffices for those classes. The design implication is that
+runtime behavior---not problem metadata---carries the metadata-derivable
+signal, while the residual WA$\leftrightarrow$RE ambiguity requires
+source-code features. Despite lower accuracy, LLMs offer explainability
 advantages---explaining ``Your O($n^2$) solution cannot handle $n = 10^5$'' is
 more instructive than a binary ``TLE'' label~\cite{finnie2022robots}. Hybrid
 approaches combining ML classification with LLM explanation generation could
@@ -1264,7 +1321,7 @@ LLMs~\cite{finnie2022robots,kazemitabaar2024impact}. While LLMs have
 demonstrated remarkable capabilities in code generation and explanation tasks,
 our results indicate that for structured classification tasks with
 well-defined feature spaces, traditional ML methods remain highly
-competitive---offering superior accuracy, interpretability (via feature
+competitive---offering strong accuracy, interpretability (via feature
 importance analysis), and deployment practicality. This points to a
 \textit{hybrid deployment strategy}: using ML for high-throughput
 classification and LLMs for explanation generation and personalized
@@ -1281,7 +1338,7 @@ LLM performance in educational contexts.
 
 \subsection{Limitations and Future Work}
 
-While our study provides the first systematic comparison of ML and LLM methods
+While our study provides a controlled comparison of ML and LLM methods
 for metadata-based error classification, several limitations should be
 acknowledged.
 
@@ -1299,7 +1356,7 @@ may generalize.
 programmers (rating 800--3,500), not novice students. Error patterns may
 differ for students (e.g., more syntax errors, fewer runtime errors). Future
 work should validate our findings on student programming datasets (e.g., CS1QA
-~\cite{lee2022cs1qa}, Blackbox~\cite{bey2022analyzing}) to ensure
+~\cite{lee2022cs1qa}, Blackbox~\cite{brown2014blackbox}) to ensure
 generalizability. Keuning et al.~\cite{keuning2017systematic} provide a systematic
 literature review of automated feedback generation for programming exercises,
 establishing methodological frameworks for cross-population validation that
@@ -1344,7 +1401,8 @@ power analysis indicates that detecting a 5\,pp difference between two 95\%
 accuracy models requires approximately 600 test samples.
 
 \textbf{External Validity:} Our data comes from competitive programmers
-(median rating $>$ 2,500), not novice students; error patterns differ
+(median rating below 1,400; approximately 69\% of the test set are rated
+below 1,400), not novice students; error patterns differ
 substantially. The language distribution is heavily C++, limiting
 generalizability to Python/Java-dominant educational settings. Replication on
 diverse datasets is essential.
@@ -1375,7 +1433,7 @@ Xijing University (Approval No.~2026-AI-003).
 \section{Conclusion and Future Directions}
 
 \subsection*{Summary of Contributions}
-This paper presented the \textit{first systematic comparative analysis} of
+This paper presented a 	extit{controlled comparative analysis} of
 traditional machine learning (ML) and large language model (LLM) approaches
 for programming error pattern recognition using \textit{only submission
 metadata} (no source code access required). Through experiments spanning 4
@@ -1384,7 +1442,7 @@ experimental conditions (3 ML classifiers and 1 LLM) on a curated dataset of
 \textbf{key contributions}:
 
 \begin{enumerate}
-    \item \textit{First ML-LLM comparison} for error classification using
+    \item \textit{Controlled ML-LLM comparison} for error classification using
           metadata, filling a critical research gap.
     \item \textit{Comprehensive statistical analysis} with power analysis
           (13,360 samples, 80\% power), effect sizes (Cohen's $h$), and
@@ -1400,15 +1458,15 @@ experimental conditions (3 ML classifiers and 1 LLM) on a curated dataset of
 
 \subsection*{Key Findings}
 
-\textbf{Finding 1:} Ensemble ML methods substantially outperform few-shot
-LLMs. Gradient Boosting achieves 95.02\% test accuracy (95\% CI [94.2\%,
-95.9\%]). DeepSeek-V3 Few-Shot on the full test set (n=2,672) achieves only
-17.37\% accuracy, with 31.3\% invalid predictions. This performance gap
-confirms that traditional ML is superior for metadata-based error
-classification. This finding aligns with recent work by Leerentveld et
-al.~\cite{leerentveld2024not}, who found LLM-enhanced error messages
-ineffective in practice, and by prior work showing LLMs struggle with code analysis relative to
-generation~\cite{kazemitabaar2024impact,finnie2022robots}.\\
+\textbf{Finding 1:} Ensemble ML recovers the error verdict from metadata;
+few-shot LLM does not. Gradient Boosting achieves 95.02\% test accuracy (95\%
+CI [94.2\%, 95.9\%]). DeepSeek-V3 Few-Shot on the full test set (n=2,672)
+achieves only 17.37\% accuracy, with 31.3\% invalid predictions. We interpret
+this gap as showing that few-shot prompting with metadata alone fails to
+recover even the metadata-derivable verdict signal, \emph{not} as evidence of
+an inherent ML--LLM capability ordering; a fair comparison requires proper
+output parsing and balanced demonstrations, which we identify as essential
+future work.
 
 \textbf{Finding 2:} Execution time is the dominant predictor. Systematic
 ablation reveals that \texttt{time\_consumed\_ms} is the most critical
@@ -1454,7 +1512,7 @@ contexts.
 \subsection*{Limitations and Generalizability}
 Three key limitations: (1) population generalizability---competitive
 programmers (rating 800--3,500) exhibit different error patterns than
-novices~\cite{lee2022cs1qa,bey2022analyzing}; (2) LLM comparison
+novices~\cite{lee2022cs1qa,brown2014blackbox}; (2) LLM comparison
 scope---only DeepSeek-V3 was tested, though it is competitive with GPT-4 on
 code tasks~\cite{deepseek2024technical,deepseek2024deepseekv3}; (3) feature
 set---only 7 metadata features were used, and source-code features could
