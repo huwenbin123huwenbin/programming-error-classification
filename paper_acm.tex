@@ -19,6 +19,7 @@
 \usepackage{pifont}
 \emergencystretch=3em
 \setlength{\emergencystretch}{3em}
+\setlength{\headheight}{19pt}
 
 \hypersetup{
     colorlinks=true,
@@ -837,6 +838,7 @@ model's predictive accuracy across all decision trees.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{fig_feature_importance.pdf}
+\Description{Bar chart of Gini importance for 7 features, from highest to lowest: execution time 42.5\%, memory 24.2\%, user success rate 19.4\%, problem rating 5.7\%, language 5.0\%, problem type 3.2\%, submission hour 0.0\%}
 \caption{Feature importance (Gini importance) from the Random Forest model
          (7 features). Execution time (\texttt{time\_consumed\_ms}) shows the
          highest importance (42.5\%), followed by memory consumption (24.2\%),
@@ -947,6 +949,7 @@ that supports robust classification.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{fig_roc_curves.pdf}
+  \Description{ROC curves for 5 error types showing AUC values: CE 0.984, MLE 1.000, TLE 1.000, WA 0.935, RE 0.778}
   \caption{ROC curves for Random Forest (One-vs-Rest, test set $n=2{,}672$).
     AUC values: CE = 0.984, MLE = 1.000, TLE = 1.000, WA = 0.935, RE = 0.778}
   \label{fig:roc}
@@ -955,6 +958,7 @@ that supports robust classification.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{fig_pr_curves.pdf}
+  \Description{Precision-Recall curves for Random Forest across 5 error types, showing trade-offs between precision and recall for each class}
   \caption{Precision-Recall curves for Random Forest (One-vs-Rest,
            test set $n=2{,}672$)}
   \label{fig:pr}
@@ -1053,6 +1057,8 @@ and DeepSeek ($p < 0.001$).
 \centering
 \caption{McNemar test results (test set $n=2{,}672$)}
 \label{tab:mcnemar}
+\resizebox{\textwidth}{!}{%
+\small
 \begin{tabular}{@{}lccc@{}}
 \toprule
 Comparison & $\chi^2$ & $p$-value & Significant? \\
@@ -1070,6 +1076,7 @@ LR vs.\ DeepSeek$^{\dagger}$ & 1542.24 & $<0.001$ & Yes \\
        incorrect.} \\
 \bottomrule
 \end{tabular}
+}%
 \end{table}
 
 Two key findings emerge from statistical testing:
@@ -1165,6 +1172,8 @@ MLE with high memory consumption).
 \centering
 \caption{DeepSeek-V3 prediction analysis on full test set (n=2,672)}
 \label{tab:deepseek-analysis}
+\resizebox{\textwidth}{!}{%
+\small
 \begin{tabular}{@{}lccc@{}}
 \toprule
 \textbf{Metric} & \textbf{Value} & \textbf{Percentage} & \textbf{Interpretation} \\
@@ -1176,6 +1185,7 @@ CE predictions (valid)    & 1,587 & 86.4\% of valid & Heavy skew toward CE \\
 WA predictions (valid)    & 114   & 6.2\% of valid  & WA underpredicted (actual: 76.6\% of test set) \\
 \bottomrule
 \end{tabular}
+}%
 \end{table}
 
 \begin{table}[htbp]
