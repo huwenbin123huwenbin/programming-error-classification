@@ -4,7 +4,7 @@
 
 1. **First ML-LLM comparison** for programming error classification using metadata only (no source code access)
 
-2. **95.02% accuracy** achieved by Gradient Boosting, significantly outperforming DeepSeek (78.29% 0-shot, 17.37% 5-shot)
+2. **95.02% accuracy** achieved by Gradient Boosting, significantly outperforming DeepSeek-V3 (76.65% valid, 0.8% invalid) and Qwen2.5:3B (35.50% valid)
 
 3. **Execution time dominance** identified via ablation study—removing this feature causes 8.8pp accuracy drop (p<0.001)
 

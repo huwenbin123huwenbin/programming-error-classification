@@ -26,7 +26,7 @@ This research directly addresses the "CS1 problem" by providing educators with p
 
 ## Key Findings
 
-- Gradient Boosting achieves **95.02% accuracy**, significantly outperforming DeepSeek (78.29% 0-shot, 17.37% 5-shot)
+- Gradient Boosting achieves **95.02% accuracy**, significantly outperforming DeepSeek-V3 (76.65% valid) and Qwen2.5:3B (35.50% valid)
 - Execution time is the dominant predictor (42.5% feature importance)
 - ML offers **10-15× cost advantage** with faster inference (2ms vs. 3s)
 
