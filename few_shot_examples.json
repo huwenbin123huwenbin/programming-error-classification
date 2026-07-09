@@ -1,0 +1,132 @@
+{
+  "WA": [
+    {
+      "problem_rating": 800.0,
+      "language": "C++17 (GCC 7-32)",
+      "time_consumed_ms": 15,
+      "memory_kb": 0.0,
+      "passed_test_count": 0.0,
+      "verdict": "WA"
+    },
+    {
+      "problem_rating": 800.0,
+      "language": "C++20 (GCC 13-64)",
+      "time_consumed_ms": 31,
+      "memory_kb": 0.0,
+      "passed_test_count": 1.0,
+      "verdict": "WA"
+    },
+    {
+      "problem_rating": 900.0,
+      "language": "C++20 (GCC 13-64)",
+      "time_consumed_ms": 15,
+      "memory_kb": 0.0,
+      "passed_test_count": 1.0,
+      "verdict": "WA"
+    }
+  ],
+  "TLE": [
+    {
+      "problem_rating": 1500.0,
+      "language": "C++17 (GCC 7-32)",
+      "time_consumed_ms": 2000,
+      "memory_kb": 0.0,
+      "passed_test_count": 2.0,
+      "verdict": "TLE"
+    },
+    {
+      "problem_rating": 1600.0,
+      "language": "Java 8",
+      "time_consumed_ms": 4000,
+      "memory_kb": 106400.0,
+      "passed_test_count": 2.0,
+      "verdict": "TLE"
+    },
+    {
+      "problem_rating": 1700.0,
+      "language": "C++23 (GCC 14-64, msys2)",
+      "time_consumed_ms": 2000,
+      "memory_kb": 400.0,
+      "passed_test_count": 15.0,
+      "verdict": "TLE"
+    }
+  ],
+  "RE": [
+    {
+      "problem_rating": 1700.0,
+      "language": "C++20 (GCC 13-64)",
+      "time_consumed_ms": 31,
+      "memory_kb": 0.0,
+      "passed_test_count": 1.0,
+      "verdict": "RE"
+    },
+    {
+      "problem_rating": 1700.0,
+      "language": "C++17 (GCC 7-32)",
+      "time_consumed_ms": 31,
+      "memory_kb": 0.0,
+      "passed_test_count": 1.0,
+      "verdict": "RE"
+    },
+    {
+      "problem_rating": 1600.0,
+      "language": "C++17 (GCC 7-32)",
+      "time_consumed_ms": 15,
+      "memory_kb": 0.0,
+      "passed_test_count": 1.0,
+      "verdict": "RE"
+    }
+  ],
+  "CE": [
+    {
+      "problem_rating": 1200.0,
+      "language": "C++17 (GCC 7-32)",
+      "time_consumed_ms": 0,
+      "memory_kb": 0.0,
+      "passed_test_count": 0.0,
+      "verdict": "CE"
+    },
+    {
+      "problem_rating": 1100.0,
+      "language": "C++17 (GCC 7-32)",
+      "time_consumed_ms": 0,
+      "memory_kb": 0.0,
+      "passed_test_count": 0.0,
+      "verdict": "CE"
+    },
+    {
+      "problem_rating": 2000.0,
+      "language": "GNU C++11",
+      "time_consumed_ms": 0,
+      "memory_kb": 0.0,
+      "passed_test_count": 0.0,
+      "verdict": "CE"
+    }
+  ],
+  "MLE": [
+    {
+      "problem_rating": 2700.0,
+      "language": "C++14 (GCC 6-32)",
+      "time_consumed_ms": 499,
+      "memory_kb": 262100.0,
+      "passed_test_count": 11.0,
+      "verdict": "MLE"
+    },
+    {
+      "problem_rating": 2500.0,
+      "language": "C++23 (GCC 14-64, msys2)",
+      "time_consumed_ms": 2531,
+      "memory_kb": 1048600.0,
+      "passed_test_count": 10.0,
+      "verdict": "MLE"
+    },
+    {
+      "problem_rating": 2600.0,
+      "language": "C++23 (GCC 14-64, msys2)",
+      "time_consumed_ms": 15,
+      "memory_kb": 262100.0,
+      "passed_test_count": 0.0,
+      "verdict": "MLE"
+    }
+  ]
+}

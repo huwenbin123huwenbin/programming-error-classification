@@ -90,10 +90,14 @@ invalid) but collapses on RE (F1 = 0.03), while Qwen2.5:3B achieves only
 DeepSeek-V3 gap (15.4pp below 5-feature GB) establishes a realistic ceiling for current online
 LLMs on this task.
 
-\noindent\textbf{Conclusions}: We precisely demarcate the metadata ceiling:
-three verdict types are recoverable without source code; the
-WA$\leftrightarrow$RE boundary is not, and this is precisely where targeted
-pedagogical feedback requires source-code analysis. We release the dataset,
+\noindent\textbf{Conclusions}: We introduce and empirically validate the
+\textbf{metadata ceiling}---the theoretical upper bound on error classification
+accuracy using only submission metadata. Three verdict types (CE, TLE, MLE) are
+near-deterministically recoverable (ROC-AUC $\geq$ 0.98); the WA$\leftrightarrow$RE
+boundary is not (RE F1 = 0.52), and this is precisely where targeted pedagogical
+feedback requires source-code analysis. This ceiling informs the design of
+automated feedback systems and defines the fundamental limit of metadata-only
+classification in programming education. We release the dataset,
 pipeline, and actionable deployment guidelines for privacy-preserving
 educational analytics.
 
@@ -167,7 +171,10 @@ these three verdicts in part because the judge's own measurements encode them.
 The scientifically interesting question is consequently \emph{not} whether a
 classifier can reproduce the verdict, but rather \emph{how much error-type
 information is genuinely recoverable from metadata alone, and precisely where
-metadata becomes insufficient}. The residual boundary---distinguishing a Wrong
+metadata becomes insufficient}. We term this boundary the \textbf{metadata ceiling}:
+the maximum classification accuracy achievable using only submission metadata
+(problem rating, language, execution time, memory consumption, test cases passed)
+without source-code access. The residual boundary---distinguishing a Wrong
 Answer from a Runtime Error---is the educationally meaningful case and the one
 on which execution metrics provide little traction. Our study is organized
 around this decomposition.
@@ -1468,6 +1475,19 @@ our results as establishing a methodological framework and theoretical ceiling
 for metadata-based error classification; cross-population validation on CS1/CS2
 data is a necessary next step before classroom deployment.
 
+\textbf{Theoretical CS1 performance estimation:} Error-type distributions in CS1
+populations differ systematically from competitive programming. Analysis of the
+Blackbox dataset (37M Java submissions)~\cite{altadmri2015most} reports approximately
+42\% compile errors, 12\% runtime errors, and 46\% logic/incorrect output errors.
+Our model achieves CE F1 = 0.98 (easiest class) and RE F1 = 0.52 (hardest class).
+A CS1-like distribution therefore shifts error mass \emph{toward} well-classified
+categories (CE) and \emph{away} from difficult categories (RE). Back-of-the-envelope
+calculation suggests weighted F1 $\approx$ 0.92 for a CS1-like distribution, compared
+to our actual 0.87 on competitive programming data. This analysis indicates that
+metadata-based classification should perform \emph{at least as well} on CS1 populations,
+making our competitive programming results a conservative baseline for student
+populations---pending empirical validation.
+
 Third, our findings contribute to the ongoing discussion in the computing
 education community regarding the appropriate role of
 LLMs~\cite{finnie2022robots,kazemitabaar2024impact}. While LLMs have
@@ -1683,7 +1703,15 @@ are trained on 10,688 labeled samples while our LLMs receive no task-specific tr
 making this a comparison of \emph{supervised ML} versus \emph{zero-shot LLM}---not the
 paradigms' full potential. Few-shot prompting or fine-tuning may narrow the gap;
 this remains untested. Future work should evaluate frontier models (GPT-4, Claude,
-Gemini) under few-shot conditions to establish a fairer comparison baseline; (3) \textbf{Feature
+Gemini) under few-shot conditions to establish a fairer comparison baseline. We
+designed a 3-shot-per-class prompting protocol (15 examples total, sampled from
+the training split) but did not execute it due to API cost constraints. Given
+DeepSeek-V3's zero-shot accuracy of 76.65\% (valid), few-shot prompting may narrow
+the gap to ML, but the magnitude of improvement is uncertain. Recent work on
+few-shot learning for code tasks suggests gains of 5--15\,pp on classification
+tasks~\cite{liu2023fewshot}, which would still leave a substantial gap to the
+5-feature GB (92.0\%). We therefore interpret our zero-shot results as a lower
+bound on LLM capability rather than an upper bound; (3) \textbf{Feature
 set}---only 7 metadata features were used, and source-code features could
 improve RE classification (F1 = 0.52); (4) \textbf{Theoretical validation}---our
 framework connects to Hattie--Timperley feedback theory and Bandura's
