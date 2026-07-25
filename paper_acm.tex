@@ -68,7 +68,7 @@ it reaches its limits.
 \noindent\textbf{Objective}: We ask the question that prior work has not answered:
 \textit{At exactly which error-type boundary does metadata become insufficient?}
 We systematically compare traditional ML and LLMs to establish the metadata
-ceiling and identify the educationally most consequential boundary---Wrong
+ceiling and identify the most consequential boundary for targeted feedback---Wrong
 Answer versus Runtime Error---where source-code integration becomes necessary.
 
 \noindent\textbf{Method}: 13,360 Codeforces submissions across five verdict types.
@@ -89,7 +89,7 @@ invalid) but collapses on RE (F1 = 0.03), while Qwen2.5:3B achieves only
 
 \noindent\textbf{Conclusions}: We introduce and empirically validate the
 \textbf{metadata ceiling}---the theoretical upper bound on error classification
-accuracy using only submission metadata. The platform's execution design means that CE, TLE, and MLE verdict types are directly encoded in execution metadata (near-ceiling ROC-AUC $\geq$ 0.98), while the WA$\leftrightarrow$RE boundary is not metadata-separable (RE F1 = 0.52). These findings quantify the boundary where source-code analysis becomes necessary and where it does not, informing the design of hybrid ML--LLM feedback systems for programming education platforms. We release the dataset, pipeline, and actionable deployment guidelines for privacy-preserving educational analytics.
+accuracy using only submission metadata. The platform's execution design means that CE, TLE, and MLE verdict types are directly encoded in execution metadata (near-ceiling ROC-AUC $\geq$ 0.98), while the WA$\leftrightarrow$RE boundary is not metadata-separable (RE F1 = 0.52). These findings quantify the boundary where source-code analysis becomes necessary and where it does not, providing empirical grounding for the design of lightweight metadata-based error screening in programming education platforms. We release the dataset, pipeline, and deployment guidelines at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 
 \end{abstract}
 
@@ -120,20 +120,20 @@ an ecologically valid environment where participants are intrinsically
 motivated to produce correct and efficient code.
 
 A central methodological consideration motivates this work. For three of the five
-verdicts, the verdict is \emph{partly determined by} the execution metrics
-themselves: a Compilation Error executes in (near) zero time, a Time Limit
+verdicts, the platform's execution environment creates distinctive metadata
+signatures: a Compilation Error executes in near-zero time, a Time Limit
 Exceeded submission runs to the time limit, and a Memory Limit Exceeded
 submission exhausts the memory limit. A metadata classifier therefore recovers
-these three verdicts in part because the judge's own measurements encode them.
-The scientifically interesting question is consequently \emph{not} whether a
-classifier can reproduce the verdict, but rather \emph{how much error-type
+these three verdicts because the platform's own measurement thresholds
+operationally define them. The question is consequently \emph{how much error-type
 information is genuinely recoverable from metadata alone, and precisely where
 metadata becomes insufficient}. We term this boundary the \textbf{metadata ceiling}:
 the maximum classification accuracy achievable using only submission metadata
 (problem rating, language, execution time, memory consumption, test cases passed)
-without source-code access. The residual boundary---distinguishing a Wrong
-Answer from a Runtime Error---where the feedback strategy differs (algorithmic revision versus boundary-condition checking). Our study is organized
-around this decomposition.
+without source-code access. The WA$\leftrightarrow$RE boundary
+represents the residual uncertainty where neither error type produces
+distinctive execution signatures, and where source-code analysis becomes necessary.
+Our study is organized around this decomposition.
 
 \textbf{Caveat on population generalizability:} Our dataset comes from
 competitive programmers on Codeforces (rating 800--3,500). Error patterns in
@@ -193,31 +193,22 @@ Our contributions are:
  \item \textbf{Controlled comparative study} of ML and LLM methods for error
  type classification from submission metadata, spanning five
  experimental conditions (three traditional ML, two LLM-based) under a
- consistent evaluation protocol.
- \item \textbf{Decomposition of metadata signal}: we show that the three
- execution-bounded verdicts (CE, TLE, MLE) are near-deterministically
- recoverable from execution metrics, while the WA$\leftrightarrow$RE
- boundary---
-which determines whether feedback should target algorithmic strategy versus
-boundary-condition checking---is not separable
-from metadata alone (RE F1 = 0.52), precisely demarcating where
-source-code analysis becomes necessary.
- \item \textbf{Comprehensive statistical analysis} including feature
- importance quantification via Gini importance, systematic ablation
- studies with McNemar significance testing, confusion matrix analysis
- with class-wise F1 scores, and power analysis for sample size
- justification.
- \item \textbf{Execution-metric dominance finding}: execution time and memory
- are the dominant predictors (8.8 pp drop on time removal, $p < 0.001$),
- reflecting that runtime metrics directly encode the three
- execution-bounded verdicts; problem-level features contribute only
- marginally, confirming the source of the metadata signal.
- \item \textbf{Actionable method-selection guidelines} that balance
- accuracy, cost, latency, and explainability across six distinct
- educational deployment contexts, supported by empirical evidence.
- \item \textbf{Open framework} with publicly released dataset, preprocessing
- pipeline, and experiment code to facilitate replication and
- extension by the research community.
+ consistent evaluation protocol, establishing the relative accuracy--cost
+ tradeoffs for each approach.
+ \item \textbf{Decomposition of metadata signal}: we systematically quantify
+ how much error-type information is genuinely recoverable from execution
+ metadata alone, demonstrating that CE, TLE, and MLE are near-deterministically
+ separable (F1 $\ge$ 0.89) because the platform's resource-limit design
+ operationally encodes them, while the WA$\leftrightarrow$RE boundary
+ is not separable from metadata alone (RE F1 = 0.52) because neither
+ error type produces distinctive execution signatures. This boundary
+ precisely demarcates where source-code analysis becomes necessary.
+ \item \textbf{Quantitative guidelines} for platform designers: execution time
+ and memory are the dominant metadata predictors (8.8 pp accuracy drop
+ when removed), and the statistical analysis (McNemar tests, ablation,
+ Gini importance, confusion matrices) quantifies the accuracy--cost--latency
+ tradeoffs across six deployment contexts. We release the dataset, pipeline,
+ and experiment code at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{enumerate}
 
 % ============================================================
@@ -1109,15 +1100,15 @@ DeepSeek-V3 vs.\ Qwen2.5:3B$^{\S}$ & 877.04 & $<0.001$ & Yes \\
 \multicolumn{4}{l}{\small $^{\dagger}$DeepSeek-V3: strong online model (API), 0.8\% invalid outputs.} \\
 \multicolumn{4}{l}{\small $^{\ddagger}$Qwen2.5:3B: small local model (Ollama), 10.1\% invalid outputs.} \\
 \multicolumn{4}{l}{\small $^{\S}$Both LLMs zero-shot on identical 5 metadata features.} \\
+\multicolumn{4}{l}{\small 10 pairwise comparisons; Bonferroni corrected threshold \textalpha$' = 0.005$. GB vs.\ RF (raw $p = 0.045$) fails corrected threshold, so labeled n.s.} \\
 \bottomrule
 \end{tabular}
 }%
 \end{table}
 
-Two findings emerge from statistical testing:
+Two findings emerge from statistical testing.
 
-\textbf{Statistical result:} McNemar tests confirm that GB (5-feature
-variant, 92.0\%) is statistically superior to both LLMs, while GB and RF show no significant difference (p = 0.045, Bonferroni corrected): DeepSeek-V3
+\textbf{Statistical result:} With 10 pairwise McNemar tests (\textalpha{} = 0.05, Bonferroni corrected to \textalpha{}' = 0.005), GB significantly outperforms both LLMs (all $p < 0.001$) and LR ($p < 0.001$), while GB and RF show no significant difference (\textchi$^2$ = 2.88, $p = 0.045 > 0.005$): DeepSeek-V3
 ($\chi^2 = 359.53$, $p < 0.001$) and Qwen2.5:3B ($\chi^2 = 1283.36$,
 $p < 0.001$), and DeepSeek-V3 is itself significantly superior to Qwen2.5:3B
 ($\chi^2 = 877.04$, $p < 0.001$). The Qwen comparison is the weakest:
