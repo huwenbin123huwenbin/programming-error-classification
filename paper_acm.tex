@@ -79,9 +79,7 @@ protocols. Significance is assessed with McNemar's test; we establish the metada
 ceiling for each verdict class individually.
 
 \noindent\textbf{Results}: Metadata is sufficient for three of five verdict types:
-The compilation-time and resource-exhaustion properties of the platform's execution environment mean that these three verdict types are near-deterministically recoverable from execution metadata alone (F1 $\ge$0.89 for CE, TLE, MLE). The scientifically and educationally interesting
-boundary---Wrong Answer versus Runtime Error, where a teacher must distinguish
-a logic error from a runtime failure---is not separable from metadata alone
+The compilation-time and resource-exhaustion properties of the platform's execution environment mean that these three verdict types are near-deterministically recoverable from execution metadata alone (F1 $\ge$0.89 for CE, TLE, MLE). The pedagogically most consequential boundary---Wrong Answer versus Runtime Error, where targeted feedback differs (algorithmic revision versus boundary-condition checking)---is not separable from metadata alone
 (RE F1 = 0.52; all models, including frontier LLMs, fail here). The two LLMs
 differ sharply: DeepSeek-V3 reaches 76.65\% on valid predictions (0.8\%
 invalid) but collapses on RE (F1 = 0.03), while Qwen2.5:3B achieves only
@@ -100,24 +98,7 @@ accuracy using only submission metadata. The platform's execution design means t
 % ============================================================
 \section{Introduction}
 
-Introductory programming courses report 30--40\% dropout rates~\cite{bennedsen2007failure,watson2014failure}. Debugging difficulty is a primary obstacle~\cite{watson2014failure}, as novices struggle to distinguish error types---misinterpreting runtime errors as logical errors~\cite{spohrer1986novice}.
-
-Prior work analyzed compilation behavior~\cite{jadud2006methods} and scaled to thousands of users via Blackbox~\cite{brown2014blackbox}, revealing systematic debugging differences between student groups.
-
-The CS1QA dataset\cite{lee2022cs1qa} provided a rich resource
-of question--code pairs from introductory programming courses at a large
-public university, enabling deeper analysis of student learning patterns
-through natural language questions accompanying code submissions.
-Concurrently, competitive programming platforms such as Codeforces, LeetCode,
-and AtCoder have emerged as valuable environments for studying programming
-behavior at scale. Unlike classroom settings, competitive programming
-platforms provide standardized, structured feedback for every submission:
-execution time measured in milliseconds, memory consumption in kilobytes,
-precise error verdicts (WA, TLE, RE, CE, MLE), and the number of test cases
-passed before failure. This structured metadata makes these platforms ideal
-sources for automated error classification research, while also representing
-an ecologically valid environment where participants are intrinsically
-motivated to produce correct and efficient code.
+Introductory programming courses report 30--40\% dropout rates~\cite{bennedsen2007failure,watson2014failure}, with debugging difficulty as a primary obstacle~\cite{watson2014failure,spohrer1986novice}. Prior work analyzed compilation behavior~\cite{jadud2006methods} and scaled to large populations via Blackbox~\cite{brown2014blackbox}, revealing systematic debugging differences between student groups. Competitive programming platforms such as Codeforces and LeetCode provide structured metadata (execution time, memory consumption, precise error verdicts, test cases passed) for every submission, making them valuable environments for studying programming error patterns at scale.
 
 A central methodological consideration motivates this work. For three of the five
 verdicts, the platform's execution environment creates distinctive metadata
@@ -146,69 +127,35 @@ before drawing conclusions for novice programming education contexts~\cite{altad
 
 LLMs (GPT-4, Claude, DeepSeek-Coder) show strong code capabilities~\cite{raihan2025large,finnie2022robots} but their effectiveness for metadata-only error classification is understudied. LLM error messages often fail to meet formative feedback criteria~\cite{morris2021formative,leerentveld2024not}, motivating controlled ML-LLM comparison.
 
-\subsection*{Research Gap and Novelty}
+While ML and LLM approaches have both been applied to programming error analysis, \textit{no prior work has systematically compared them on the same dataset under identical evaluation protocols}. Existing work also predominantly relies on source-code analysis~\cite{feng2020codebert}, which incurs high computational cost, raises privacy concerns, and cannot scale to platform-level deployment. We address both gaps: a controlled ML--LLM comparison on the same dataset, and a systematic characterization of what submission metadata alone can and cannot reveal about error type.
 
-While both ML and LLM approaches have been applied to programming error
-analysis, \textit{no prior work has systematically compared them on the same
-dataset using identical evaluation protocols}. Prior comparative studies either
-(1) evaluate only ML methods,
-(2) evaluate only LLM methods~\cite{raihan2025large,finnie2022robots},
-or (3) use different datasets and evaluation metrics, making direct comparison
-impossible.
-
-Furthermore, existing work predominantly relies on \textit{source-code
-analysis} (ASTs, token sequences, code
-embeddings)~\cite{feng2020codebert}, which incurs high
-computational cost, requires source code access (raising privacy concerns),
-and cannot scale to platform-level deployment where millions of submissions
-must be processed daily.
-
-This paper addresses both gaps. We provide a controlled ML--LLM comparison
-on the \emph{same} dataset with \emph{identical} evaluation protocol, and we
-characterize what submission metadata alone can and cannot reveal about error
-type. Our results show that metadata-based classification recovers the three
-execution-bounded verdicts reliably and at low cost, whereas the
-WA$\leftrightarrow$RE boundary requires source-code analysis. These findings
-have practical implications for educational platforms seeking to deploy error
-classification at scale.
-
-To address this gap, we formulate the following three research questions:
+We investigate three research questions:
 
 \begin{itemize}
- \item \textbf{RQ1:} What are the most prevalent programming error patterns
- in competitive programming submissions, and how do they distribute
- across different error categories?
- \item \textbf{RQ2:} How do traditional ML classifiers perform on this task,
- which features are most predictive, and how stable are predictions
- under cross-validation?
- \item \textbf{RQ3:} Where exactly does metadata become insufficient for
- error classification---i.e., can ML and LLMs distinguish Wrong Answer
- from Runtime Error---and which approach provides the most
- cost-effective path toward targeted feedback in educational settings?
+ \item \textbf{RQ1:} What are the prevalent programming error patterns in competitive
+ programming submissions, and how do they distribute across error categories?
+ \item \textbf{RQ2:} How do traditional ML classifiers perform on metadata-based
+ error classification, which features are most predictive, and how stable are predictions?
+ \item \textbf{RQ3:} Where does metadata become insufficient---can ML or LLMs distinguish
+ Wrong Answer from Runtime Error---and what are the accuracy--cost tradeoffs?
 \end{itemize}
 
 Our contributions are:
 
 \begin{enumerate}
  \item \textbf{Controlled comparative study} of ML and LLM methods for error
- type classification from submission metadata, spanning five
- experimental conditions (three traditional ML, two LLM-based) under a
- consistent evaluation protocol, establishing the relative accuracy--cost
- tradeoffs for each approach.
- \item \textbf{Decomposition of metadata signal}: we systematically quantify
- how much error-type information is genuinely recoverable from execution
- metadata alone, demonstrating that CE, TLE, and MLE are near-deterministically
- separable (F1 $\ge$ 0.89) because the platform's resource-limit design
- operationally encodes them, while the WA$\leftrightarrow$RE boundary
- is not separable from metadata alone (RE F1 = 0.52) because neither
- error type produces distinctive execution signatures. This boundary
- precisely demarcates where source-code analysis becomes necessary.
- \item \textbf{Quantitative guidelines} for platform designers: execution time
- and memory are the dominant metadata predictors (8.8 pp accuracy drop
- when removed), and the statistical analysis (McNemar tests, ablation,
- Gini importance, confusion matrices) quantifies the accuracy--cost--latency
- tradeoffs across six deployment contexts. We release the dataset, pipeline,
- and experiment code at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
+ type classification from submission metadata under identical evaluation
+ protocols, spanning three ML models and two LLM configurations.
+ \item \textbf{Decomposition of metadata signal}: CE, TLE, and MLE are
+ near-deterministically separable from execution metadata (F1 $\ge$ 0.89)
+ because the platform's resource-limit design operationally encodes them;
+ the WA$\leftrightarrow$RE boundary is not metadata-separable (RE F1 = 0.52)
+ because neither error type produces distinctive execution signatures.
+ \item \textbf{Quantitative deployment guidelines}: execution time and memory
+ are the dominant predictors (8.8 pp accuracy drop when removed), with
+ statistical analysis (McNemar tests, ablation, Gini importance) quantifying
+ accuracy--cost--latency tradeoffs across six deployment contexts.
+ Dataset and code: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{enumerate}
 
 % ============================================================
@@ -1502,7 +1449,7 @@ Five research directions: (1) cross-population validation on novice datasets
 (CS1QA\cite{lee2022cs1qa}, Blackbox) to test whether the metadata ceiling generalizes to
 students with different error profiles; (2) source-code integration (AST
 embeddings, code complexity metrics) for improved WA$\leftrightarrow$RE
-classification, the educationally most consequential boundary; (3) longitudinal
+classification, the boundary most consequential for targeted feedback; (3) longitudinal
 deployment studies to empirically validate the Hattie--Timperley pathway from
 accurate error classification to improved student self-efficacy; (4) multi-LLM
 comparison including GPT-4, Claude, Gemini, and LLaMA-3 to determine whether
