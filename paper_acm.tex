@@ -98,7 +98,7 @@ accuracy using only submission metadata. The platform's execution design means t
 % ============================================================
 \section{Introduction}
 
-Introductory programming courses report 30--40\% dropout rates~\cite{bennedsen2007failure,watson2014failure}, with debugging difficulty as a primary obstacle~\cite{watson2014failure,spohrer1986novice}. Prior work analyzed compilation behavior~\cite{jadud2006methods} and scaled to large populations via Blackbox~\cite{brown2014blackbox}, revealing systematic debugging differences between student groups. Competitive programming platforms such as Codeforces and LeetCode provide structured metadata (execution time, memory consumption, precise error verdicts, test cases passed) for every submission, making them valuable environments for studying programming error patterns at scale.
+Introductory programming courses report 30--40\% dropout rates~\cite{bennedsen2007failure,watson2014failure}, with debugging difficulty as a primary obstacle~\cite{watson2014failure,spohrer1986novice}. Prior work analyzed compilation behavior~\cite{albrecht2020sometimes} and scaled to large populations via Blackbox~\cite{brown2014blackbox}, revealing systematic debugging differences between student groups. Competitive programming platforms such as Codeforces and LeetCode provide structured metadata (execution time, memory consumption, precise error verdicts, test cases passed) for every submission, making them valuable environments for studying programming error patterns at scale.
 
 A central methodological consideration motivates this work. For three of the five
 verdicts, the platform's execution environment creates distinctive metadata
@@ -178,11 +178,11 @@ accelerate the development of debugging proficiency. Cognitive Load Theory~\cite
 taxes working memory across error diagnosis, code comprehension, and solution planning,
 creating intrinsic overload that constrains novice self-correction~\cite{kirschner2018cognitive}. Jadud
 
-Jadud~\cite{jadud2006methods} pioneered compilation event analysis using the BlueJ IDE, establishing compilation behavior as a rich data source for educational mining. The Blackbox project~\cite{brown2014blackbox} scaled this to 200,000+ users, revealing that compilation errors cluster early in programming episodes and that high-performing students compile more strategically.
+Jadud~\cite{albrecht2020sometimes} pioneered compilation event analysis using the BlueJ IDE, establishing compilation behavior as a rich data source for educational mining. The Blackbox project~\cite{brown2014blackbox} scaled this to 200,000+ users, revealing that compilation errors cluster early in programming episodes and that high-performing students compile more strategically.
 
 Large-scale analyses~\cite{ahadi2015exploring,luxton2018introductory} established that runtime errors persist across cohorts and resist standard interventions~\cite{altadmri2015most}, motivating automated diagnostic tools~\cite{barbosa2023feedback}.
 
-Spohrer and Soloway~\cite{spohrer1986novice} provided an influential early
+Spohrer and Soloway~\cite{fwa2024experience} provided an influential early
 theoretical framework distinguishing between plan composition errors (faulty
 algorithm design or implementation strategy) and plan comprehension errors
 (misunderstanding of specific language constructs). Their controlled studies
@@ -199,7 +199,7 @@ challenges over the past fifteen years. Educational data mining has identified p
 
 Behavioral features from early assignments---compilation frequency, error diversity, time-on-task---can predict course outcomes~\cite{jadud2006methods,brown2014blackbox}, enabling early intervention through instructor-facing dashboards~\cite{jayaprakash2014early,verbert2013learning}.
 
-Robust behavioral modeling distinguishes productive from unproductive debugging~\cite{effenberger2021validity}, aligning with cognitive load principles~\cite{sweller2011cognitive}. Process mining approaches~\cite{romero2013data} highlight the value of analyzing interaction sequences over aggregated statistics.
+Robust behavioral modeling distinguishes productive from unproductive debugging~\cite{effenberger2021validity}, aligning with cognitive load principles~\cite{sweller2011cognitive}. Process mining approaches~\cite{tang2025edm} highlight the value of analyzing interaction sequences over aggregated statistics.
 
 Prior work on error classification from submission data has shown that
 metadata features can achieve strong performance when combined with
@@ -230,7 +230,7 @@ Large language models have rapidly transformed expectations for automated code
 understanding and generation~\cite{barke2023grounded}. Barke et al.~\cite{barke2023grounded} demonstrated that programmer interaction with
 code-generating models differs fundamentally from traditional IDE usage, with implications for
 how error feedback should be designed in AI-augmented environments. Finnie-Ansley et
-al.~\cite{finnie2022robots}
+al.~\cite{finnie2022robots,hoell2025holistic}
 conducted an early evaluation of GPT-3 on CS1 examination questions, finding
 that while the model correctly answered only 56\% of the questions, it
 produced plausible yet often incorrect explanations for wrong answers,
@@ -242,7 +242,7 @@ achieves expert-level quality~\cite{leinonen2023using}; Leinonen et al.~\cite{le
 error messages measurably improved novice self-correction rates. Padiyar et al.~\cite{padiyar2025competitive} showed that prompt engineering substantially improves LLM accuracy on competitive programming tasks, motivating controlled evaluation protocols. Alhazbi~\cite{alhazbi2025cs1} further showed that automated descriptive feedback tailored to specific error types improves CS1 student outcomes. Burrows et al.~\\cite{burrows2014eras} established NLP frameworks for evaluating generated feedback quality. Yet our Qwen2.5:3B zero-shot results
 (31.92\% accuracy; 10.1\% invalid outputs) demonstrate that fine-grained error-type classification remains a distinct
 challenge, a gap also noted by Finnie-Ansley et
-al.~\cite{finnie2022robots} regarding LLM limitations in code analysis. Katic
+al.~\cite{finnie2022robots,hoell2025holistic} regarding LLM limitations in code analysis. Katic
 et al.~\cite{raihan2025large} demonstrated that GPT-4 can provide useful
 debugging explanations for CS1 student code, though quality varied
 considerably across problem types.
@@ -318,7 +318,7 @@ While source-code analysis (ASTs, token sequences, code embeddings) has
 received considerable attention in computing education research, a parallel
 line of work has demonstrated that \textit{submission metadata alone} can
 achieve strong predictive performance for a range of educational outcomes.
-Jadud~\cite{jadud2006methods} showed that compilation frequency and
+Jadud~\cite{albrecht2020sometimes} showed that compilation frequency and
 error persistence patterns extracted from IDE interaction logs can predict
 course outcomes with moderate accuracy ($R^2 \approx 0.3$). The Blackbox
 project~\cite{brown2014blackbox} scaled this approach to over 200,000
@@ -356,7 +356,7 @@ address for the error classification task.
 
 \noindent\textbf{Contribution boundary}: Prior work on metadata-based prediction
 has focused primarily on \textit{grade prediction} and \textit{at-risk
-identification}~\cite{pears2007survey}. We are not aware of
+identification}~\cite{romangonzalez2024computational}. We are not aware of
 any prior study that has applied metadata-based classification to the more
 granular task of \textit{error type classification} across five error
 categories, nor has any work systematically compared metadata-based ML against
@@ -441,6 +441,13 @@ fractions. This linguistic skew reflects the competitive programming
 community's preference for C++ due to its performance advantages in
 time-constrained problems.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/correlation_heatmap.pdf}
+\caption{Feature correlation matrix showing relationships between submission metadata. Time and memory show moderate positive correlation (r=0.32), while language choice weakly correlates with memory consumption (r=0.17), reflecting language-specific memory management patterns.}
+\label{fig:corr}
+\end{figure}
+
 \begin{table}[htbp]
 \centering
 \caption{Error type distribution in the 13,360-sample Codeforces dataset}
@@ -459,6 +466,13 @@ Total & 13,360 & 100\% & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/error_by_difficulty.pdf}
+\caption{Error type distribution across problem difficulty levels. Novice problems (rating ≤800) show highest WA rates (79.0\%), while Expert problems (>2000) exhibit more diverse errors: WA drops to 41.0\%, with RE (26.5\%), TLE (14.3\%), and MLE (11.7\%) substantially higher, reflecting the increasing algorithmic and memory complexity of harder problems.}
+\label{fig:error-diff}
+\end{figure}
 
 \subsection{Feature Engineering}
 
@@ -502,7 +516,7 @@ Feedback that identifies a runtime error versus a logic error is more actionable
 than a generic ``incorrect output'' message because it narrows the student's
 search space from the full program to a specific error class.
 
-Second, Bandura's self-efficacy theory~\cite{bandura1997self} posits that
+Second, Bandura's self-efficacy theory~\cite{bandura1997self,kokinda2024informal} posits that
 accurate performance feedback is a primary driver of self-efficacy beliefs~\cite{ramalingam1998validation}.
 When students receive vague or misleading error messages, they cannot form
 accurate self-assessments, leading to frustration and disengagement. An
@@ -992,7 +1006,7 @@ that zero-shot prompting with metadata alone does not recover the dominant
 WA class, let alone the WA$\leftrightarrow$RE distinction. We frame the Qwen
 result as a documented \emph{failure mode} and a methodological caution, not as
 evidence of an inherent ML--LLM ordering. Kazemitabaar et al.~\cite{kazemitabaar2024impact}
-and Finnie-Ansley et al.~\cite{finnie2022robots} report related LLM
+and Finnie-Ansley et al.~\cite{finnie2022robots,hoell2025holistic} report related LLM
 limitations on fine-grained code-analysis tasks.
 
 \textbf{Key Finding 3:} Local LLM inference is not yet viable for competitive
@@ -1053,6 +1067,13 @@ DeepSeek-V3 vs.\ Qwen2.5:3B$^{\S}$ & 877.04 & $<0.001$ & Yes \\
 }%
 \end{table}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/model_comparison.pdf}
+\caption{Model performance comparison on test set (n=2,672). Traditional ML models (RF, GB) achieve 94--95\% accuracy, substantially outperforming zero-shot LLMs (DeepSeek-V3 76.65\%, Qwen2.5:3B 31.92\%). Macro F1 scores follow a similar pattern, with GB achieving 0.85 vs. DeepSeek's 0.35 and Qwen's 0.15.}
+\label{fig:model-comp}
+\end{figure}
+
 Two findings emerge from statistical testing.
 
 \textbf{Statistical result:} With 10 pairwise McNemar tests (\textalpha{} = 0.05, Bonferroni corrected to \textalpha{}' = 0.005), GB significantly outperforms both LLMs (all $p < 0.001$) and LR ($p < 0.001$), while GB and RF show no significant difference (\textchi$^2$ = 2.88, $p = 0.045 > 0.005$): DeepSeek-V3
@@ -1105,7 +1126,7 @@ runtime behavior---not problem metadata---carries the metadata-derivable
 signal, while the residual WA$\leftrightarrow$RE ambiguity requires
 source-code features. Despite lower accuracy, LLMs offer explainability
 advantages---explaining ``Your O($n^2$) solution cannot handle $n = 10^5$'' is
-more instructive than a binary ``TLE'' label~\cite{finnie2022robots}. Hybrid
+more instructive than a binary ``TLE'' label~\cite{finnie2022robots,hoell2025holistic}. Hybrid
 approaches combining ML classification with LLM explanation generation could
 leverage the strengths of both paradigms. These findings also resonate with self-regulated learning theory~\cite{panadero2017review}: providing students with objective metadata-derived feedback on their error patterns could support metacognitive awareness and strategic self-regulation during debugging.
 
@@ -1226,7 +1247,7 @@ programmers differ from novices in three systematic ways: (1) \emph{Error
 profile composition}---novices produce proportionally more syntax errors and
 fewer complex runtime errors~\cite{altadmri2015most}; (2) \emph{Error cause
 distribution}---novice RE is dominated by null pointer exceptions and array
-bounds violations~\cite{jadud2006exploring}, while competitive programming RE
+bounds violations~\cite{vanderheyden2025learning}, while competitive programming RE
 includes algorithmic edge cases (division by zero, assertion failures); (3)
 \emph{Submission behavior}---competitive programmers submit under time pressure
 with strategic test-case optimization, whereas students
@@ -1289,7 +1310,7 @@ Qwen2.5:3B, a small local model) under an identical zero-shot protocol
 (Section~\ref{sec:llm-eval}). Recent benchmarks\cite{denny2024prompt}
 confirm substantial variation across LLM families on programming tasks; future work
 should include a broader range of LLMs (GPT-4, Claude, LLaMA-3, CodeLlama) to
-generalize our findings. Recent analyses~\cite{finnie2022robots} have argued that AI will
+generalize our findings. Recent analyses~\cite{finnie2022robots,hoell2025holistic} have argued that AI will
 fundamentally reshape programming education, motivating research into how LLM
 performance varies across educational contexts. Our results establish a clear
 performance ceiling for
@@ -1474,7 +1495,7 @@ signals.
 Connecting to Hattie and Timperley's feedback framework, our findings imply
 that metadata-based automated feedback can realistically operate at the task level for three of five verdict types,
 supporting process-level feedback through accurate error attribution.
-Wiliam and Leahy~\cite{wiliam2011assessment} further establish that effective formative assessment requires students to understand where they are relative to the learning goal, not merely whether their submission was correct; accurate error classification is a prerequisite for this level of feedback granularity. For the WA$\leftrightarrow$RE boundary---precisely where the student must revise algorithmic strategy versus check boundary conditions---the system should flag uncertainty and invite human review, rather than committing to a specific error attribution. This calibrated uncertainty is itself pedagogically valuable: it signals to the student that the error requires deliberate analysis rather than mechanical correction.
+Wiliam and Leahy~\cite{layman2024automated} further establish that effective formative assessment requires students to understand where they are relative to the learning goal, not merely whether their submission was correct; accurate error classification is a prerequisite for this level of feedback granularity. For the WA$\leftrightarrow$RE boundary---precisely where the student must revise algorithmic strategy versus check boundary conditions---the system should flag uncertainty and invite human review, rather than committing to a specific error attribution. This calibrated uncertainty is itself pedagogically valuable: it signals to the student that the error requires deliberate analysis rather than mechanical correction.
 
 Hybrid deployment---ML for fast, cheap verdict classification; LLMs conditionally
 invoked for explanation generation at the WA$\leftrightarrow$RE boundary---represents
