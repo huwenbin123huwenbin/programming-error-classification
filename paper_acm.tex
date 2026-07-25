@@ -125,7 +125,7 @@ classroom learning goals. We evaluate generalizability via a skill-tier analysis
 (Section~4.7), but validation on student datasets (CS1QA\cite{lee2022cs1qa}, Blackbox) is needed
 before drawing conclusions for novice programming education contexts~\cite{altadmri2015most,sarsa2022automatic}.
 
-LLMs (GPT-4, Claude, DeepSeek-Coder) show strong code capabilities~\cite{raihan2025large,finnie2022robots} but their effectiveness for metadata-only error classification is understudied. LLM error messages often fail to meet formative feedback criteria~\cite{morris2021formative,leerentveld2024not}, motivating controlled ML-LLM comparison.
+LLMs show strong code capabilities~\cite{raihan2025large,finnie2022robots} but their effectiveness for metadata-only error classification is understudied. LLM error messages often fail to meet formative feedback criteria~\cite{morris2021formative,leerentveld2024not}. Aza{"i}z et al.~\cite{azaiz2024feedback} found that GPT-4 Turbo generates more structured and consistent feedback than GPT-3.5 for authentic student submissions, though quality varies across problem types. Controlled ML-LLM comparison is therefore needed to quantify these tradeoffs on objective classification tasks.
 
 While ML and LLM approaches have both been applied to programming error analysis, \textit{no prior work has systematically compared them on the same dataset under identical evaluation protocols}. Existing work also predominantly relies on source-code analysis~\cite{feng2020codebert}, which incurs high computational cost, raises privacy concerns, and cannot scale to platform-level deployment. We address both gaps: a controlled ML--LLM comparison on the same dataset, and a systematic characterization of what submission metadata alone can and cannot reveal about error type.
 
@@ -188,7 +188,7 @@ algorithm design or implementation strategy) and plan comprehension errors
 (misunderstanding of specific language constructs). Their controlled studies
 with novice LISP programmers demonstrated that many seemingly simple errors
 have deeper cognitive roots than syntax misunderstanding, indicating that
-effective automated feedback must identify the underlying error pattern. Students' self-efficacy beliefs compound this challenge: Gorson and O'Rourke~\cite{gorson2020why} found that CS1 students systematically overestimate their error severity, often attributing correct execution to luck rather than understanding---a metacognitive gap that automated tools could help correct.
+effective automated feedback must identify the underlying error pattern. Students' self-efficacy beliefs compound this challenge. Lishinski and Yadav~\cite{lishinski2021self} showed that structured self-evaluation interventions in CS1 can improve both self-efficacy and programming performance. Gorson and O'Rourke~\cite{gorson2020why} found that CS1 students systematically overestimate their error severity, often attributing correct execution to luck rather than understanding---a metacognitive gap that automated tools could help correct.
 
 Busjahn et al.~\cite{busjahn2015eye} further revealed through eye-tracking studies that even expert programmers do not process code linearly, complicating error diagnosis and self-correction across all skill levels. 
 
@@ -239,7 +239,7 @@ raising concerns about over-reliance on LLM outputs in educational settings.
 Prior work has established that LLMs excel at code generation and
 repair~\cite{kazemitabaar2024impact,sarsa2022automatic}. Sarsa et al.~\\cite{sarsa2022automatic} demonstrated that LLM-based feedback generation
 achieves expert-level quality~\cite{leinonen2023using}; Leinonen et al.~\cite{leinonen2023using} specifically demonstrated that LLM-enhanced
-error messages measurably improved novice self-correction rates. Burrows et al.~\\cite{burrows2014eras} established NLP frameworks for evaluating generated feedback quality. Yet our Qwen2.5:3B zero-shot results
+error messages measurably improved novice self-correction rates. Padiyar et al.~\cite{padiyar2025competitive} showed that prompt engineering substantially improves LLM accuracy on competitive programming tasks, motivating controlled evaluation protocols. Alhazbi~\cite{alhazbi2025cs1} further showed that automated descriptive feedback tailored to specific error types improves CS1 student outcomes. Burrows et al.~\\cite{burrows2014eras} established NLP frameworks for evaluating generated feedback quality. Yet our Qwen2.5:3B zero-shot results
 (31.92\% accuracy; 10.1\% invalid outputs) demonstrate that fine-grained error-type classification remains a distinct
 challenge, a gap also noted by Finnie-Ansley et
 al.~\cite{finnie2022robots} regarding LLM limitations in code analysis. Katic
@@ -497,7 +497,7 @@ feedback~\cite{hattie2007power} identifies four levels of feedback: task
 level, process level, self-regulation level, and self level. Accurate error
 classification enables \emph{task-level feedback} (correcting specific
 misconceptions) and \emph{process-level feedback} (addressing algorithmic
-inefficiencies), which Hattie ranks as the most impactful for learning.
+inefficiencies), which Hattie ranks as the most impactful for learning. Wagner~\cite{wagner2025hattie} synthesizes Hattie and Timperley's model across educational contexts; Layman~\cite{layman2024automated} demonstrates that automated formative feedback at the task level consistently improves student learning outcomes.
 Feedback that identifies a runtime error versus a logic error is more actionable
 than a generic ``incorrect output'' message because it narrows the student's
 search space from the full program to a specific error class.
@@ -1445,8 +1445,7 @@ validate that accurate metadata-based error classification \emph{causes}
 improved student self-efficacy and learning outcomes.
 
 \subsection*{Future Research Directions}
-Five research directions: (1) cross-population validation on novice datasets
-(CS1QA\cite{lee2022cs1qa}, Blackbox) to test whether the metadata ceiling generalizes to
+Five research directions: (1) cross-population validation on novice datasets (CS1QA\cite{lee2022cs1qa}, Blackbox; cf.~Winder et al.~\cite{winder2024cs1} on incremental development in CS1) to test whether the metadata ceiling generalizes to
 students with different error profiles; (2) source-code integration (AST
 embeddings, code complexity metrics) for improved WA$\leftrightarrow$RE
 classification, the boundary most consequential for targeted feedback; (3) longitudinal
