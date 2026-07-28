@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 """
 DeepSeek-V4-flash zero-shot error classification.
 Uses identical test set as run_deepseek_fair_rerun.py (2672 samples).
@@ -7,7 +8,7 @@ import json, time, sys, os, re, subprocess, tempfile
 import csv
 from collections import Counter
 
-API_KEY = "__DEEPSEEK_API_KEY_REDACTED__"
+API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 MODEL = "deepseek-v4-flash"
 MAX_TOKENS = 3000
 LIMIT = None  # None = all 2672; set = N for quick test

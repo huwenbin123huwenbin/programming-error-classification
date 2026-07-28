@@ -2,7 +2,7 @@
 # DeepSeek-V4-flash full experiment: 2672 samples
 CSV="/Users/mac/Desktop/SCI1/01_原始数据/codeforces_final_real.csv"
 API="https://api.deepseek.com/v1/chat/completions"
-KEY="__DEEPSEEK_API_KEY_REDACTED__"
+KEY="${DEEPSEEK_API_KEY}"
 MODEL="deepseek-v4-flash"
 LOG="ds_v4_full_log.txt"
 OUT="ds_v4_predictions.json"
@@ -18,7 +18,7 @@ CSV = "/Users/mac/Desktop/SCI1/01_原始数据/codeforces_final_real.csv"
 OUT = "/Users/mac/Desktop/SCI1/06_论文定稿/ds_v4_predictions.json"
 MODEL = "deepseek-v4-flash"
 API = "https://api.deepseek.com/v1/chat/completions"
-KEY = "__DEEPSEEK_API_KEY_REDACTED__"
+KEY="${DEEPSEEK_API_KEY}"
 PROGRESS = 25
 VERDICTS = ["WA", "TLE", "RE", "CE", "MLE"]
 

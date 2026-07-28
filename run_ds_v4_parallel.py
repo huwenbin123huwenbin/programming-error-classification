@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 """DeepSeek-V4-flash parallel experiment: 2672 samples, concurrent workers."""
 import csv, json, random, subprocess, time, threading, queue
 
@@ -6,7 +7,7 @@ CSV = "/Users/mac/Desktop/SCI1/01_原始数据/codeforces_final_real.csv"
 OUT = "/Users/mac/Desktop/SCI1/06_论文定稿/ds_v4_predictions.json"
 MODEL = "deepseek-v4-flash"
 API = "https://api.deepseek.com/v1/chat/completions"
-KEY = "__DEEPSEEK_API_KEY_REDACTED__"
+KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 WORKERS = 3  # concurrent API calls
 REPORT_EVERY = 25
 VERDICTS = ["WA", "TLE", "RE", "CE", "MLE"]

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 """
 Fair LLM re-run for SCI1 paper — DeepSeek-V3 (online API).
 
@@ -17,7 +18,7 @@ DATA   = ROOT / "01_原始数据" / "codeforces_final_real.csv"
 OUT    = ROOT / "06_论文定稿" / "llm_experiments"
 OUT.mkdir(parents=True, exist_ok=True)
 
-API_KEY = os.environ.get("DEEPSEEK_API_KEY", "__DEEPSEEK_API_KEY_REDACTED__")
+API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 URL     = "https://api.deepseek.com/v1/chat/completions"
 MODEL   = "deepseek-chat"
 BATCH   = 8        # samples per API call (same as Qwen)
