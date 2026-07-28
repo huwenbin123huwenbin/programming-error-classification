@@ -89,16 +89,7 @@
   pages={146--156},
   year={2021},
   doi={10.1145/3448139.3448140}
-}@article{wang2017learning,
-  title={Learning to Represent Student Knowledge from Programming Submissions},
-  author={Wang, L. and Sy, A. and Liu, L. and Piech, C.},
-  journal={Proceedings of the Fourth ACM Conference on Learning at Scale},
-  pages={141--150},
-  year={2017},
-  doi={10.1145/3051457.3053985}
-}
-
-@article{romero2013data,
+}@article{romero2013data,
   title={Data mining in education},
   author={Romero, C. and Ventura, S.},
   journal={Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery},
@@ -358,80 +349,6 @@
   doi={10.1145/3626175}
 }
 
-@article{carter2022prediction,
-  title={Predicting programming success in CS1: A mixed-methods study},
-  author={Carter, A. S. and Hmelo-Silver, C. E. and Price, T. W.},
-  journal={ACM Transactions on Computing Education},
-  volume={22},
-  number={2},
-  pages={1--30},
-  year={2022},
-  doi={10.1145/3491104}
-}
-
-@article{yu2023large,
-  title={Large Language Models in Education: A Systematic Review},
-  author={Yu, H. and Cao, Y. and Liu, J.},
-  journal={Computers and Education},
-  volume={215},
-  pages={104--125},
-  year={2023},
-  doi={10.1016/j.compedu.2023.104939}
-}
-
-@article{pelayo2024exploring,
-  title={Exploring the impact of AI code generation tools on introductory programming},
-  author={Pelayo, L. and Brown, N. C. C. and Haaranen, L.},
-  journal={ACM Transactions on Computing Education},
-  volume={24},
-  number={3},
-  pages={1--28},
-  year={2024},
-  doi={10.1145/3664555}
-}
-
-@article{sentance2024learning,
-  title={Learning to Program with AI: Student Perspectives from Secondary Education},
-  author={Sentance, S. and Waite, J. and Kallio, A. and Heeren, E.},
-  journal={ACM Transactions on Computing Education},
-  volume={24},
-  number={2},
-  pages={1--35},
-  year={2024},
-  doi={10.1145/3641556}
-}
-
-@article{braunstein2024using,
-  title={Using Machine Learning to Predict Programming Assignment Performance},
-  author={Braunstein, M. and Prechelt, L. and others},
-  journal={Computers and Education},
-  volume={220},
-  pages={104--118},
-  year={2024},
-  doi={10.1016/j.compedu.2024.104993}
-}
-
-@article{edwards2023programming,
-  title={Programming Difficulty: A Systematic Literature Review},
-  author={Edwards, J. and Towler, A. and Luxton-Reilly, A.},
-  journal={Computer Science Education},
-  volume={34},
-  number={2},
-  pages={1--32},
-  year={2023},
-  doi={10.1080/08993408.2023.2178947}
-}
-
-@article{le2023automated,
-  title={Automated feedback generation in programming education: A systematic review},
-  author={Le, N. T. and Nguyen, H. and Ho, T. N.},
-  journal={Computers and Education},
-  volume={196},
-  pages={104--118},
-  year={2023},
-  doi={10.1016/j.compedu.2023.104766}
-}
-
 @inproceedings{sarsa2024does,
   title={Does GPT-4 Outperform Other AI Models in CS Education?},
   author={Sarsa, S. and Rajala, J. and Korhonen, A. and Malmi, L.},
@@ -448,38 +365,6 @@
   pages={1--7},
   year={2024},
   doi={10.1145/3648168.3648189}
-}
-
-@article{yao2024llm,
-  title={LLM-Generated Code in CS Assignments: Implications for Feedback Quality},
-  author={Yao, W. and Dou, Z. and Liu, C. and Huang, J.},
-  journal={IEEE Transactions on Education},
-  volume={67},
-  number={4},
-  pages={312--323},
-  year={2024},
-  doi={10.1109/TE.2024.3401234}
-}
-
-@article{aggarwal2024programming,
-  title={Programming error prediction using deep learning: A systematic review},
-  author={Aggarwal, K. and Yadav, D. and Malik, M.},
-  journal={Journal of Computer Science and Technology},
-  volume={39},
-  number={3},
-  pages={1--18},
-  year={2024},
-  doi={10.1007/s11390-024-3021-9}
-}
-
-@article{wolff2024learning,
-  title={Learning Analytics in Programming Education: A Decade of Progress},
-  author={Wolff, A. and Goic, M. and Urli{\v{s}}, F.},
-  journal={Computers and Education},
-  volume={215},
-  pages={104042},
-  year={2024},
-  doi={10.1016/j.compedu.2023.104042}
 }
 
 @inproceedings{agrawal2019will,
@@ -499,15 +384,6 @@
   number={1},
   pages={1--5},
   year={2009}
-}
-
-@inproceedings{cottrell2024ai,
-  title={AI as a Learning Partner: Student Perceptions of LLM-Generated Feedback},
-  author={Cottrell, R. and Watson, M. and Scott, D.},
-  booktitle={Proceedings of the 2024 Australasian Computing Education Conference},
-  pages={1--10},
-  year={2024},
-  doi={10.1145/3651056.3651067}
 }
 
 @article{karavirta2019mistake,

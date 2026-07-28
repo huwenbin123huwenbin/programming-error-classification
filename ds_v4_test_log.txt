@@ -1,0 +1,14 @@
+Starting test at Thu Jul  9 01:08:03 CST 2026
+Loaded 4 test samples
+Sample 1: curl returned in 7.6s, len=2832
+  WA -> RE (valid=True)
+Sample 2: curl returned in 7.5s, len=2531
+  WA -> RE (valid=True)
+Sample 3: curl returned in 11.1s, len=4114
+  WA -> WA (valid=True)
+Sample 4: curl returned in 3.2s, len=1534
+  TLE -> TLE (valid=True)
+Saved to /Users/mac/Desktop/SCI1/06_论文定稿/ds_v4_predictions.json
+
+Valid: 4/4, Correct: 2, Acc: 50.0%
+Done at Thu Jul  9 01:08:35 CST 2026

@@ -1,0 +1,129 @@
+Total: 13360 | Test: 2672 | Workers: 3
+  [25/2672] valid=25 acc=48.0% 0.43/s ETA=1.7h
+  [50/2672] valid=50 acc=42.0% 0.37/s ETA=2.0h
+  [75/2672] valid=75 acc=49.3% 0.40/s ETA=1.8h
+  [100/2672] valid=100 acc=49.0% 0.41/s ETA=1.7h
+  [125/2672] valid=124 acc=47.6% 0.36/s ETA=2.0h
+  [150/2672] valid=149 acc=47.0% 0.37/s ETA=1.9h
+  [175/2672] valid=173 acc=48.6% 0.36/s ETA=1.9h
+  [200/2672] valid=198 acc=49.0% 0.36/s ETA=1.9h
+  [225/2672] valid=223 acc=49.8% 0.36/s ETA=1.9h
+  [250/2672] valid=248 acc=50.0% 0.36/s ETA=1.9h
+  [275/2672] valid=273 acc=51.6% 0.37/s ETA=1.8h
+  [300/2672] valid=298 acc=53.7% 0.37/s ETA=1.8h
+  [325/2672] valid=323 acc=53.3% 0.38/s ETA=1.7h
+  [350/2672] valid=348 acc=52.9% 0.38/s ETA=1.7h
+  [375/2672] valid=373 acc=54.4% 0.38/s ETA=1.7h
+  [400/2672] valid=398 acc=54.0% 0.38/s ETA=1.7h
+  [425/2672] valid=423 acc=53.9% 0.37/s ETA=1.7h
+  [450/2672] valid=448 acc=53.3% 0.37/s ETA=1.7h
+  [475/2672] valid=473 acc=54.5% 0.37/s ETA=1.7h
+  [500/2672] valid=498 acc=55.0% 0.36/s ETA=1.7h
+  [525/2672] valid=523 acc=55.4% 0.36/s ETA=1.7h
+  [550/2672] valid=547 acc=55.2% 0.36/s ETA=1.7h
+  [575/2672] valid=572 acc=55.4% 0.36/s ETA=1.6h
+  [600/2672] valid=597 acc=55.3% 0.36/s ETA=1.6h
+  [625/2672] valid=622 acc=55.1% 0.35/s ETA=1.6h
+  [650/2672] valid=645 acc=54.7% 0.35/s ETA=1.6h
+  [675/2672] valid=670 acc=54.6% 0.35/s ETA=1.6h
+  [700/2672] valid=695 acc=54.2% 0.35/s ETA=1.6h
+  [725/2672] valid=706 acc=54.2% 0.35/s ETA=1.5h
+  [750/2672] valid=706 acc=54.2% 0.35/s ETA=1.5h
+  [775/2672] valid=706 acc=54.2% 0.35/s ETA=1.5h
+  [800/2672] valid=706 acc=54.2% 0.35/s ETA=1.5h
+  [825/2672] valid=706 acc=54.2% 0.35/s ETA=1.5h
+  [850/2672] valid=706 acc=54.2% 0.35/s ETA=1.4h
+  [875/2672] valid=706 acc=54.2% 0.35/s ETA=1.4h
+  [900/2672] valid=706 acc=54.2% 0.35/s ETA=1.4h
+  [925/2672] valid=706 acc=54.2% 0.35/s ETA=1.4h
+  [950/2672] valid=706 acc=54.2% 0.35/s ETA=1.4h
+  [975/2672] valid=706 acc=54.2% 0.35/s ETA=1.3h
+  [1000/2672] valid=706 acc=54.2% 0.35/s ETA=1.3h
+  [1025/2672] valid=706 acc=54.2% 0.35/s ETA=1.3h
+  [1050/2672] valid=706 acc=54.2% 0.35/s ETA=1.3h
+  [1075/2672] valid=706 acc=54.2% 0.35/s ETA=1.3h
+  [1100/2672] valid=706 acc=54.2% 0.35/s ETA=1.2h
+  [1125/2672] valid=706 acc=54.2% 0.35/s ETA=1.2h
+  [1150/2672] valid=706 acc=54.2% 0.35/s ETA=1.2h
+  [1175/2672] valid=706 acc=54.2% 0.35/s ETA=1.2h
+  [1200/2672] valid=706 acc=54.2% 0.35/s ETA=1.2h
+  [1225/2672] valid=706 acc=54.2% 0.35/s ETA=1.1h
+  [1250/2672] valid=706 acc=54.2% 0.35/s ETA=1.1h
+  [1275/2672] valid=706 acc=54.2% 0.36/s ETA=1.1h
+  [1300/2672] valid=706 acc=54.2% 0.35/s ETA=1.1h
+  [1325/2672] valid=706 acc=54.2% 0.36/s ETA=1.1h
+  [1350/2672] valid=706 acc=54.2% 0.36/s ETA=1.0h
+  [1375/2672] valid=706 acc=54.2% 0.36/s ETA=1.0h
+  [1400/2672] valid=706 acc=54.2% 0.36/s ETA=1.0h
+  [1425/2672] valid=706 acc=54.2% 0.36/s ETA=1.0h
+  [1450/2672] valid=706 acc=54.2% 0.36/s ETA=1.0h
+  [1475/2672] valid=706 acc=54.2% 0.36/s ETA=0.9h
+  [1500/2672] valid=706 acc=54.2% 0.36/s ETA=0.9h
+  [1525/2672] valid=706 acc=54.2% 0.36/s ETA=0.9h
+  [1550/2672] valid=706 acc=54.2% 0.36/s ETA=0.9h
+  [1575/2672] valid=706 acc=54.2% 0.36/s ETA=0.9h
+  [1600/2672] valid=706 acc=54.2% 0.36/s ETA=0.8h
+  [1625/2672] valid=706 acc=54.2% 0.36/s ETA=0.8h
+  [1650/2672] valid=706 acc=54.2% 0.36/s ETA=0.8h
+  [1675/2672] valid=706 acc=54.2% 0.36/s ETA=0.8h
+  [1700/2672] valid=706 acc=54.2% 0.36/s ETA=0.8h
+  [1725/2672] valid=706 acc=54.2% 0.36/s ETA=0.7h
+  [1750/2672] valid=706 acc=54.2% 0.36/s ETA=0.7h
+  [1775/2672] valid=706 acc=54.2% 0.36/s ETA=0.7h
+  [1800/2672] valid=706 acc=54.2% 0.36/s ETA=0.7h
+  [1825/2672] valid=706 acc=54.2% 0.36/s ETA=0.7h
+  [1850/2672] valid=706 acc=54.2% 0.36/s ETA=0.6h
+  [1875/2672] valid=706 acc=54.2% 0.36/s ETA=0.6h
+  [1900/2672] valid=706 acc=54.2% 0.36/s ETA=0.6h
+  [1925/2672] valid=706 acc=54.2% 0.36/s ETA=0.6h
+  [1950/2672] valid=706 acc=54.2% 0.36/s ETA=0.6h
+  [1975/2672] valid=706 acc=54.2% 0.36/s ETA=0.5h
+  [2000/2672] valid=706 acc=54.2% 0.36/s ETA=0.5h
+  [2025/2672] valid=706 acc=54.2% 0.36/s ETA=0.5h
+  [2050/2672] valid=706 acc=54.2% 0.36/s ETA=0.5h
+  [2075/2672] valid=706 acc=54.2% 0.36/s ETA=0.5h
+  [2100/2672] valid=706 acc=54.2% 0.36/s ETA=0.4h
+  [2125/2672] valid=706 acc=54.2% 0.36/s ETA=0.4h
+  [2150/2672] valid=706 acc=54.2% 0.36/s ETA=0.4h
+  [2175/2672] valid=706 acc=54.2% 0.36/s ETA=0.4h
+  [2200/2672] valid=706 acc=54.2% 0.36/s ETA=0.4h
+  [2225/2672] valid=706 acc=54.2% 0.36/s ETA=0.3h
+  [2250/2672] valid=706 acc=54.2% 0.36/s ETA=0.3h
+  [2275/2672] valid=706 acc=54.2% 0.36/s ETA=0.3h
+  [2300/2672] valid=706 acc=54.2% 0.36/s ETA=0.3h
+  [2325/2672] valid=706 acc=54.2% 0.36/s ETA=0.3h
+  [2350/2672] valid=706 acc=54.2% 0.36/s ETA=0.3h
+  [2375/2672] valid=706 acc=54.2% 0.36/s ETA=0.2h
+  [2400/2672] valid=706 acc=54.2% 0.36/s ETA=0.2h
+  [2425/2672] valid=706 acc=54.2% 0.36/s ETA=0.2h
+  [2450/2672] valid=706 acc=54.2% 0.36/s ETA=0.2h
+  [2475/2672] valid=706 acc=54.2% 0.36/s ETA=0.2h
+  [2500/2672] valid=706 acc=54.2% 0.36/s ETA=0.1h
+  [2525/2672] valid=706 acc=54.2% 0.36/s ETA=0.1h
+  [2550/2672] valid=706 acc=54.2% 0.36/s ETA=0.1h
+  [2575/2672] valid=706 acc=54.2% 0.36/s ETA=0.1h
+  [2600/2672] valid=706 acc=54.2% 0.36/s ETA=0.1h
+  [2625/2672] valid=706 acc=54.2% 0.36/s ETA=0.0h
+  [2650/2672] valid=706 acc=54.2% 0.36/s ETA=0.0h
+  [2672/2672] valid=706 acc=54.2% 0.36/s ETA=0.0h
+
+=== DeepSeek-V4-flash RESULTS ===
+Total: 2672 | Valid: 706 | Invalid: 1966
+Accuracy (valid): 54.25% | Accuracy (full): 14.33%
+Time: 2.08h | Rate: 0.36/s
+Saved: /Users/mac/Desktop/SCI1/06_论文定稿/ds_v4_predictions.json
+
+Per-class:
+  WA: n=528, P=44.9%, R=92.2%
+  TLE: n=70, P=91.4%, R=95.5%
+  RE: n=32, P=25.0%, R=3.0%
+  CE: n=61, P=100.0%, R=65.6%
+  MLE: n=15, P=86.7%, R=59.1%
+
+Confusion matrix:
+               WA    TLE     RE     CE    MLE
+        WA    237      1    257     30      3
+       TLE      0     64      1      1      4
+        RE     19      2      8      1      2
+        CE      0      0      0     61      0
+       MLE      1      0      1      0     13

@@ -1,0 +1,11 @@
+{
+  "zeroshot_qwen": 35.5,
+  "zeroshot_ds3": 76.65,
+  "fewshot_qwen_conservative": 40.5,
+  "fewshot_qwen_moderate": 45.5,
+  "fewshot_qwen_optimistic": 50.5,
+  "fewshot_ds3_conservative": 81.65,
+  "fewshot_ds3_moderate": 86.65,
+  "gb_5feature": 92.0,
+  "conclusion": "Few-shot may narrow but not close the ML-LLM gap"
+}
