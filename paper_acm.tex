@@ -1261,6 +1261,32 @@ performance, and privacy in educational settings.
 subsets limit per-class F1 precision; larger datasets would enable more
 detailed per-class error analysis.
 
+\textbf{Ethical and Fairness Considerations:} Deploying automated verdict
+classifiers in educational settings introduces fairness risks that warrant
+explicit scrutiny. First, misclassified error types produce mis-targeted
+pedagogical feedback: a RE incorrectly labeled WA (or vice versa) can lead a
+learner to debug the wrong component or, worse, to believe a failing solution
+is correct. Second, this harm is not evenly distributed. Students at
+under-resourced institutions---large sections, fewer teaching assistants, limited
+office-hour access---rely disproportionately on automated feedback because they
+have fewer human buffers to catch classification errors. A false positive that a
+well-resourced peer would immediately overturn in a staffed lab may persist
+uncorrected for a under-resourced student across an entire assignment cycle.
+Third, the platform-encoding boundary (Section~3.2) means models learn
+platform-specific submission thresholds; transferring a classifier trained on one
+institution's population to a demographically or pedagogically distinct
+population (e.g., a school with a different error mix, more syntax errors, less
+competitive exposure) risks systematic, population-specific misclassification
+rather than random error. Fourth, the accuracy--Macro~F1 tension documented in
+our LLM analysis (Section~4.5) generalizes: aggregate accuracy rewards the
+dominant WA class and can mask under-served minority errors (RE, MLE)---precisely
+the harder failures where under-resourced students most need accurate diagnosis.
+We therefore recommend three safeguards before deployment: (i) fairness audits
+reporting per-class performance across institution types rather than aggregate
+accuracy alone; (ii) human-in-the-loop review for low-confidence predictions,
+especially for RE/MLE; and (iii) explicit disclosure to students that verdict
+labels are model-generated and contestable.
+
 Despite these limitations, our findings provide strong evidence that
 traditional ML methods remain highly competitive for metadata-based error
 classification, offering a cost-effective alternative to LLM-based approaches.
