@@ -145,9 +145,9 @@ classroom learning goals. We evaluate generalizability via a skill-tier analysis
 (Section~4.7), but validation on student datasets (CS1QA\cite{lee2022cs1qa}, Blackbox) is needed
 before drawing conclusions for novice programming education contexts~\cite{altadmri2015most,sarsa2022automatic}. Furthermore, we note that competitive programmers on Codeforces differ from novices in submission behavior: competitive submissions are made under time pressure with strategic test-case optimization, whereas students iteratively submit during learning. The skill-tier analysis in Section 4.7 partially addresses this by demonstrating consistent performance across programmer experience levels (novice: 96.0\%, advanced: 88.5\%); however, validation on student datasets remains necessary.
 
-Prior work has studied LLM-based programming feedback~\cite{raihan2025large,finnie2022robots}
-and source-code analysis for programming error classification~\cite{feng2020codebert};
-we review this literature in Section~2.
+LLMs show strong code capabilities~\cite{raihan2025large,finnie2022robots} but their effectiveness for metadata-based verdict classification is understudied. LLM error messages have been found to often fail to meet formative feedback criteria~\cite{morris2021formative,leerentveld2024not}. Aza{"i}z et al.~\cite{azaiz2024feedback} found that GPT-4 Turbo generates more structured and consistent feedback than GPT-3.5 for authentic student submissions, though quality varies across problem types. Controlled ML-LLM comparison is therefore needed to quantify these tradeoffs on objective classification tasks.
+
+While ML and LLM approaches have both been applied to programming error analysis, \textit{no prior work has systematically compared them on the same dataset under identical evaluation protocols}. Existing work also predominantly relies on source-code analysis~\cite{feng2020codebert}, which incurs high computational cost, raises privacy concerns, and cannot scale to platform-level deployment. We address both gaps: a controlled ML--LLM comparison on the same dataset, and a systematic characterization of what submission metadata alone can and cannot reveal about error type.
 
 We investigate three research questions:
 
@@ -179,11 +179,12 @@ Our contributions are:
  Dataset and code: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{enumerate}
 
-\paragraph{On the asymmetry of the ML--LLM comparison.} We compare supervised ML (trained on 10,688 labeled samples) against zero-shot
-LLM (no task-specific training). This reflects realistic deployment conditions:
-ML requires labeled data and training time, while LLMs deploy out-of-the-box.
-We do not claim this comparison is symmetric; it quantifies the
-\emph{labeled-data advantage} ML models carry in practice (Section~\ref{sec:llm-eval}).
+\paragraph{On the asymmetry of the ML--LLM comparison.} Our experimental design
+deliberately compares supervised ML (trained on 10,688 labeled samples) against
+zero-shot LLM (no task-specific training). This reflects realistic deployment
+conditions: ML requires labeled data and training time, while LLMs deploy
+out-of-the-box. We do not claim that this comparison is symmetric; rather, it
+quantifies the \emph{labeled-data advantage} that ML models carry in practice.
 Future work should compare fine-tuned LLMs, few-shot LLMs, and active-learning ML
 under controlled data budgets.
 
@@ -589,8 +590,7 @@ with 3-fold cross-validation on a 10\% held-out validation set, but the
 performance gains were marginal ($< 1\%$ for tuned vs.\ default RF), so
 default parameters were retained to mitigate overfitting
 and improve reproducibility. The random state was set to 42 for
-reproducibility. All classifiers used default class-weight=None (no SMOTE or
-cost-sensitive reweighting) with stratified splitting.
+reproducibility.
 
 \subsubsection*{LLM-Based Approaches}
 Two LLM configurations were evaluated under an identical zero-shot protocol,
@@ -957,7 +957,7 @@ to fully recover the metadata-derivable signal, while the small local model
 (\texttt{Qwen2.5:3B}) collapses.
 
 DeepSeek-V3 (76.05\% all; 76.65\% valid) remains 15.4pp below the 5-feature GB (92.0\%),
-with Macro F1 = 0.35 (zero-shot; detailed per-class in Table~\ref{tab:llm-analysis});
+with per-class F1 of WA=0.85, TLE=0.84, CE=0.49, MLE=0.51, RE=0.03 (zero-shot, Macro F1=0.3467); with few-shot prompting, DeepSeek-V3 achieves CE=0.44, TLE=0.87, MLE=0.86, WA=0.75, RE=0.21 (Macro F1=0.6266, accuracy=64.55\%), demonstrating that few-shot improves minority-class balance at the cost of majority-class accuracy.
 it recovers the execution-bounded verdicts yet still fails the WA$\leftrightarrow$RE
 distinction. \texttt{Qwen2.5:3B} (31.92\% all; 35.50\% valid) falls far below all
 baselines; 10.1\% of its outputs were invalid, and its valid predictions
@@ -1071,26 +1071,38 @@ gap below 5-feature GB reflects the supervised ML advantage; whether LLMs can cl
 
 \paragraph{Addressing the circularity concern.} The platform-encoding boundary does not mean that CE/TLE/MLE classification is trivial. A classifier must learn from labeled data that \texttt{execution\_time}=0 predicts CE---this requires generalization, not memorization of threshold values. Our ablation study (Table~\ref{tab:ablation}) confirms this: while execution time is the dominant feature (8.8\,pp drop), removing it does not reduce accuracy to zero, indicating the model also leverages complementary signals (\texttt{user\_success\_rate}, \texttt{problem\_rating}) to distinguish CE from near-CE boundary cases.
 
-Submission metadata enables near-perfect recovery of CE, TLE, MLE because the platform's resource measurements operationally
-define these outcomes. This is not a classifier result---it is a platform design property.
-The critical finding is the WA$\leftrightarrow$RE boundary: neither ML
-(GB RE F1 = 0.52) nor LLMs (DeepSeek-V3 RE F1 = 0.03) reliably distinguish
-these classes from metadata alone. This boundary is precisely where pedagogical
-feedback is most needed, requiring source-code integration or human expert review.
-Gradient Boosting achieves 95.02\% accuracy by leveraging the CE/TLE/MLE signal;
-DeepSeek-V3 (76.05\%) and \texttt{Qwen2.5:3B} (31.92\%) do not close this gap.
-ML inference cost ($0.01/1k) is negligible versus DeepSeek-V3 ($0.10/1k).
+Submission metadata enables near-perfect recovery of three verdict types
+(CE, TLE, MLE) because the platform's own resource measurements operationally
+define these outcomes. This is not a classifier result---it is a property of the
+platform's design. The critical finding is the
+WA$\leftrightarrow$RE boundary: neither ML nor LLMs can reliably distinguish
+these two classes from metadata alone (RE F1 = 0.52 for GB; F1 = 0.03 for
+DeepSeek-V3). This boundary is precisely where targeted pedagogical feedback
+is most needed, because a teacher distinguishing a logic error (WA) from a
+runtime hazard (RE) must understand the student's reasoning process, not just
+execution traces. The practical implication: metadata-based systems can
+automatically classify three of five verdicts at scale; the remaining two
+require source-code integration or human expert review. Gradient Boosting
+achieves 95.02\% overall accuracy by leveraging the CE/TLE/MLE signal, while
+DeepSeek-V3 (76.05\% on the full test set, 0.8\% invalid) and \texttt{Qwen2.5:3B}
+(31.92\%, 10.1\% invalid) do not close the gap. The inference cost for ML
+(\$0.01/1k) is negligible; DeepSeek-V3 API calls cost \$0.10/1k (see Section 4.5),
+making ML the practical choice for platform-scale deployment.
+
 \subsection{Finding 2: Execution Time Dominance and Feature Insights}
 
-Execution time (\texttt{time\_consumed\_ms}) is the dominant predictor:
-removing it reduces accuracy by 8.8 pp. This confirms that runtime behavior---
-not problem metadata---carries the metadata-derivable signal for CE, TLE, and MLE.
-Memory consumption follows (4.2 pp), user success rate contributes 3.6 pp;
-problem rating, language, and problem type each contribute 1--2 pp, while
-submission hour contributes negligibly (0.0 pp). The WA$\leftrightarrow$RE
-ambiguity remains irreducible from metadata, requiring source-code features.
-Despite lower accuracy, LLMs offer explainability advantages~\cite{finnie2022robots,hoell2025holistic};
-a hybrid strategy (ML for classification, LLM for explanation) leverages both.
+Execution time (\texttt{time\_consumed\_ms}) emerges as the dominant
+predictive feature, with an 8.8\,pp accuracy drop upon removal. This is
+expected: execution time and memory directly encode the three
+verdicts whose outcomes they determine (CE, TLE, MLE), confirming \emph{why}
+metadata alone suffices for those classes. The design implication is that
+runtime behavior---not problem metadata---carries the metadata-derivable
+signal, while the residual WA$\leftrightarrow$RE ambiguity requires
+source-code features. Despite lower accuracy, LLMs offer explainability
+advantages---explaining ``Your O($n^2$) solution cannot handle $n = 10^5$'' is
+more instructive than a binary ``TLE'' label~\cite{finnie2022robots,hoell2025holistic}. Hybrid
+approaches combining ML classification with LLM explanation generation could
+leverage the strengths of both paradigms. These findings also resonate with self-regulated learning theory~\cite{panadero2017review}: providing students with objective metadata-derived feedback on their error patterns could support metacognitive awareness and strategic self-regulation during debugging.
 
 \subsection{Finding 3: Error Type Skew and RE Challenges}
 
@@ -1174,54 +1186,93 @@ platforms serving millions of users.
 
 \subsubsection*{Empirical Generalization Analysis}
 To assess generalizability beyond typical competitive programming
-distributions, we segmented users into three skill tiers based on Codeforces
-rating: novice ($<$1,400), intermediate (1,400--1,999), and advanced ($\geq$2,000),
-and evaluated GB on each tier using the same 80/20 stratified split.
+distributions, we conducted a subpopulation analysis that segments users into
+three skill tiers based on Codeforces rating: novice ($<$1,400), intermediate
+(1,400--1,999), and advanced ($\geq$2,000). The Gradient Boosting
+classifier---the best-performing model---is evaluated on each tier using the
+same 80/20 stratified split from the main experiment.
 
-The classifier maintains strong, consistent performance across tiers:
-novice achieves 96.01\% (n=1,853, macro F1=0.877), intermediate 95.21\%
-(n=522, F1=0.864), and advanced 88.54\% (n=288, F1=0.861).
-Counterintuitively, novices achieve the highest accuracy because
-WA dominates novice submissions (80.0\%), which GB classifies with
-F1=0.977. Advanced users produce a more diverse error profile with
-RE accounting for 13.2\% (vs.\ 3.6\% for novices), reducing RE F1
-from 0.585 (novice) to 0.475 (advanced).
+The classifier shows strong, consistent performance across all three tiers:
+novice achieves 96.01\% accuracy (n=1,853, macro F1=0.877), intermediate
+achieves 95.21\% (n=522, macro F1=0.864), and advanced achieves 88.54\%
+(n=288, macro F1=0.861).
 
-This subpopulation analysis extends prior work on fine-grained error
-classification~\cite{altadmri2015most} by demonstrating that metadata-based ML
-generalizes across skill levels, with accuracy maintained above 88\%
-for experienced programmers producing diverse error types.
+Contrary to the expectation that novices would be hardest to classify,
+the novice group achieves the highest accuracy. This counterintuitive result
+is explained by class distribution differences: novice submissions are
+dominated by WA (80.0\% of novice test samples), which the model classifies
+with F1=0.977. Advanced users produce a more balanced error profile---
+RE accounts for 13.2\% of advanced submissions (vs.\ 3.6\% for novices)---
+making classification inherently more challenging. The per-group F1 scores
+confirm this interpretation: RE F1 drops from 0.585 (novice) to 0.475
+(advanced), consistent with increasing diversity of runtime errors at higher
+competition levels.
 
-\textbf{Population external validity:} The skill-tier analysis demonstrates
-internal generalizability across competitive programming expertise levels, but
-the gap to CS1/CS2 student populations~\cite{yadav2021collaborative}
-remains open. Competitive programmers differ from novices in error profile
-(more CE, fewer complex RE)~\cite{altadmri2015most}, error cause (novice RE
-dominated by null pointer/array bounds violations)~\cite{vanderheyden2025learning},
-and submission behavior (iterative learning vs. competitive time pressure).
-Validation on student datasets (CS1QA\cite{lee2022cs1qa}, Blackbox)
-is needed before drawing conclusions for novice education.
+This subpopulation analysis extends recent work on fine-grained error
+classification~\cite{altadmri2015most} by demonstrating that
+metadata-based ML generalizes well across skill levels, with accuracy
+maintained above 88\% even for experienced programmers producing diverse
+error types.
+
+\textbf{Population external validity:} While skill-tier analysis demonstrates
+internal generalizability across competitive programming expertise levels, the
+gap to CS1/CS2 student populations~\cite{yadav2021collaborative} remains an open question. Yadav et al.~\cite{yadav2021collaborative} demonstrated that collaborative, process-oriented guided inquiry learning (POGIL) improves both performance and self-efficacy in CS1, suggesting that error diagnosis accuracy could be enhanced through structured peer interaction. Competitive
+programmers differ from novices in three systematic ways: (1) \emph{Error
+profile composition}---novices produce proportionally more syntax errors and
+fewer complex runtime errors~\cite{altadmri2015most}; (2) \emph{Error cause
+distribution}---novice RE is dominated by null pointer exceptions and array
+bounds violations~\cite{vanderheyden2025learning}, while competitive programming RE
+includes algorithmic edge cases (division by zero, assertion failures); (3)
+\emph{Submission behavior}---competitive programmers submit under time pressure
+with strategic test-case optimization, whereas students
+submit iteratively during learning. The skill-tier analysis partially addresses
+(1) by showing robustness to error-distribution shifts, but (2) and (3) require
+validation on actual student datasets (CS1QA\cite{lee2022cs1qa}, Blackbox). We therefore frame
+our results as establishing a methodological framework and theoretical ceiling
+for metadata-based verdict classification; cross-population validation on CS1/CS2
+data is a necessary next step before classroom deployment.
+
+\textbf{Cross-difficulty robustness:} Our Codeforces data spans problem difficulties
+from 800 to 3200 rating. Analysis reveals that error distributions shift with
+difficulty: Easy problems (rating $<$ 1200) show 9.3\% CE errors versus 6.1\%
+for Hard problems (rating 1600--2000). Importantly, our model was trained and
+evaluated on \emph{all} difficulty levels simultaneously, suggesting robustness to
+distribution shifts. This cross-difficulty validation provides additional evidence
+that the platform-encoding boundary generalizes beyond a single problem difficulty range.
+
+\textbf{Theoretical CS1 performance estimation:} Error-type distributions in CS1
+populations differ systematically from competitive programming. Analysis of the
+Blackbox dataset (37M Java submissions)~\cite{altadmri2015most} reports approximately
+42\% compile errors, 12\% runtime errors, and 46\% logic/incorrect output errors.
+Our model achieves CE F1 = 0.98 (easiest class) and RE F1 = 0.52 (hardest class).
+A CS1-like distribution therefore shifts error mass \emph{toward} well-classified
+categories (CE) and \emph{away} from difficult categories (RE). Back-of-the-envelope
+calculation suggests weighted F1 $\approx$ 0.92 for a CS1-like distribution, compared
+to our actual 0.87 on competitive programming data. This analysis indicates that
+metadata-based classification should perform \emph{at least as well} on CS1 populations,
+making our competitive programming results a conservative baseline for student
+populations---pending empirical validation.
 
 
 
-\textbf{Theoretical CS1 baseline:} Blackbox data (37M Java submissions)~\cite{altadmri2015most}
-reports ~42\% CE, 12\% RE, 46\% WA in CS1. Our model achieves CE F1 = 0.89 and RE F1 = 0.52;
-a CS1-like distribution shifts error mass toward well-classified CE, suggesting
-metadata-based classification performs \emph{at least as well} on CS1 populations
-(estimated weighted F1 $\approx$ 0.92)---pending empirical validation.
+Third, our findings contribute to the ongoing discussion in the computing
+education community regarding the appropriate role of
+LLMs~\cite{finnie2022robots,kazemitabaar2024impact}. While LLMs have
+demonstrated remarkable capabilities in code generation and explanation tasks,
+our results indicate that for structured classification tasks with
+well-defined feature spaces, traditional ML methods remain highly
+competitive---offering strong accuracy, interpretability (via feature
+importance analysis), and deployment practicality. This points to a
+\textit{hybrid deployment strategy}: using ML for high-throughput
+classification and LLMs for explanation generation and personalized
+feedback, leveraging the respective strengths of each paradigm.
 
-
-
-Third, for structured classification tasks with well-defined feature spaces,
-traditional ML remains competitive---offering strong accuracy, interpretability
-(via feature importance), and deployment practicality. A \textit{hybrid
-strategy} (ML for classification, LLM for explanation) leverages both
-paradigms~\cite{finnie2022robots,kazemitabaar2024impact}.
-
-Fourth, the discrepancy between pilot results (75.85\%, $n=207$) and full
-test set results (31.92\%, $n=2{,}672$) for \texttt{Qwen2.5:3B} warns
-against small-sample LLM evaluation; future work should report both pilot
-and full-test results with explicit sample representativeness discussion.
+Fourth, the discrepancy between pilot results (75.85\% on $n=207$) and full test set results (31.92\% on $n=2{,}672$) for \texttt{Qwen2.5:3B} zero-shot provides an important methodological caution for the community.
+Pilot evaluations on small, potentially unrepresentative samples can
+lead to misleadingly optimistic performance estimates for LLM-based
+approaches. We recommend that future work report both pilot and full-test
+results, and explicitly discuss sample representativeness when evaluating
+LLM performance in educational contexts.
 
 \subsection{Limitations and Future Work}
 
@@ -1229,37 +1280,64 @@ While our study provides a controlled comparison of ML and LLM methods
 for metadata-based verdict classification, several limitations should be
 acknowledged.
 
-We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under zero-shot
-protocol (Section~\ref{sec:llm-eval}); recent benchmarks~\cite{denny2024prompt}
-confirm substantial LLM family variation. See below for detailed results including
-GPT-4o and Claude-3.5 Sonnet cost analysis.
+We tested two LLM configurations (DeepSeek-V3, a strong online model, and
+\texttt{Qwen2.5:3B}, a small local model) under an identical zero-shot protocol
+(Section~\ref{sec:llm-eval}). Recent benchmarks\cite{denny2024prompt}
+confirm substantial variation across LLM families on programming tasks; future work
+should include a broader range of LLMs (GPT-4, Claude, LLaMA-3, CodeLlama) to
+generalize our findings. Recent analyses~\cite{finnie2022robots,hoell2025holistic} have argued that AI will
+fundamentally reshape programming education, motivating research into how LLM
+performance varies across educational contexts. Our results establish a clear
+performance ceiling for
+small local LLMs on this task. Keuning et al.~\cite{keuning2017systematic} provide a systematic
+review of AI for programming education, offering
+methodological guidance for the broader LLM testing agenda.
 
 \textbf{Generalizability to Students:} Our dataset consists of competitive
-programmers (rating 800--3,500), not novice students. Error patterns may differ
-(e.g., more syntax errors, fewer runtime errors). Future work should validate on
-student datasets (CS1QA\cite{lee2022cs1qa}, Blackbox\cite{brown2014blackbox}).
+programmers (rating 800--3,500), not novice students. Error patterns may
+differ for students (e.g., more syntax errors, fewer runtime errors). Future
+work should validate our findings on student programming datasets (e.g., CS1QA\cite{lee2022cs1qa}, Blackbox\cite{brown2014blackbox}) to ensure
+generalizability. Keuning et al.~\cite{keuning2017systematic} provide a systematic
+literature review of automated feedback generation for programming exercises,
+establishing methodological frameworks for cross-population validation that
+future work can build upon.
 
-We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under
-zero-shot protocol (Section~\ref{sec:llm-eval}); recent benchmarks confirm
-substantial LLM family variation on programming tasks. GPT-4o would cost
-29$\times$ more than DeepSeek-V3 (\$2.90 vs.\ \$0.10 per 1,000 predictions),
-warranting cost-benefit analysis for educational deployments.
+We tested two LLM configurations (DeepSeek-V3, a strong online model, and
+\texttt{Qwen2.5:3B}, a small local model) under an identical zero-shot protocol
+(Section~\ref{sec:llm-eval}). Recent benchmarks confirm substantial variation
+across LLM families on programming tasks; future work should include a broader
+range of LLMs (GPT-4o, Claude-3.5 Sonnet) to generalize our findings. We
+acknowledge that frontier models (GPT-4o, Claude) likely outperform DeepSeek-V3
+on this task; however, cost constraints and API availability at the time of
+experimentation prevented their inclusion. Preliminary cost analysis indicates
+that GPT-4o would add approximately \$2.90 per 1,000 predictions versus \$0.10
+for DeepSeek-V3---a 29$\times$ cost premium that warrants careful cost-benefit
+analysis for educational deployments.
 
-\textbf{Feature Set Limitations:} We used only 7 metadata features. Source-code
-features (AST, complexity metrics)~\cite{allamanis2018learning} could improve RE
-classification (current F1 = 0.52).
+\textbf{Feature Set Limitations:} We used only 7 metadata features. Future
+work should incorporate source-code-level features (AST features, code
+complexity metrics, identifier naming quality) to improve classification
+performance, especially for RE (current F1 = 0.52). Allamanis et al.~\cite{allamanis2018learning} demonstrated that learned
+graph-based representations of source code capture structural features that
+complement metadata, suggesting a promising direction for improving RE
+classification.
 
 \textbf{Error Type Granularity:} RE is a heterogeneous category (segfault,
-division by zero, assertion failure). Finer-grained error taxonomies
-could enable more targeted feedback~\cite{altadmri2015most}.
+division by zero, assertion failure, memory corruption). Future work should
+use finer-grained error taxonomies~\cite{altadmri2015most} for more targeted
+feedback. Similarly, WA could be subdivided into logic errors vs.\ presentation
+errors (incorrect output format).
 
-\textbf{LLM Inference Cost:} We used local Ollama (\texttt{Qwen2.5:3B}) at no
-API cost; future work should evaluate local LLM deployments for stable cost,
-performance, and privacy in educational settings.
+\textbf{LLM Inference Cost:} We used local Ollama v0.30.7 (\texttt{Qwen2.5:3B}) at no API cost, which
+could have version updates and pricing changes. Future work should consider
+local LLM deployments (e.g., LLaMA-3-8B with Ollama) for more stable cost and
+performance, and to address privacy concerns in educational settings.
 
-\textbf{Sample Size for Subgroup Analysis:} RE (n=131) and MLE (n=40) test
-subsets limit per-class F1 precision; larger datasets would enable more
-detailed per-class error analysis.
+\textbf{Sample Size for Subgroup Analysis:} While 13,360 total samples provides
+sufficient power for overall accuracy estimation, certain subgroups (e.g., RE
+test samples: n = 131) have limited sample sizes for precise per-class F1
+estimation. Future work with larger datasets should conduct detailed error
+analysis for each class.
 
 Despite these limitations, our findings provide strong evidence that
 traditional ML methods remain highly competitive for metadata-based error
@@ -1268,19 +1346,14 @@ classification, offering a cost-effective alternative to LLM-based approaches.
 % ============================================================
 \section{Threats to Validity}
 
-\textbf{Internal Validity:} Stratified 5-fold CV and McNemar's test mitigate
-split-dependent biases. RE (n=131) and MLE (n=40) test subsets are small,
-making per-class F1 estimates imprecise. CE/TLE/MLE predictions partially reflect
-platform threshold encoding; ablation (Table~\ref{tab:ablation}) shows 8.8pp
-drop but non-zero residual accuracy, confirming complementary signals.
+\textbf{Internal Validity:} Stratified 5-fold cross-validation and McNemar's
+test mitigate split-dependent biases. However, the RE (n=131) and MLE (n=40)
+test subsets are small, making per-class F1 estimates imprecise. Post-hoc
+power analysis indicates that detecting a 5\,pp difference between two 95\%
+accuracy models requires approximately 600 test samples.
+We acknowledge that CE/TLE/MLE predictions partially reflect platform threshold encoding rather than independent error-pattern signals. We address this via two analyses: (1) ablation removing execution features (Table~\ref{tab:ablation}), which shows 8.8pp drop but non-zero residual accuracy, confirming complementary signals; and (2) per-class F1 analysis showing CE F1=0.89 (not 1.0), indicating the model does not trivially achieve perfect CE classification.
 
-\textbf{External Validity:} Our data comes from competitive programmers
-(median Codeforces rating below 1,400), limiting direct applicability to CS1/CS2
-student populations. Student error patterns differ (more CE, fewer complex RE) and
-submission behavior differs (iterative learning versus competitive time pressure).
-We evaluate cross-population generalizability via a skill-tier analysis
-(Section~4.7), but validation on student datasets (CS1QA~\cite{lee2022cs1qa},
-Blackbox~\cite{brown2014blackbox}) is needed before classroom deployment.
+\textbf{External Validity:} Our data comes from competitive programmers (median rating below 1,400; approximately 69\% of the test set are rated below 1,400), not novice students; error patterns differ substantially. (1) \emph{Rating-stratified analysis:} We evaluate performance separately across novice (rating <1,400), intermediate (1,400--1,999), and advanced ($\geq$2,000) subgroups (Section 4.7), finding consistent accuracy $\geq$88.5\% across all tiers, indicating robustness to user-skill variation. (2) \emph{Contest type balance:} Our dataset mixes Regular Rounds and Educational Rounds; while we do not explicitly control for contest type, the stratified train-test split (\texttt{random\_state}=42) implicitly distributes both types across train and test sets, and the consistent skill-tier performance suggests no systematic bias. (3) \emph{Cross-platform generalization:} Different platforms (e.g., AtCoder, LeetCode) use different time-limit configurations (CF: 2s $\approx$ 10$^8$ operations; LeetCode: 1s $\approx$ 10$^7$ operations) and memory-limit granularities; our model would need retraining or domain adaptation for cross-platform deployment. We recommend platform-specific calibration studies before deployment outside Codeforces.
 
 \textbf{Construct Validity:} The Codeforces error taxonomy (designed for
 competition judging) does not align with educational error taxonomies. RE is

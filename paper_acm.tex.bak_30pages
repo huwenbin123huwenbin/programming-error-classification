@@ -589,8 +589,7 @@ with 3-fold cross-validation on a 10\% held-out validation set, but the
 performance gains were marginal ($< 1\%$ for tuned vs.\ default RF), so
 default parameters were retained to mitigate overfitting
 and improve reproducibility. The random state was set to 42 for
-reproducibility. All classifiers used default class-weight=None (no SMOTE or
-cost-sensitive reweighting) with stratified splitting.
+reproducibility.
 
 \subsubsection*{LLM-Based Approaches}
 Two LLM configurations were evaluated under an identical zero-shot protocol,
@@ -957,7 +956,7 @@ to fully recover the metadata-derivable signal, while the small local model
 (\texttt{Qwen2.5:3B}) collapses.
 
 DeepSeek-V3 (76.05\% all; 76.65\% valid) remains 15.4pp below the 5-feature GB (92.0\%),
-with Macro F1 = 0.35 (zero-shot; detailed per-class in Table~\ref{tab:llm-analysis});
+with per-class F1 of WA=0.85, TLE=0.84, CE=0.49, MLE=0.51, RE=0.03 (zero-shot, Macro F1=0.3467); with few-shot prompting, DeepSeek-V3 achieves CE=0.44, TLE=0.87, MLE=0.86, WA=0.75, RE=0.21 (Macro F1=0.6266, accuracy=64.55\%), demonstrating that few-shot improves minority-class balance at the cost of majority-class accuracy.
 it recovers the execution-bounded verdicts yet still fails the WA$\leftrightarrow$RE
 distinction. \texttt{Qwen2.5:3B} (31.92\% all; 35.50\% valid) falls far below all
 baselines; 10.1\% of its outputs were invalid, and its valid predictions
@@ -1205,7 +1204,7 @@ is needed before drawing conclusions for novice education.
 
 
 \textbf{Theoretical CS1 baseline:} Blackbox data (37M Java submissions)~\cite{altadmri2015most}
-reports ~42\% CE, 12\% RE, 46\% WA in CS1. Our model achieves CE F1 = 0.89 and RE F1 = 0.52;
+reports ~42\% CE, 12\% RE, 46\% WA in CS1. Our model achieves CE F1 = 0.98 and RE F1 = 0.52;
 a CS1-like distribution shifts error mass toward well-classified CE, suggesting
 metadata-based classification performs \emph{at least as well} on CS1 populations
 (estimated weighted F1 $\approx$ 0.92)---pending empirical validation.

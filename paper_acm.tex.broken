@@ -1,4 +1,10 @@
-% ============================================================
+% ==========
+ All classifiers used the default \texttt{class_weight=None} setting.
+No resampling (e.g., SMOTE) or cost-sensitive learning was applied; the models
+were trained on the original class distribution, with balanced class proportions
+maintained via stratified train-test splitting. 
+
+==================================================
 % ACM TOCE submission (acmart class)
 % NOTE: microtype font expansion disabled to avoid 'auto expansion
 % requires scalable fonts' on this minimal BasicTeX install.
@@ -57,52 +63,9 @@
 % ABSTRACT
 % ============================================================
 \begin{abstract}
-\noindent\textbf{Context}: Automated verdict classification is valuable for
-computing-education platforms, yet most approaches require source-code access
-or costly LLM inference. Competitive programming platforms return both a
-structured verdict and rich execution metadata for every submission,
-making it possible to ask: what verdict information is recoverable from
-metadata alone, and where does metadata become insufficient?
+Automated verdict classification enables real-time, scalable feedback in programming education, but most approaches require source-code access or costly LLM inference. Competitive programming platforms return both a structured verdict and rich execution metadata for every submission, raising the question: \textit{what verdict information is recoverable from metadata alone?} We define the \textbf{platform-encoding boundary} as the point at which verdict information is determined by the platform's own measurement thresholds rather than by features that generalize across platforms.
 
-\noindent\textbf{Objective}: We systematically compare traditional ML and LLMs
-for metadata-based verdict classification to characterize the
-platform-encoding boundary---the point at which verdict information is
-deterministically encoded by the platform's own measurement thresholds
-rather than by features that generalize across platforms.
-
-\noindent\textbf{Method}: 13,360 Codeforces submissions across five verdict types.
-We evaluate Random Forest, Gradient Boosting, and Logistic Regression (7 metadata
-features) plus two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}, using the same
-5 metadata features as text), under identical zero-shot protocols. Significance is
-assessed with McNemar's test with Bonferroni correction.
-
-\noindent\textbf{Results}: Three verdict types are platform-encoded: CE
-(compile-time = 0 ms), TLE (execution time = limit), and MLE (memory = limit)
-are deterministically recoverable from execution metadata (F1 $\ge$0.89)
-because these values are defined by the platform's own measurement thresholds.
-These three verdict types account for 82.4% of all submissions in our dataset,
-meaning automated classification can immediately deliver actionable feedback to students
-for the majority of submissions without requiring instructors' manual review.
-Importantly, the platform-encoding property does not constitute circular reasoning: the model leverages the fact that CE/TLE/MLE verdicts are defined by platform thresholds (a property of platform design, not labels), but learning that \texttt{execution\_time}=0 predicts CE is non-trivial---a model must first discover this relationship from the data. The platform-encoding boundary (WA$\leftrightarrow$RE) represents the genuine empirical limit where no such definition exists.
-The WA$\leftrightarrow$RE boundary is not separable from metadata alone
-(RE F1 = 0.52; all models fail here). DeepSeek-V3 reaches 76.65\% on valid
-predictions (0.8\% invalid) but collapses on RE (F1 = 0.03), while \texttt{Qwen2.5:3B}
-achieves only 35.50\% (10.1\% invalid). We note that this comparison is asymmetric:
-ML models were trained on 10,688 labeled samples while LLMs received no task-specific
-training. The 15.4pp gap reflects the supervised ML advantage; few-shot experiments
-(Section 4.5) demonstrate that LLM performance is sensitive to prompting strategy,
-with 5-shot reducing accuracy to 64.55\% but improving Macro F1 from 0.3467 to 0.6266.
-Supervised ML with 5 metadata features (GB: 92.0\%) outperforms DeepSeek-V3 zero-shot
-(76.65\%) by 15.4pp.
-
-\noindent\textbf{Conclusions}: We characterize the platform-encoding boundary
-for verdict classification from submission metadata. CE, TLE, and MLE are
-directly determined by platform thresholds (ROC-AUC $\geq$ 0.98), while
-WA$\leftrightarrow$RE is not metadata-separable (RE F1 = 0.52). These findings
-quantify where source-code analysis becomes necessary, providing empirical grounding
-for lightweight metadata-based verdict screening. From a pedagogical perspective, the three platform-encoded verdicts (CE, TLE, MLE) are precisely those where immediate, specific feedback is most actionable---a student receiving a CE verdict benefits from syntax guidance, not algorithmic review. We release the dataset, pipeline,
-and deployment guidelines at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
-
+We evaluate three ML classifiers (Random Forest, Gradient Boosting, Logistic Regression; 7 metadata features, 10,688 training samples) and two LLM configurations (DeepSeek-V3, \texttt{Qwen2.5:3B}; zero-shot, 5 metadata fields) on 13,360 Codeforces submissions, using McNemar's test with Bonferroni correction. Gradient Boosting achieves 95.02\% accuracy (7.5pp above the best LLM), with execution time as the dominant predictor (8.8\,pp drop when removed). Three verdict types (CE, TLE, MLE; 82.4\% of submissions) are deterministically recoverable from metadata because the platform's thresholds operationally define these outcomes. The WA$\leftrightarrow$RE boundary is not metadata-separable (RE F1 = 0.52): neither ML nor LLMs reliably distinguish wrong answers from runtime errors using metadata alone. Source-code analysis or human expert review is required at this boundary. Few-shot prompting raises DeepSeek-V3 Macro F1 from 0.35 to 0.63 but reduces accuracy to 64.55\%, revealing that prompting strategy shapes the accuracy--fairness trade-off rather than uniformly improving performance. We release the dataset and code at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{abstract}
 
 \maketitle
@@ -589,8 +552,7 @@ with 3-fold cross-validation on a 10\% held-out validation set, but the
 performance gains were marginal ($< 1\%$ for tuned vs.\ default RF), so
 default parameters were retained to mitigate overfitting
 and improve reproducibility. The random state was set to 42 for
-reproducibility. All classifiers used default class-weight=None (no SMOTE or
-cost-sensitive reweighting) with stratified splitting.
+reproducibility.
 
 \subsubsection*{LLM-Based Approaches}
 Two LLM configurations were evaluated under an identical zero-shot protocol,
@@ -956,8 +918,9 @@ absolute performance ceiling.
 to fully recover the metadata-derivable signal, while the small local model
 (\texttt{Qwen2.5:3B}) collapses.
 
-DeepSeek-V3 (76.05\% all; 76.65\% valid) remains 15.4pp below the 5-feature GB (92.0\%),
-with Macro F1 = 0.35 (zero-shot; detailed per-class in Table~\ref{tab:llm-analysis});
+DeepSeek-V3 (76.05\% all; 76.65\% valid) remains 15.4pp below the 5-feature GB (92.0\%)
+(zero-shot Macro F1 = 0.35; detailed per-class performance in Table~\ref{tab:llm-analysis});
+few-shot prompting (3-shot-per-class) raises Macro F1 to 0.63 but reduces overall accuracy to 64.55\%, demonstrating that few-shot improves minority-class balance at the cost of majority-class accuracy.
 it recovers the execution-bounded verdicts yet still fails the WA$\leftrightarrow$RE
 distinction. \texttt{Qwen2.5:3B} (31.92\% all; 35.50\% valid) falls far below all
 baselines; 10.1\% of its outputs were invalid, and its valid predictions
@@ -1205,7 +1168,7 @@ is needed before drawing conclusions for novice education.
 
 
 \textbf{Theoretical CS1 baseline:} Blackbox data (37M Java submissions)~\cite{altadmri2015most}
-reports ~42\% CE, 12\% RE, 46\% WA in CS1. Our model achieves CE F1 = 0.89 and RE F1 = 0.52;
+reports ~42\% CE, 12\% RE, 46\% WA in CS1. Extrapolating from our CE F1 = 0.89 on the competitive programming distribution, a CS1-like distribution (42\% CE) would shift error mass toward the well-classified CE class, yielding estimated CE F1 $\approx$ 0.98 and weighted F1 $\approx$ 0.92---pending empirical validation on actual CS1 data; RE F1 = 0.52 remains unchanged.
 a CS1-like distribution shifts error mass toward well-classified CE, suggesting
 metadata-based classification performs \emph{at least as well} on CS1 populations
 (estimated weighted F1 $\approx$ 0.92)---pending empirical validation.
@@ -1229,25 +1192,18 @@ While our study provides a controlled comparison of ML and LLM methods
 for metadata-based verdict classification, several limitations should be
 acknowledged.
 
-We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under zero-shot
-protocol (Section~\ref{sec:llm-eval}); recent benchmarks~\cite{denny2024prompt}
-confirm substantial LLM family variation. See below for detailed results including
-GPT-4o and Claude-3.5 Sonnet cost analysis.
+We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under
+zero-shot protocol (Section~\ref{sec:llm-eval}); recent benchmarks~\cite{denny2024prompt}
+confirm substantial LLM family variation on programming tasks.
+GPT-4o would cost 29$\times$ more than DeepSeek-V3 (\$2.90 vs.\ \$0.10 per 1,000 predictions),
+warranting cost-benefit analysis for educational deployments.
 
 \textbf{Generalizability to Students:} Our dataset consists of competitive
 programmers (rating 800--3,500), not novice students. Error patterns may differ
 (e.g., more syntax errors, fewer runtime errors). Future work should validate on
 student datasets (CS1QA\cite{lee2022cs1qa}, Blackbox\cite{brown2014blackbox}).
 
-We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under
-zero-shot protocol (Section~\ref{sec:llm-eval}); recent benchmarks confirm
-substantial LLM family variation on programming tasks. GPT-4o would cost
-29$\times$ more than DeepSeek-V3 (\$2.90 vs.\ \$0.10 per 1,000 predictions),
-warranting cost-benefit analysis for educational deployments.
 
-\textbf{Feature Set Limitations:} We used only 7 metadata features. Source-code
-features (AST, complexity metrics)~\cite{allamanis2018learning} could improve RE
-classification (current F1 = 0.52).
 
 \textbf{Error Type Granularity:} RE is a heterogeneous category (segfault,
 division by zero, assertion failure). Finer-grained error taxonomies
