@@ -70,11 +70,7 @@ platform-encoding boundary---the point at which verdict information is
 deterministically encoded by the platform's own measurement thresholds
 rather than by features that generalize across platforms.
 
-\noindent\textbf{Method}: 13,360 Codeforces submissions across five verdict types.
-We evaluate Random Forest, Gradient Boosting, and Logistic Regression (7 metadata
-features) plus two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}, using the same
-5 metadata features as text), under identical zero-shot protocols. Significance is
-assessed with McNemar's test with Bonferroni correction.
+\noindent\textbf{Method}: 13,360 Codeforces submissions across five verdict types. We evaluate Random Forest, Gradient Boosting, and Logistic Regression (seven metadata features) plus two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}, using five metadata fields as text input), under identical zero-shot protocols. Significance is assessed with McNemar's test with Bonferroni correction. For a fair ML--LLM comparison, we also report Gradient Boosting trained on the same five features available to the LLMs.
 
 \noindent\textbf{Results}: Three verdict types are platform-encoded: CE
 (compile-time = 0 ms), TLE (execution time = limit), and MLE (memory = limit)
@@ -90,11 +86,9 @@ The WA$\leftrightarrow$RE boundary is not separable from metadata alone
 predictions (0.8\% invalid) but collapses on RE (F1 = 0.03), while \texttt{Qwen2.5:3B}
 achieves only 35.50\% (10.1\% invalid). We note that this comparison is asymmetric:
 ML models were trained on 10,688 labeled samples while LLMs received no task-specific
-training. The 15.4pp gap reflects the supervised ML advantage; few-shot experiments
-(Section 4.5) demonstrate that LLM performance is sensitive to prompting strategy,
-with 3-shot-per-class prompting reducing accuracy to 64.55\% but improving Macro F1 from 0.5447 to 0.6266.
-Supervised ML with 5 metadata features (GB: 92.0\%) outperforms DeepSeek-V3 zero-shot
-(76.65\%) by 15.4pp.
+training. Supervised ML (7-feature GB: 95.02\%) outperforms DeepSeek-V3 zero-shot
+(76.65\%) by 18.4 pp; a fair-feature comparison using GB trained on the same five
+features as the LLMs (92.0\%) still outperforms DeepSeek-V3 by 15.4 pp.
 
 \noindent\textbf{Conclusions}: We characterize the platform-encoding boundary for verdict classification from submission metadata. CE, TLE, and MLE are directly recoverable from platform thresholds (F1 $\ge$0.89), while WA$\leftrightarrow$RE is not metadata-separable (RE F1 = 0.52). These findings quantify where source-code analysis becomes necessary, providing empirical grounding for lightweight metadata-based verdict screening. From a pedagogical perspective, the three platform-encoded verdicts (CE, TLE, MLE) are precisely those where immediate, specific feedback is most actionable---a student receiving a CE verdict benefits from syntax guidance, not algorithmic review. We release the dataset, pipeline,
 and deployment guidelines at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
@@ -826,30 +820,7 @@ None (full model) & 95.02 & --- & --- \\
 \end{tabular}
 \end{table}
 
-The ablation results (Table~\ref{tab:ablation}) reveal that execution time is
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.62\textwidth]{fig_ablation_chart.png}
-\Description{Ablation study: accuracy drop when removing each feature. Execution Time causes the largest drop (8.80 pp), followed by User Success Rate (3.60 pp) and Memory (1.40 pp); other features cause negligible drops.}
-\caption{Ablation study visualized: accuracy drop (pp) when each feature is removed individually (Gradient Boosting, test set $n=2{}672$). Execution time is dominant---removing it collapses accuracy by 8.8\,pp (95.02\% $\to$ 86.19\%)---while \texttt{user\_success\_rate} (3.6\,pp) and \texttt{memory\_kb} (1.4\,pp) are secondary; the remaining features are negligible.}
-\label{fig:ablation}
-\end{figure}
-
-the dominant predictive feature. Removing \texttt{time\_consumed\_ms} causes
-a substantial 8.8\,pp accuracy collapse (from 95.02\% to 86.19\%), which is
-highly statistically significant ($p < 0.001$). Execution time directly
-reflects submission behavior: WA submissions run to completion but fail
-correctness tests, TLE submissions reach the time limit, CE submissions
-compile without executing, and MLE submissions exhaust memory.
-
-The second most important feature is \texttt{user\_success\_rate} (3.6\,pp
-drop, $p < 0.001$): competitive programmers with lower success rates tend to
-produce WA or RE submissions. Removing \texttt{memory\_kb} yields a 1.40\,pp
-drop ($p < 0.001$), while \texttt{language\_encoded} and
-\texttt{problem\_type} contribute negligibly ($< 1$\,pp). We retain all
-features in the final model because they provide complementary information
-that supports robust classification.
-
+The ablation results (Table~\ref{tab:ablation}) reveal a clear feature hierarchy. After applying Holm-Bonferroni correction for seven pairwise comparisons (adjusted $\alpha' = 0.05/7 \approx 0.007$), all reported $p$-values ($< 0.001$) remain significant, confirming the robustness of each finding. The dominant feature is \texttt{time\_consumed\_ms}: removing it collapses accuracy by 8.8\,pp (from 95.02\% to 86.19\%), establishing execution time as the primary predictor. The second tier comprises \texttt{user\_success\_rate} (3.6\,pp drop) and \texttt{memory\_kb} (1.40\,pp drop); these two features contribute similarly-sized effects that are substantially smaller than time but larger than the remaining four features, which collectively contribute $< 1$\,pp. Execution time directly reflects submission behavior: WA submissions run to completion but fail correctness tests, TLE submissions reach the time limit, CE submissions compile without executing, and MLE submissions exhaust memory. The \texttt{user\_success\_rate} feature captures competitive programmers' historical performance, with lower success rates associated with WA or RE submissions. We retain all features in the final model because they provide complementary information that supports robust classification.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.62\textwidth]{fig_roc_curves.pdf}
@@ -949,11 +920,10 @@ absolute performance ceiling.
 to fully recover the metadata-derivable signal, while the small local model
 (\texttt{Qwen2.5:3B}) collapses.
 
-DeepSeek-V3 (76.05\% all; 76.65\% valid) remains 15.4pp below the 5-feature GB (92.0\%),
-with Macro F1 = 0.5447 (zero-shot; detailed per-class in Table~\ref{tab:llm-analysis});
+DeepSeek-V3 (76.05\% all; 76.65\% valid) remains 15.4 pp below the fair-feature GB (92.0\%) and 18.4 pp below the 7-feature GB (95.02\%), with Macro F1 = 0.5447 (zero-shot; detailed per-class in Table~\ref{tab:llm-analysis});
 it recovers the execution-bounded verdicts yet still fails the WA$\leftrightarrow$RE
 distinction. \texttt{Qwen2.5:3B} (31.92\% all; 35.50\% valid) falls far below all
-baselines; 10.1\% of its outputs were invalid, and its valid predictions
+baselines, performing worse than even the majority-class baseline (76.6\%); 10.1\% of its outputs were invalid, and its valid predictions
 distort the class distribution---it underpredicts WA (29.8\% vs.\ 76.6\% actual)
 and overpredicts RE (19.3\% vs.\ 4.9\%) and MLE (13.2\% vs.\ 1.5\%)---showing
 that zero-shot prompting with metadata alone does not recover the dominant
