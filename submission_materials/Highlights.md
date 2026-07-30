@@ -1,52 +1,13 @@
-# Highlights for ACM TOCE Submission
+# Highlights
 
 ## Research Highlights
 
-1. **First systematic ML-LLM comparison** for programming error classification using metadata only (no source code access), evaluating three conditions: Gradient Boosting, DeepSeek-V3, and Qwen2.5:3B
+1. **First controlled ML–LLM comparison** for programming verdict classification using only submission metadata (no source code required), evaluated under identical zero-shot protocols across Random Forest, Gradient Boosting, Logistic Regression, DeepSeek-V3, and Qwen2.5:3B.
 
-2. **95.02% accuracy** achieved by 5-feature Gradient Boosting, significantly outperforming DeepSeek-V3 (76.65% valid accuracy, χ²=376.30, p<0.001) and Qwen2.5:3B (31.92% accuracy, χ²=1537.85, p<0.001)
+2. **Platform-encoding boundary**: Compile-time errors (CE), time limit exceeded (TLE), and memory limit exceeded (MLE) are deterministically recoverable from execution metadata (F1 ≥ 0.89) because platform measurement thresholds define these outcomes. These three verdict types account for 18.4% of submissions. The WA↔RE boundary is not metadata-separable (RE F1 = 0.52), indicating where source-code analysis may be required.
 
-3. **"Metadata ceiling" phenomenon**: Execution time alone achieves 91.99% accuracy, establishing a realistic upper bound for metadata-only approaches; LLMs cannot close this gap even with advanced prompting
+3. **Supervised ML outperforms frontier LLMs**: Gradient Boosting (95.02%) exceeds DeepSeek-V3 zero-shot (76.65%) by 18.4 pp, and Qwen2.5:3B (35.50%) by 59.5 pp. Even with identical features, GB (92.0%) surpasses DeepSeek-V3 by 15.4 pp. Execution time is the dominant predictor (8.8 pp accuracy drop when removed).
 
-4. **Execution time dominance** identified via ablation study—removing this feature causes the largest accuracy drop (p<0.001)
+4. **Statistical and empirical rigor**: Holm-Bonferroni-corrected McNemar tests, feature ablation, Gini importance, leave-one-user-out cross-validation (82.5% accuracy), and cross-difficulty generalization (71–94% across problem difficulties).
 
-5. **WA↔RE boundary challenge**: WA and RE exhibit near-identical metadata distributions, suggesting platform design factors may be more determinant than model capability
-
-6. **Open dataset and code** available at https://github.com/huwenbin123huwenbin/programming-error-classification
-
----
-
-## Theoretical Contributions
-
-- **Feedback Theory**: Grounded in Hattie & Timperley (2007) feedback model, identifying "feedback gaps" that metadata-only approaches can and cannot address
-- **Self-Efficacy**: Connected to Bandura (1977) theory, explaining how immediate automated feedback enhances learner confidence
-- **Cross-Difficulty Validation**: Model performance validated across problem difficulty levels (Easy 9.3% CE → Hard 6.1% CE)
-
----
-
-## Practical Implications
-
-### For Educators
-- Metadata-based classification provides immediate diagnostic feedback without code review
-- ML models offer interpretable predictions for targeted intervention
-- Cost-effective solution for large-scale deployment in CS1/CS2 courses
-
-### For Platform Developers
-- No source code access required—addresses privacy concerns
-- Fast inference (2ms vs. 3s for LLMs) enables real-time feedback
-- Practical selection guidelines for choosing between ML and LLM approaches
-
-### For Researchers
-- First systematic comparison using identical evaluation protocols on 2,672 test samples
-- Comprehensive statistical analysis with McNemar significance testing
-- Open dataset for benchmarking future methods
-
----
-
-## Technical Contributions
-
-- **Method**: Novel metadata-only approach achieving 95.02% accuracy
-- **Features**: Five interpretable metadata features (execution time, memory, success rate, problem rating, language)
-- **Analysis**: Comprehensive ablation study identifying execution time as most critical predictor
-- **Comparison**: Head-to-head ML vs. LLM evaluation with rigorous statistical validation
-- **Insight**: "Metadata ceiling" phenomenon explains why even frontier LLMs underperform ML on this task
+5. **Open dataset, code, and deployment guidelines**: 13,360 Codeforces submissions with full metadata; deployment guidelines balancing accuracy, cost ($0.01/1K), latency (2 ms), and explainability across six educational contexts. Available at: https://github.com/huwenbin123huwenbin/programming-error-classification

@@ -1,76 +1,62 @@
-# Cover Letter for ACM Transactions on Computing Education
+# Cover Letter
 
 **To:** Editor-in-Chief, ACM Transactions on Computing Education  
 **From:** Wenbin Hu, School of Computer Science, Xijing University  
-**Date:** July 10, 2026  
-**Subject:** Manuscript Submission - Metadata-Based Programming Error Classification
+**Date:** July 30, 2026  
+**Subject:** Manuscript Submission — "Automated Programming Verdict Classification from Submission Metadata: Comparing Machine Learning and Large Language Models in Competitive Programming"
 
 ---
 
 Dear Editor,
 
-We are pleased to submit our manuscript entitled **"Metadata Ceiling: Why Machine Learning Outperforms Large Language Models in Programming Error Classification"** for consideration in ACM Transactions on Computing Education.
+We are pleased to submit our manuscript, **"Automated Programming Verdict Classification from Submission Metadata: Comparing Machine Learning and Large Language Models in Competitive Programming,"** for consideration in ACM Transactions on Computing Education.
 
-## Novelty and Significance
+## Why This Paper Fits TOCE
 
-This work presents the **first systematic comparison** of traditional ML classifiers and LLM-based methods for programming error classification using **only submission metadata** (no source code access). Our key contributions include:
+Automated feedback is central to computing education, yet most existing tools require source code access. We address a deceptively simple question: **what verdict information can be recovered from metadata alone?** Our answer reveals a platform-encoding boundary—a natural limit that neither ML nor LLMs can overcome without source code.
 
-1. **Novel ML-LLM comparison** using identical evaluation protocols on 2,672 test samples
-2. **"Metadata ceiling" phenomenon**: Execution time alone achieves 91.99% accuracy, establishing a realistic upper bound; LLMs cannot close this gap
-3. **95.02% accuracy** with 5-feature Gradient Boosting, significantly outperforming DeepSeek-V3 (76.65%, p<0.001) and Qwen2.5:3B (31.92%, p<0.001)
-4. **Theoretical grounding**: Hattie & Timperley feedback model + Bandura self-efficacy theory
-5. **Cross-difficulty validation**: Model robust across Easy (9.3% CE) to Hard (6.1% CE) problems
+The paper is directly relevant to TOCE readers: it provides educators with cost-effective verdict-screening tools (2 ms inference, $0.01 per 1,000 classifications), characterizes where metadata-based automated feedback is and is not feasible, and contributes an empirical framework for comparing supervised ML and zero-shot LLM approaches.
 
-## Relevance to TOCE
+## Novelty and Contributions
 
-This work directly addresses TOCE's focus on computing education tools and methods:
+1. **First controlled ML–LLM comparison** for programming verdict classification from metadata alone, with identical protocols across three ML models (Random Forest, Gradient Boosting, Logistic Regression) and two LLM configurations (DeepSeek-V3, Qwen2.5:3B).
 
-- **Immediate pedagogical impact**: Provides educators with cost-effective automated feedback (2ms inference, 10-15× cheaper than LLM APIs)
-- **Evidence-based guidelines**: Clear decision framework for choosing between ML and LLM approaches
-- **Open dataset**: Enables reproducible research and benchmarking
+2. **The platform-encoding boundary**: Compile-time errors (CE), time limit exceeded (TLE), and memory limit exceeded (MLE)—together 18.4% of submissions—are deterministically recoverable from execution metadata (F1 ≥ 0.89) because platform measurement thresholds define these outcomes. The WA↔RE boundary is not metadata-separable (RE F1 = 0.52), delineating where source-code analysis may be required.
+
+3. **Statistical and deployment rigor**: Holm-Bonferroni-corrected McNemar tests, ablation analysis, Gini importance, leave-one-user-out cross-validation (82.5% accuracy), cross-difficulty generalization (71–94% across problem difficulties), and method-selection guidelines balancing accuracy, cost, and latency across six deployment contexts.
+
+4. **Data and code publicly released**: https://github.com/huwenbin123huwenbin/programming-error-classification
 
 ## Key Findings
 
-| Condition | Accuracy | Cost/Sample | Inference Time |
-|-----------|----------|-------------|----------------|
-| Gradient Boosting | 95.02% | $0.0001 | 2ms |
-| DeepSeek-V3 | 76.65% | $0.001 | 3s |
-| Qwen2.5:3B | 31.92% | $0 | 5s (local) |
+| Approach | Accuracy | Valid Predictions | Cost / 1K |
+|----------|---------|-------------------|-----------|
+| Gradient Boosting (7 feat.) | **95.02%** | 100% | $0.01 |
+| Gradient Boosting (5 feat.) | 92.0% | 100% | $0.01 |
+| DeepSeek-V3 zero-shot | 76.65% | 99.2% | $0.10 |
+| Qwen2.5:3B zero-shot | 35.50% | 89.9% | $0.00 (local) |
 
-**Main insight**: ML models outperform LLMs on this task because execution time and memory consumption encode sufficient signal for error type discrimination. LLMs struggle with fine-grained WA↔RE boundary despite strong general coding capabilities.
+Supervised ML (95.02%) outperforms DeepSeek-V3 zero-shot (76.65%) by 18.4 pp. Even with equal features, Gradient Boosting (92.0%) surpasses DeepSeek-V3 by 15.4 pp. We note that this comparison is asymmetric: ML models were trained on 10,688 labeled samples while LLMs received no task-specific training.
+
+## Relevance to TOCE Scope
+
+This work speaks to TOCE's interest in:
+- **Automated assessment tools**: Lightweight metadata-based verdict screening is computationally tractable for resource-constrained educational settings.
+- **Feedback automation**: Characterizes which verdicts benefit from immediate automated feedback (CE, TLE, MLE) and which require human expert review (WA, RE).
+- **Empirical computing education research**: Controlled comparison of ML and LLM methods with transparent statistical analysis.
 
 ## Submission Materials
 
-- Manuscript (25 pages, 9 tables, 8 figures)
-- Highlights (6 key contributions)
-- Open dataset and code: https://github.com/huwenbin123huwenbin/programming-error-classification
+- Manuscript: 28 pages, 8 tables, 7 figures
+- Highlights: 5 key contributions
+- Supplementary Materials: per-class F1 scores, Cohen's h effect sizes, balanced accuracy, confusion matrices, statistical test p-values, ROC/PR curves
 
-We confirm this manuscript is original, unpublished, and not under review elsewhere.
+We confirm this manuscript is original, has not been published elsewhere, and is not under review at any other venue. All authors have approved the submitted version.
 
 Thank you for considering our submission.
 
 Best regards,
 
 **Wenbin Hu**  
-Lecturer, School of Computer Science  
-Xijing University  
-Email: wenbin.hu2026@outlook.com
-
----
-
-## Suggested Reviewers
-
-1. **Prof. Salehu Abubeker** - University of Illinois, salehu@illinois.edu  
-   *Expertise: ML for education, automated assessment*
-
-2. **Dr. Juho Leinonen** - University of Helsinki, juho.leinonen@helsinki.fi  
-   *Expertise: Programming education, error analysis*
-
-3. **Prof. Hieke Loomans** - Open University Netherlands, h.loomans@ou.nl  
-   *Expertise: CS1/CS2 pedagogy, formative feedback*
-
-4. **Dr. Andrew Petersen** - University of Toronto, andrew.petersen@utoronto.ca  
-   *Expertise: Automated grading, educational data mining*
-
-5. **Prof. Matti Tedre** - University of Eastern Finland, matti.tedre@uef.fi  
-   *Expertise: Programming education, computational thinking*
+School of Computer Science, Xijing University  
+Email: wenbin.hu2026@outlook.com  
