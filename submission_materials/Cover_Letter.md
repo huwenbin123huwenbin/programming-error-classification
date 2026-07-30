@@ -47,7 +47,7 @@ This work speaks to TOCE's interest in:
 
 ## Submission Materials
 
-- Manuscript: 28 pages, 8 tables, 7 figures
+- Manuscript: 28 pages, 9 tables, 8 figures
 - Highlights: 5 key contributions
 - Supplementary Materials: per-class F1 scores, Cohen's h effect sizes, balanced accuracy, confusion matrices, statistical test p-values, ROC/PR curves
 
