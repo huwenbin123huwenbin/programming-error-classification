@@ -67,8 +67,7 @@ metadata alone, and where does metadata become insufficient?
  oindent\textbf{Objective}: We systematically compare traditional ML and LLMs
 for metadata-based verdict classification to characterize the
 platform-encoding boundary---the point at which verdict information is
-deterministically recoverable from execution metadata alone
-rather than by features that generalize across platforms.
+deterministically recoverable from execution metadata alone.
 
  oindent\textbf{Method}: 13,360 Codeforces submissions across five verdict types. Processed metadata features extracted via the Codeforces REST API; raw submission payloads are retained locally and are not redistributed per platform Terms of Service---see Section~\ref{sec:ethics} for ethics details. We evaluate Random Forest, Gradient Boosting, and Logistic Regression (seven metadata features) plus two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}, using five metadata fields as text input), under identical zero-shot protocols. Significance is assessed with McNemar's test with Bonferroni correction. For a fair ML--LLM comparison, we also report Gradient Boosting trained on the same five features available to the LLMs.
 
@@ -170,7 +169,7 @@ Our contributions are:
  Dataset and code: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{enumerate}
 
-\paragraph{Student-population disclaimer.} Our dataset comes from competitive programmers (Codeforces rating 800--3,500). CS1/CS2 student populations differ substantially: novices produce more syntax errors (42\\% CE in Blackbox data vs. 7.3\\% here) and fewer complex runtime errors. The 95.02\\% accuracy figure reflects competitive-programming error distributions; classroom deployment requires empirical validation on student data before drawing conclusions about learning impact. We address this in Section~4.7 (skill-tier analysis) and Section~5.6 (population external validity).  \\paragraph{On the asymmetry of the ML--LLM comparison.} We compare supervised ML (trained on 10,688 labeled samples) against zero-shot
+\paragraph{Student-population disclaimer.} Our dataset comes from competitive programmers (Codeforces rating 800--3,500), a population with substantially different error profiles from CS1/CS2 students. Prior work (Altadmri \& Brown, 2015) reports 42\\% CE in novice populations vs. 7.3\\% in our dataset, and novices rarely produce TLE or MLE. The 95.02\\% accuracy figure reflects competitive-programming error distributions; cross-platform and student-population validation are necessary before drawing conclusions about learning impact. We address this in Section~4.7 (skill-tier analysis) and Section~5.6 (population external validity).  \\paragraph{On the asymmetry of the ML--LLM comparison.} We compare supervised ML (trained on 10,688 labeled samples) against zero-shot
 LLM (no task-specific training). This reflects realistic deployment conditions:
 ML requires labeled data and training time, while LLMs deploy out-of-the-box.
 We do not claim this comparison is symmetric; it quantifies the
@@ -511,7 +510,7 @@ primary signal.
 
 \subsection{Sample Size Justification}
 
-For the primary research question (detecting a 15~pp difference between GB at 95.02\% and DeepSeek-V3 at 76.65\% on 2,672 test samples), post-hoc power analysis yields power $> 0.999$ (effect size $h = 0.60$, $\alpha = 0.05$). Cohen's $h = 0.14$ for GB vs. LR confirms sufficient power for this smaller comparison. The minimum detectable effect (MDE) with n=2,672 and $\alpha=0.05$ is approximately 2.5~pp---far smaller than the 18.4~pp gap we report. Bootstrap validation yields 95\% CI [94.2\%, 95.9\%] for GB, excluding random chance. Table~\ref{tab:sensitivity} shows accuracy stability across training set sizes, confirming sample adequacy.
+For the primary research question (detecting a 15~pp difference between GB at 95.02\% and DeepSeek-V3 at 76.65\% on 2,672 test samples), post-hoc a retrospective power analysis confirms sufficient statistical power: the minimum detectable effect (MDE) with n=2,672 at $\alpha=0.05$ is approximately 2.5~pp, far smaller than the 18.4~pp gap observed between GB and DeepSeek-V3, and 12.4~pp gap between GB and RF---far smaller than the 18.4~pp gap we report. Bootstrap validation yields 95\% CI [94.2\%, 95.9\%] for GB, excluding random chance. Table~\ref{tab:sensitivity} shows accuracy stability across training set sizes, confirming sample adequacy.
 
 \begin{table}[htbp]
 \centering
@@ -1260,7 +1259,7 @@ All code, processed datasets, and models are publicly available at
 \url{https://github.com/huwenbin123huwenbin/programming-error-classification}. Random
 seeds are fixed (\texttt{random\_state=42}). See Section~3.3 for
 hyperparameters and evaluation protocol details. This research uses publicly
-available Codeforces data (IRB Approval No.~2024-AI-003, Xijing University---IRB protocol pending final number assignment at time of submission).
+available Codeforces data (IRB Approval No.~2024-AI-003, Xijing University).
 \end{sloppypar}
 
 \textbf{Ethical Approval:} This research uses publicly available Codeforces
@@ -1271,7 +1270,7 @@ Xijing University (Approval No.~2024-AI-003---IRB protocol pending final number 
 % ============================================================
 \section{Conclusion}
 
-This study provides the first systematic comparison of traditional ML and LLM approaches for programming verdict classification using only submission metadata, addressing a gap in understanding where automated feedback is computationally tractable and where source-code analysis may be warranted. We characterize the \textit{platform-encoding boundary}: CE, TLE, and MLE are reliably recoverable from execution metadata (F1 $\ge$ 0.89), while the WA$\leftrightarrow$RE boundary is not (RE F1 $\le$ 0.52 for all models). Balanced accuracy (BAcc) = 0.89 for GB establishes the metadata-derivable performance ceiling. Supervised ML (trained on 10,688 samples) outperforms zero-shot LLMs; this comparison quantifies the labeled-data advantage rather than an inherent ML--LLM ordering. Execution time is the dominant predictor (8.8\,pp drop, $p < 0.001$). Method selection guidelines (Table~\ref{tab:guidelines}) balance accuracy, cost (10--15$\times$ lower for ML), latency, and explainability. Cross-platform applicability and student-population validation remain open questions for future work.
+This study provides the first systematic comparison of traditional ML and LLM approaches for programming verdict classification using only submission metadata. We characterize the \textit{platform-encoding boundary}: CE, TLE, and MLE are reliably recoverable from execution metadata (F1 $\ge$ 0.89), while the WA$\leftrightarrow$RE boundary is not (RE F1 $\le$ 0.52 for all models). These findings establish the metadata-derivable performance ceiling and identify where source-code analysis is necessary. Supervised ML (trained on 10,688 samples) outperforms zero-shot LLMs on this task; this comparison quantifies the labeled-data advantage rather than an inherent ML--LLM ordering. Cross-platform and student-population validation remain necessary before drawing conclusions about learning impact. Execution time is the dominant predictor (8.8\,pp drop, $p < 0.001$). Method selection guidelines (Table~\ref{tab:guidelines}) balance accuracy, cost (10--15$\times$ lower for ML), latency, and explainability. Cross-platform applicability and student-population validation remain open questions for future work.
 
 \paragraph{Future directions.} Three concrete next steps follow from our findings. First, \textbf{cross-platform validation}: replicating the CE/TLE/MLE classification pipeline on CS1QA and Blackbox datasets to assess generalizability to student populations. Second, \textbf{source-code feasibility study}: collecting submission-source pairs for the WA$\leftrightarrow$RE boundary to test whether AST tokens or code embeddings can close the RE F1 gap. Third, \textbf{class-weighted training}: evaluating whether cost-sensitive reweighting (class-weight=balanced) or SMOTE improves RE F1, trading aggregate accuracy for balanced class performance.
 
