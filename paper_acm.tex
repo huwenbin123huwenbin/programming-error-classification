@@ -371,7 +371,7 @@ same user solving the same problem. This does not prevent user-level leakage: a
 given user can appear in both training and test sets on different problems,
 potentially allowing the model to exploit user-specific patterns. The \texttt{user\_success\_rate} feature (19.4\% Gini importance) is the primary channel for this effect. Stratified sampling ensures no single user dominates any fold (maximum 0.8\% of any fold). We additionally re-ran McNemar tests on a user-level deduplicated subset (n=3,241 unique user-problem pairs), finding consistent significance patterns (GB vs. DeepSeek: $p < 0.001$). Full results are in the Supplementary Materials.
 
-\paragraph{Caveat on \texttt{user\_success\_rate}.} This feature captures competitive programmers' historical success rates across all submissions to a given platform. Because WA and RE submissions are classified as unsuccessful, high-WA or high-RE users will have systematically lower success rates. This creates a conditional dependency: \texttt{user\_success\_rate} encodes information partially redundant with the target verdict. We retain it for three reasons: (1) ablation confirms it provides 3.6\,pp accuracy (complementary to execution-time features); (2) it represents a distinct dimension of programmer proficiency not reducible to per-submission metadata; and (3) in formative assessment settings, historical performance is a legitimate proxy for instructor judgment of student progress. Future work should examine whether this feature generalizes across different student populations or introduces demographic biases.
+\paragraph{Caveat on \texttt{user\_success\_rate}.} This feature captures competitive programmers' historical success rates across all submissions to a given platform. Because WA and RE submissions are classified as unsuccessful, high-WA or high-RE users will have systematically lower success rates. This creates a conditional dependency: \texttt{user\_success\_rate} encodes information partially redundant with the target verdict. We retain it for three reasons: (1) ablation confirms it provides 3.6\,pp accuracy (complementary to execution-time features); (2) it represents a distinct dimension of programmer proficiency not reducible to per-submission metadata; and (3) in formative assessment settings, historical performance is a legitimate proxy for instructor judgment of student progress. Furthermore, \texttt{user\_success\_rate} is a historical aggregate unavailable for new students in early-semester deployment; its predictive power may not transfer to populations with no prior submission history. Future work should examine whether this feature generalizes across different student populations or introduces demographic biases.
 
 The final dataset comprises 13,360 error submissions from competitive programmers
 across hundreds of Codeforces contests. Table~\ref{tab:error-dist} summarizes
@@ -664,13 +664,15 @@ Logistic Regression & 73.91\% & 74.31\% ($\pm$3.26) & 0.6738 & --- & --- \\
 \bottomrule
 \end{tabular}
 
+{\small\textit{Note:} Logistic Regression shows $5\times$ higher CV variance (\$3.26$ pp) than RF (\$0.65$ pp) or GB (\$0.39$ pp); included as a baseline for interpretability, not as a preferred method.}
+
 \vspace{2mm}
 {\small \textit{Note:} 80/20 stratified split: 10,688 training, 2,672 test.
 5-fold CV on training set. Random state fixed at 42.\\
 \textit{Balanced Accuracy (BAcc):} GB=0.89, RF=0.87, LR=0.62 (average of per-class recall, reported in Supplementary Materials).}
 \end{table}
 
-The Gradient Boosting achieves balanced accuracy (BAcc) of 0.89 and 95.02\% overall accuracy, representing an 12.4\,pp lift in BAcc over the majority-class baseline (0.89 vs. 0.20) (and 15.4\,pp for the fair 5-feature GB variant) over the majority-class baseline (76.6\%); overall accuracy is dominated by WA (76.6\% of test set, F1=0.97), while RE (4.9\% of test set) has F1=0.52 consistent with three verdicts being near-deterministically encoded in execution metrics while the WA$\leftrightarrow$RE boundary is not metadata-separable. The perfect ROC-AUC for MLE/TLE (1.000) reflects this deterministic relationship; the critical challenge lies in the WA and RE boundary (AUC 0.778), where execution metadata provides only partial signal.
+The Gradient Boosting achieves balanced accuracy (BAcc) of 0.89 and 95.02\% overall accuracy, representing an 12.4\,pp lift in BAcc over the majority-class baseline ($0.89$ vs. $0.20$) (and 15.4\,pp for the fair 5-feature GB variant) over the majority-class baseline (76.6\%); overall accuracy is dominated by WA (76.6\% of test set, F1=0.97), while RE (4.9\% of test set) has F1=0.52 consistent with three verdicts being near-deterministically encoded in execution metrics while the WA$\leftrightarrow$RE boundary is not metadata-separable. The perfect ROC-AUC for MLE/TLE (1.000) reflects this deterministic relationship; the critical challenge lies in the WA and RE boundary (AUC 0.778), where execution metadata provides only partial signal.
 
 The 21\,pp gap between ensemble methods and linear regression confirms that error classification benefits from models capturing non-linear feature interactions. Prior work~\cite{altadmri2015most,luxton2018introductory} established that runtime errors are persistently difficult to classify, consistent with our findings.
 
@@ -784,10 +786,7 @@ incorporating source-code-level features for improved RE classification.
 \label{sec:ablation}
 
 To rigorously quantify each feature's contribution and assess the model's
-robustness, we conducted a systematic feature ablation study. Each of the
-seven features was removed individually from the feature set, the Gradient
-Boosting model was retrained on the remaining six features, and performance
-was measured on the same held-out test set of 2,672 samples.
+robustness, we conducted a systematic feature ablation study. Table~\ref{tab:ablation} reports uncorrected ablation p-values; the Holm-Bonferroni correction (Section~\ref{sec:ml-eval}) applies to the primary ML--LLM McNemar comparisons. Each of the seven features was removed individually from the feature set, the Gradient Boosting model was retrained on the remaining six features, and performance was measured on the same held-out test set of 2,672 samples.
 
 \begin{table}[htbp]
 \centering
