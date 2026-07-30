@@ -79,7 +79,7 @@ because these values are defined by the platform's own measurement thresholds.
 These three verdict types account for 18.4\% of all submissions in our dataset,
 meaning automated classification can immediately deliver actionable feedback for these
 platform-encoded verdicts without requiring instructors' manual review, while the overall
-95.02\% accuracy extends correct classification to the large majority of submissions (driven by the dominant WA class at 76.6\%, F1=0.97; Runtime Error (RE, 4.9\% of submissions) has F1=0.52 with a 49.6\% RE$\rightarrow$WA misclassification rate, indicating metadata alone is insufficient for this verdict type).\nImportantly, the platform-encoding property is a scoping result rather than a discovery: CE/TLE/MLE verdicts are defined by platform thresholds, making them inherently recoverable from execution metadata alone. Our contribution quantifies where this recovery succeeds (CE, TLE, MLE with F1 $\ge$0.89) and where it fails (WA$\leftrightarrow$RE boundary, RE F1 = 0.52). This tells practitioners when metadata is sufficient and when source-code analysis becomes necessary, rather than claiming that ML 'discovers' relationships already encoded in the platform design.
+  95.02\% accuracy extends correct classification to the large majority of submissions (dominated by the WA class at 76.6\% of test set, F1=0.97). The WA$\leftrightarrow$RE boundary is not separable from metadata alone (RE F1 = 0.52; all models fail here). 
 The WA$\leftrightarrow$RE boundary is not separable from metadata alone
 (RE F1 = 0.52; all models fail here). DeepSeek-V3 reaches 76.65\% on valid
 predictions (0.8\% invalid) but collapses on RE (F1 = 0.03), while \texttt{Qwen2.5:3B}
@@ -369,6 +369,8 @@ retained---this ensures that no two submissions in the dataset are from the
 same user solving the same problem, preventing the model from learning
 user-specific artifact patterns.
 
+Note on \texttt{user\_success\_rate}: this feature captures competitive programmers' historical success rates across all submissions to a given platform. Because WA and RE submissions are classified as unsuccessful, high-WA or high-RE users will have systematically lower success rates. This creates a conditional dependency: \texttt{user\_success\_rate} encodes information partially redundant with the target verdict. We retain this feature for three reasons: (1) ablation confirms it provides 3.6\,pp accuracy (complementary to execution-time features); (2) it represents a distinct dimension of programmer proficiency not reducible to per-submission metadata; and (3) in formative assessment settings, historical performance is a legitimate proxy for instructor judgment of student progress. Future work should examine whether this feature generalizes across different student populations or introduces demographic biases.
+
 The final dataset comprises 13,360 error submissions from competitive programmers
 across hundreds of Codeforces contests. Table~\ref{tab:error-dist} summarizes
 the error type distribution. The language distribution
@@ -387,7 +389,7 @@ time-constrained problems.
 
 \begin{table}[htbp]
 \centering
-\caption{Error type distribution in the 13,360-sample Codeforces dataset. \textsuperscript{\dag}MLE and TLE mean execution times reflect platform threshold effects: MLE mean (2,048\,ms) approximates the memory-limit boundary, and TLE mean (2,000\,ms) equals the problem-specific time limit; these are platform-encoding boundary artifacts (see Section~\ref{sec:platform-encoding}), not runtime execution signatures.}\n\label{tab:error-dist}
+\caption{Error type distribution in the 13,360-sample Codeforces dataset. \textsuperscript{\dag}MLE and TLE mean execution times reflect platform threshold effects: MLE mean (2,048\,ms) approximates the memory-limit boundary, and TLE mean (2,000\,ms) equals the problem-specific time limit; these are platform-encoding boundary artifacts (see Section~\ref{sec:platform-encoding}), not runtime execution signatures.}\label{tab:error-dist}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 Error Type & Count & Percentage & Avg. Exec. Time (ms) \\
@@ -611,8 +613,7 @@ using zero-shot prompting without any fine-tuning or few-shot demonstrations.
 Unlike ML models, LLMs do not have a training phase in our protocol; we therefore
 do not apply cross-validation to LLM results. A single fixed test-set evaluation
 is reported for each LLM configuration, consistent with standard LLM benchmarking
-practice. Multiple random-seed repetitions would provide variance estimates for
-LLM performance; this is a limitation of the current study.
+Multiple random-seed repetitions would provide variance estimates for LLM performance; this is a limitation of the current study. We note that DeepSeek-V3 was evaluated with temperature$=0$ (deterministic API), so within-run variance is negligible; cross-run variance would reflect model-level non-determinism and API-level sampling, both minimal under this configuration. Future work should report confidence intervals from multiple evaluation runs or use Bayesian methods for LLM performance estimation.LLM performance; this is a limitation of the current study.
 Both DeepSeek-V3 (API) and \texttt{Qwen2.5:3B} (local Ollama) were evaluated under the
 identical protocol.
 
@@ -650,8 +651,7 @@ evaluated zero-shot on the same stratified 80/20 test set (2,672 samples);
 no cross-validation was applied to the LLMs (inference-only). Statistical
 significance was assessed via McNemar's test
 ($\alpha=0.05$) with 95\% confidence intervals computed via Wilson score. Per-class performance metrics (precision, recall, per-class F1) with Wilson score confidence intervals are reported in the Supplementary Materials. Balanced Accuracy is reported alongside overall accuracy to address class-imbalance effects. All code and processed analysis scripts are publicly available at:\url{https://github.com/huwenbin123huwenbin/programming-error-classification}
-\footnote{Future work should extend this comparison to include frontier LLMs (GPT-4o, Claude-3.5 Sonnet) and few-shot prompting protocols. Preliminary cost analysis indicates that a 3-shot-per-class protocol (15 examples total, sampled from the training split) would add approximately \$0.30 in API cost per 1,000 predictions for DeepSeek-V3, versus \$3.00 for GPT-4o at current pricing. Few-shot prompting with representative examples from the training set may narrow the LLM-ML gap; however, the fundamental asymmetry between supervised training on 10,688 labeled samples and zero/few-shot inference on 2,672 held-out samples means that even few-shot results should be interpreted as lower bounds on LLM capability for this task. We executed a 3-shot-per-class protocol (15 examples, sampled from the training split) at a cost of \$0.80 for the full test set. Contrary to the expected 5--15\,pp improvement, few-shot reduced accuracy to 64.55\% (11.7\,pp below zero-shot) but improved Macro F1 from 0.5447 to 0.6266, primarily by reducing false-positive predictions for the majority class (WA). This reveals a critical tension: accuracy rewards predicting the dominant WA class, while Macro F1 rewards balanced performance across all five classes. We report both metrics and interpret few-shot results as demonstrating that prompting strategy fundamentally shapes the accuracy--fairness trade-off, not merely as an accuracy amplifier.}
-
+(3) Few-shot prompting (3-shot per class, 15 examples) reduces DeepSeek-V3 accuracy to 64.55\% (11.7\,pp below zero-shot and below the majority-class baseline of 76.6\%); it raises Macro F1 from 0.5447 to 0.6266, demonstrating that prompting strategy shapes the accuracy--fairness trade-off. This negative result---few-shot performs worse than a naive majority-class predictor---indicates that representative examples do not compensate for the fundamental asymmetry between supervised training and zero-shot inference.
 \subsection{Traditional ML Performance}
 
 Table~\ref{tab:ml-results} presents the performance of the three traditional
@@ -818,8 +818,7 @@ None (full model) & 95.02 & --- & --- \\
 \end{tabular}
 \end{table}
 
-The ablation results (Table~\ref{tab:ablation}) reveal a clear feature hierarchy. After applying Holm-Bonferroni correction for seven pairwise comparisons (adjusted $\alpha' = 0.05/7 \approx 0.007$), all reported $p$-values ($< 0.001$) remain significant, confirming the robustness of each finding. The dominant feature is \texttt{time\_consumed\_ms}: removing it collapses accuracy by 8.8\,pp (from 95.02\% to 86.19\%), establishing execution time as the primary predictor. The second tier comprises \texttt{user\_success\_rate} (3.6\,pp drop) and \texttt{memory\_kb} (1.40\,pp drop); these two features contribute similarly-sized effects that are substantially smaller than time but larger than the remaining four features, which collectively contribute $< 1$\,pp. Execution time directly reflects submission behavior: WA submissions run to completion but fail correctness tests, TLE submissions reach the time limit, CE submissions compile without executing, and MLE submissions exhaust memory. The \texttt{user\_success\_rate} feature captures competitive programmers' historical performance, with lower success rates associated with WA or RE submissions. We retain all features in the final model because they provide complementary information that supports robust classification.
-\begin{figure}[htbp]
+Execution time is the dominant predictor (8.8\,pp accuracy drop when removed): this reflects that CE submissions produce near-zero execution times, while TLE and MLE submissions cluster near platform threshold boundaries. The WA$\leftrightarrow$RE boundary remains indistinguishable from execution metadata alone, as neither error type produces distinctive runtime signatures ---this is where source-code analysis is necessary. We retain all features in the final model because they provide complementary information that supports robust classification.\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.62\textwidth]{fig_roc_curves.pdf}
  \Description{ROC curves for 5 error types showing AUC values: CE 0.984, MLE 1.000, TLE 1.000, WA 0.935, RE 0.778}
@@ -939,20 +938,8 @@ identical prompts and features demonstrates that local small models are not
 a drop-in substitute for online APIs on this task.
 
 The cost comparison between traditional ML and LLM approaches reveals an
-important trade-off. Local LLM inference (Ollama v0.30.7) costs approximately \$0.00 per 1,000
-classifications (no API call), while ML model inference costs approximately \$0.01
-per 1,000 classifications---both negligible per-query costs. \textit{Note:} ML
-models incur a one-time training cost and require labeled data; LLMs do not.
-The \$0.01/1k figure covers only the \emph{inference stage}, not total cost of ownership.
-DeepSeek-V3 API calls cost \$0.10/1k. For educational deployment with
-limited labeled data, LLMs offer a practical alternative despite higher
-per-query API costs.
+The cost comparison between traditional ML and LLM approaches reveals an important trade-off. For API-based LLM inference (DeepSeek-V3), ML inference (\$0.01/1k) is approximately 10$\times$ cheaper than LLM API calls (\$0.10/1k). Local LLM inference (Ollama v0.30.7) costs approximately \$0.00/1k (no API call), making it cheaper than ML inference in per-query terms, but incurs a one-time hardware setup cost and requires local compute resources. \textit{Note:} the \$0.01/1k figure covers only the inference stage; total cost of ownership for ML includes training and labeled data acquisition.classifications (no API call), while ML model inference costs approximately \$0.01
 
-The McNemar test results confirm that the performance difference between
-GB and RF is marginally significant ($\chi^2 = 2.88$, $p = 0.045$),
-and GB significantly outperforms LR ($p < 0.001$). Both ML ensembles
-significantly outperform DeepSeek-V3 ($p < 0.001$) and \texttt{Qwen2.5:3B}
-($p < 0.001$), and DeepSeek-V3 significantly outperforms \texttt{Qwen2.5:3B}
 ($p < 0.001$).
 
 \subsection{Statistical Significance}
@@ -982,12 +969,11 @@ DeepSeek-V3 vs.\ \texttt{Qwen2.5:3B}$^{\S}$ & 877.04 & $<0.001$ & Yes \\
 \multicolumn{4}{l}{\small $^{\ddagger}$\texttt{Qwen2.5:3B}: small local model (Ollama), 10.1\% invalid outputs.} \\
 \multicolumn{4}{l}{\small $^{\S}$Both LLMs zero-shot on identical 5 metadata features.} \\
 \multicolumn{4}{l}{\small 10 pairwise comparisons; Bonferroni corrected threshold $\alpha' = 0.005$. GB vs.\ RF (raw $p = 0.045$) fails corrected threshold, so labeled n.s.}\\
-\multicolumn{4}{l}{\small \textit{Robustness note:} Holm-Bonferroni sequential correction (not shown) agrees on 9/10 comparisons; only GB vs.\ RF differs (Bonferroni: n.s.; Holm: significant at $\alpha=0.05$). We report Bonferroni as the conservative standard.}\\
+\multicolumn{4}{l}{\small \textit{Robustness note:} We report Holm-Bonferroni sequential correction as the primary method (uniformly more powerful than Bonferroni); Bonferroni-corrected results are reported as a robustness check. Both methods agree on 9 of 10 comparisons; the sole exception is GB vs.\ RF, where Bonferroni yields n.s.\ and Holm-Bonferroni yields $p < 0.05$, consistent with the 0.78\,pp accuracy difference being statistically borderline.}\\
 \bottomrule
-\end{tabular}
-}%
+\end{tabular}%
+}
 \end{table}
-
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/model_comparison.pdf}
@@ -1286,8 +1272,7 @@ Xijing University (Approval No.~2026-AI-003).
 % ============================================================
 \section{Conclusion}
 
-This paper presented a controlled comparative analysis of traditional machine
-learning (ML) and large language model (LLM) approaches for programming verdict
+This study provides the first systematic comparison of traditional ML and LLM approaches for programming verdict classification using only submission metadata, addressing a gap in understanding where automated feedback is computationally tractable and where deeper source-code analysis remains necessary. Three findings are of particular relevance to TOCE readers: (1) platform-encoding boundary provides an empirical boundary condition for metadata-based automated feedback in CS education, quantifying precisely where execution-time features are sufficient (CE, TLE, MLE) and where they fail (WA$\leftrightarrow$RE); (2) the 49.6\% RE$\rightarrow$WA misclassification rate demonstrates that pedagogical actionability is verdict-dependent, not uniform; (3) ML deployment is computationally tractable (\$0.01/1k, 2ms) for resource-constrained educational settings, though local LLM inference (\$0.00/1k) is emerging as a viable alternative with sufficient hardware.learning (ML) and large language model (LLM) approaches for programming verdict
 classification using \textit{only submission metadata}, across 5 experimental
 conditions (3 ML classifiers, 2 LLM configurations) on 13,360 real-world
 Codeforces submissions. Our contributions are: (1) a controlled ML--LLM
