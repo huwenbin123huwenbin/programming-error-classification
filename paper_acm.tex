@@ -88,7 +88,7 @@ training. Supervised ML (7-feature GB: 95.02\%) outperforms DeepSeek-V3 zero-sho
 (76.65\%) by 18.4 pp; a fair-feature comparison using GB trained on the same five
 features as the LLMs (92.0\%) still outperforms DeepSeek-V3 by 15.4 pp.
 
-\noindent\textbf{Conclusions}: We characterize the platform-encoding boundary for verdict classification from submission metadata. CE, TLE, and MLE are directly recoverable from platform thresholds (F1 $\ge$0.89), while WA$\leftrightarrow$RE is not metadata-separable (RE F1 = 0.52). These findings quantify where source-code analysis becomes necessary, providing empirical grounding for lightweight metadata-based verdict screening. From a pedagogical perspective, the three platform-encoded verdicts (CE, TLE, MLE) are precisely those where immediate, specific feedback is most actionable---a student receiving a CE verdict benefits from syntax guidance, not algorithmic review. We release the dataset, pipeline,
+\noindent\textbf{Conclusions}: We characterize the platform-encoding boundary for verdict classification from submission metadata. CE, TLE, and MLE are directly recoverable from platform thresholds (F1 $\ge$0.89), while WA$\leftrightarrow$RE is not metadata-separable (RE F1 = 0.52). These findings delineate where metadata alone becomes insufficient, motivating source-code analysis as the natural next step, and provide empirical grounding for lightweight metadata-based verdict screening. From a pedagogical perspective, the three platform-encoded verdicts (CE, TLE, MLE) are precisely those where immediate, specific feedback is most actionable; we hypothesize that a student receiving a CE verdict would benefit from syntax guidance rather than algorithmic review---a claim that remains to be validated in a classroom study. We release the dataset, pipeline,
 and deployment guidelines at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 
 \end{abstract}
@@ -469,7 +469,7 @@ predictions: (1) Hattie and Timperley's model predicts that \emph{task-level
 feedback} (precise error class) is more actionable than \emph{process-level
 feedback} (general guidance); our finding that WA$\leftrightarrow$RE is not
 metadata-separable confirms that the finest-grained automated feedback (distinguishing
-logic errors from runtime failures) requires source-code analysis, consistent
+logic errors from runtime failures) might require source-code analysis, consistent
 with their ranking of feedback levels. (2) Bandura's theory predicts that
 accurate self-assessment requires attributing failure to a specific cause; our
 results show that metadata cannot support this attribution for RE versus WA,
@@ -816,7 +816,7 @@ None (full model) & 95.02 & --- & --- \\
 \end{tabular}
 \end{table}
 
-Execution time is the dominant predictor (8.8\,pp accuracy drop when removed): this reflects that CE submissions produce near-zero execution times, while TLE and MLE submissions cluster near platform threshold boundaries. The WA$\leftrightarrow$RE boundary remains indistinguishable from execution metadata alone, as neither error type produces distinctive runtime signatures ---this is where source-code analysis would be required. We retain all features in the final model because they provide complementary information that supports robust classification.\begin{figure}[htbp]
+Execution time is the dominant predictor (8.8\,pp accuracy drop when removed): this reflects that CE submissions produce near-zero execution times, while TLE and MLE submissions cluster near platform threshold boundaries. The WA$\leftrightarrow$RE boundary remains indistinguishable from execution metadata alone, as neither error type produces distinctive runtime signatures---this is where source-code analysis might be required, a hypothesis to be tested in future work. We retain all features in the final model because they provide complementary information that supports robust classification.\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.62\textwidth]{fig_roc_curves.pdf}
  \Description{ROC curves for 5 error types showing AUC values: CE 0.984, MLE 1.000, TLE 1.000, WA 0.935, RE 0.778}
@@ -1019,7 +1019,7 @@ define these outcomes. This is not a classifier result---it is a platform design
 The critical finding is the WA$\leftrightarrow$RE boundary: neither ML
 (GB RE F1 = 0.52) nor LLMs (DeepSeek-V3 RE F1 = 0.03) reliably distinguish
 these classes from metadata alone. This boundary is precisely where pedagogical
-feedback is most needed, requiring source-code integration or human expert review.
+feedback is most needed, suggesting that source-code integration or human expert review might be warranted.
 Gradient Boosting achieves 95.02\% accuracy by leveraging the CE/TLE/MLE signal;
 DeepSeek-V3 (76.05\%) and \texttt{Qwen2.5:3B} (31.92\%) do not close this gap.
 ML inference cost ($0.01/1k) is negligible versus DeepSeek-V3 ($0.10/1k).
@@ -1031,12 +1031,12 @@ not problem metadata---carries the metadata-derivable signal for CE, TLE, and ML
 Memory consumption follows (1.40 pp), user success rate contributes 3.6 pp;
 problem rating, language, and problem type each contribute 1--2 pp, while
 submission hour contributes negligibly (0.0 pp). The WA$\leftrightarrow$RE
-ambiguity remains irreducible from metadata, requiring source-code features.
+ambiguity remains irreducible from metadata, suggesting that source-code features might be required.
 Despite lower accuracy, LLMs offer explainability advantages~\cite{finnie2022robots}; a hybrid strategy (ML for classification, LLM for explanation) leverages both.
 
 \subsection{Finding 3: Error Type Skew and RE Challenges}
 
-The class imbalance (WA 76.6\% vs.\ MLE 1.5\%) and low RE F1-score (0.52) highlight limitations. RE encompasses diverse root causes that metadata cannot distinguish, motivating source-code features. Prior work~\cite{altadmri2015most} confirms RE difficulty as a general limitation of metadata-only approaches.
+The class imbalance (WA 76.6\% vs.\ MLE 1.5\%) and low RE F1-score (0.52) highlight limitations. RE encompasses diverse root causes that metadata cannot distinguish, suggesting that source-code features might help. Prior work~\cite{altadmri2015most} confirms RE difficulty as a general limitation of metadata-only approaches.
 
 \subsection{LLM Error Analysis}
 
