@@ -82,7 +82,7 @@ platform-encoded verdicts without requiring instructors' manual review, while th
   95.02\% accuracy extends correct classification to the large majority of submissions (dominated by the WA class at 76.6\% of test set, F1=0.97). The WA$\leftrightarrow$RE boundary is not separable from metadata alone (RE F1 = 0.52; all models fail here). 
 DeepSeek-V3 reaches 76.65\% on valid
 predictions (0.8\% invalid) but collapses on RE (F1 = 0.03), while \texttt{Qwen2.5:3B}
-achieves only 35.50\% (10.1\% invalid). We note that this comparison is asymmetric:
+achieves only 35.50\% (10.1\% invalid). This comparison is asymmetric:
 ML models were trained on 10,688 labeled samples while LLMs received no task-specific
 training. Supervised ML (7-feature GB: 95.02\%) outperforms DeepSeek-V3 zero-shot
 (76.65\%) by 18.4 pp; a fair-feature comparison using GB trained on the same five
@@ -182,7 +182,7 @@ under controlled data budgets.
 
 \subsection{Programming Error Analysis}
 
-The study of programming errors has a rich history spanning over four decades
+The study of programming errors has a history spanning over four decades
 in computing education research~\cite{winslow1996programming}. This psychological perspective on
 programming pedagogy highlights the cognitive demands debugging places on novices~\cite{winslow1996programming}.
 McCauley et al.\cite{mccauley2008evidence} conducted a comprehensive review of the novice programmer literature, identifying
@@ -195,7 +195,7 @@ accelerate the development of debugging proficiency. Cognitive Load Theory~\cite
 taxes working memory across error diagnosis, code comprehension, and solution planning,
 creating intrinsic overload that constrains novice self-correction~\cite{kirschner2018cognitive}. Jadud
 
-Jadud~\cite{jadud2006methods} pioneered compilation event analysis using the BlueJ IDE, establishing compilation behavior as a rich data source for educational mining. The Blackbox project~\cite{brown2014blackbox} scaled this to 200,000+ users, revealing that compilation errors cluster early in programming episodes and that high-performing students compile more strategically.
+Jadud~\cite{jadud2006methods} pioneered compilation event analysis using the BlueJ IDE, establishing compilation behavior as a data source for educational mining. The Blackbox project~\cite{brown2014blackbox} scaled this to 200,000+ users, revealing that compilation errors cluster early in programming episodes and that high-performing students compile more strategically.
 
 Large-scale analyses~\cite{ahadi2015exploring,luxton2018introductory} established that runtime errors persist across cohorts and resist standard interventions~\cite{altadmri2015most}, motivating automated diagnostic tools~\cite{barbosa2023feedback}.
 
@@ -612,7 +612,7 @@ using zero-shot prompting without any fine-tuning or few-shot demonstrations.
 Unlike ML models, LLMs do not have a training phase in our protocol; we therefore
 do not apply cross-validation to LLM results. A single fixed test-set evaluation
 is reported for each LLM configuration, consistent with standard LLM benchmarking
-Multiple random-seed repetitions would provide variance estimates for  We note that DeepSeek-V3 was evaluated with temperature$=0$ (deterministic API), so within-run variance is negligible; cross-run variance would reflect model-level non-determinism and API-level sampling, both minimal under this configuration. Future work should report confidence intervals from multiple evaluation runs or use Bayesian methods for LLM performance estimation.
+Multiple random-seed repetitions would provide variance estimates; DeepSeek-V3 was evaluated with temperature$=0$ (deterministic API), so within-run variance is negligible and cross-run variance reflects only model-level non-determinism, which is minimal under this configuration. Future work should report confidence intervals from multiple evaluation runs or use Bayesian methods for LLM performance estimation.
 Both DeepSeek-V3 (API) and \texttt{Qwen2.5:3B} (local Ollama) were evaluated under the
 identical protocol.
 
@@ -676,7 +676,7 @@ Logistic Regression & 73.91\% & 74.31\% ($\pm$3.26) & 0.6738 & --- & --- \\
 \textit{Balanced Accuracy (BAcc):} GB=0.89, RF=0.87, LR=0.62 (average of per-class recall, reported in Supplementary Materials).}
 \end{table}
 
-The 95.02\% accuracy represents a 18.4\,pp lift for the 7-feature GB model (and 15.4\,pp for the fair 5-feature GB variant) over the majority-class baseline (76.6\%); note that overall accuracy is dominated by WA (76.6\% of test set, F1=0.97), while RE (4.9\% of test set) has F1=0.52 consistent with three verdicts being near-deterministically encoded in execution metrics while the WA$\leftrightarrow$RE boundary is not metadata-separable. The perfect ROC-AUC for MLE/TLE (1.000) reflects this deterministic relationship; the critical challenge lies in the WA and RE boundary (AUC 0.778), where execution metadata provides only partial signal.
+The 95.02\% accuracy represents a 18.4\,pp lift for the 7-feature GB model (and 15.4\,pp for the fair 5-feature GB variant) over the majority-class baseline (76.6\%); overall accuracy is dominated by WA (76.6\% of test set, F1=0.97), while RE (4.9\% of test set) has F1=0.52 consistent with three verdicts being near-deterministically encoded in execution metrics while the WA$\leftrightarrow$RE boundary is not metadata-separable. The perfect ROC-AUC for MLE/TLE (1.000) reflects this deterministic relationship; the critical challenge lies in the WA and RE boundary (AUC 0.778), where execution metadata provides only partial signal.
 
 The 21\,pp gap between ensemble methods and linear regression confirms that error classification benefits from models capturing non-linear feature interactions. Prior work~\cite{altadmri2015most,luxton2018introductory} established that runtime errors are persistently difficult to classify, consistent with our findings.
 
@@ -1274,7 +1274,7 @@ Xijing University (Approval No.~2026-AI-003).
 % ============================================================
 \section{Conclusion}
 
-This study provides the first systematic comparison of traditional ML and LLM approaches for programming verdict classification using only submission metadata, addressing a gap in understanding where automated feedback is computationally tractable and where deeper source-code analysis would be required. Three findings are of particular relevance to TOCE readers: (1) platform-encoding boundary provides an empirical boundary condition for metadata-based automated feedback in CS education, quantifying precisely where execution-time features are sufficient (CE, TLE, MLE) and where they fail (WA$\leftrightarrow$RE); (2) the 49.6\% RE$\rightarrow$WA misclassification rate demonstrates that pedagogical actionability is verdict-dependent, not uniform; (3) ML deployment is computationally tractable (\$0.01/1k, 2ms) for resource-constrained educational settings, though local LLM inference (\$0.00/1k) is emerging as a viable alternative with sufficient hardware. Our contributions are: (1) a controlled ML--LLM
+This study provides the first systematic comparison of traditional ML and LLM approaches for programming verdict classification using only submission metadata, addressing a gap in understanding where automated feedback is computationally tractable and where source-code analysis may be warranted. We make the following contributions: (1) a controlled ML--LLM
 comparison for metadata-based verdict classification with comprehensive
 statistical analysis (power analysis, Cohen's $h$, McNemar's test with
 Bonferroni correction); (2) the \textit{platform-encoding boundary} finding:
