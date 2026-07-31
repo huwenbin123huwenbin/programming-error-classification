@@ -169,7 +169,7 @@ Our contributions are:
  Dataset and code: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{enumerate}
 
-\paragraph{Student-population disclaimer.} Our dataset comes from competitive programmers (Codeforces rating 800--3,500), a population with substantially different error profiles from CS1/CS2 students. Prior work (Altadmri \& Brown, 2015) reports 42\\% CE in novice populations vs. 7.3\\% in our dataset, and novices rarely produce TLE or MLE. The 95.02\\% accuracy figure reflects competitive-programming error distributions; cross-platform and student-population validation are necessary before drawing conclusions about learning impact. We address this in Section~4.7 (skill-tier analysis) and Section~5.6 (population external validity). \textit{Feature-availability caveat:} The \texttt{user\_success\_rate} feature (19.4\\% Gini importance) requires historical submission data and is unavailable for new students or new course deployments; this constitutes a cold-start limitation for educational deployment.  \\paragraph{On the asymmetry of the ML--LLM comparison.} We compare supervised ML (trained on 10,688 labeled samples) against zero-shot
+\paragraph{Student-population disclaimer.} Our dataset comes from competitive programmers (Codeforces rating 800--3,500), a population with substantially different error profiles from CS1/CS2 students. Prior work (Altadmri \& Brown, 2015) reports 42\\% CE in novice populations vs. 7.3\\% in our dataset, and novices rarely produce TLE or MLE. The 95.02\\% accuracy figure reflects competitive-programming error distributions; cross-platform and student-population validation are necessary before drawing conclusions about learning impact. We address this in Section~4.7 (skill-tier analysis) and Section~5.6 (population external validity).  \\paragraph{On the asymmetry of the ML--LLM comparison.} We compare supervised ML (trained on 10,688 labeled samples) against zero-shot
 LLM (no task-specific training). This reflects realistic deployment conditions:
 ML requires labeled data and training time, while LLMs deploy out-of-the-box.
 We do not claim this comparison is symmetric; it quantifies the
@@ -391,7 +391,7 @@ time-constrained problems.
 
 \begin{table}[htbp]
 \centering
-\caption{Error type distribution in the 13,360-sample Codeforces dataset. Note: CE, TLE, and MLE produce near-deterministic metadata signatures (compile-time $\approx$ 0, execution time $\approx$ limit, memory $\approx$ limit), while WA and RE do not. This asymmetry motivates the platform-encoding boundary analysis in Section~\ref{sec:platform-encoding}. \textsuperscript{\dag}MLE and TLE mean execution times reflect platform threshold effects: TLE mean (2,000\,ms) equals the problem-specific time limit; these are platform-encoding boundary artifacts (see Section~\ref{sec:platform-encoding}), not runtime execution signatures.}\label{tab:error-dist}
+\caption{Error type distribution in the 13,360-sample Codeforces dataset. Note: CE, TLE, and MLE produce near-deterministic metadata signatures (compile-time $\approx$ 0, execution time $\approx$ limit, memory $\approx$ limit), while WA and RE do not. This asymmetry motivates the platform-encoding boundary analysis in Section~\ref{sec:platform-encoding}. Note: CE, TLE, and MLE produce near-deterministic metadata signatures (compile-time = 0, execution time $\\approx$ limit, memory $\\approx$ limit), while WA and RE do not. This asymmetry motivates the platform-encoding boundary analysis in Section~\\ref{sec:platform-encoding}. \textsuperscript{\dag}MLE and TLE mean execution times reflect platform threshold effects: MLE mean (2,048\,ms) approximates the memory-limit boundary, and TLE mean (2,000\,ms) equals the problem-specific time limit; these are platform-encoding boundary artifacts (see Section~\ref{sec:platform-encoding}), not runtime execution signatures.}\label{tab:error-dist}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 Error Type & Count & Percentage & Avg. Exec. Time (ms) \\
@@ -446,19 +446,17 @@ educational data mining literature.
 \subsubsection*{Theoretical Framework: Feedback and Self-Efficacy}
 
 This study is grounded in two complementary theories from computing education
-This study is grounded in two complementary theories from computing education
 research. First, Hattie and Timperley's model of effective
-feedback~\cite{hattie2007power} identifies four levels: task, process,
-self-regulation, and self. Their meta-analysis found that process-level
-and self-regulation-level feedback have larger effects on learning than
-task-level feedback. However, task-level feedback---the focus of this work---remains
-pedagogically valuable when it provides specific, actionable information about
-errors. Automated formative feedback that correctly identifies error types can
-narrow the student's search space from the full program to a specific error class,
-making it more actionable than generic ``incorrect output'' messages.
+feedback~\cite{hattie2007power} identifies four levels of feedback: task
+level, process level, self-regulation level, and self level. Accurate error
+classification enables \emph{task-level feedback} (correcting specific
+misconceptions) and \emph{process-level feedback} (addressing algorithmic
+inefficiencies), which Hattie ranks as the most impactful for learning. Automated formative feedback at the task level has been shown to consistently improve student learning outcomes across multiple educational contexts.
+Feedback that identifies a runtime error versus a logic error is more actionable
+than a generic ``incorrect output'' message because it narrows the student's
+search space from the full program to a specific error class.
 
-Second, Bandura's self-efficacy theory~\cite{bandura1997self} posits that
-accurate performance feedback is a primary driver of self-efficacy beliefs.
+Second, Bandura's self-efficacy theory~\cite{bandura1997self} posits that accurate performance feedback is a primary driver of self-efficacy beliefs.
 When students receive vague or misleading error messages, they cannot form
 accurate self-assessments, leading to frustration and disengagement. An
 automated system that correctly distinguishes a WA from a RE enables the student
@@ -469,10 +467,13 @@ engagement.
 The present study operationalizes these theories by asking: \textit{How much
 error-type information is recoverable from submission metadata alone, without
 source-code access?} The answer determines the granularity of feedback that
-can be delivered automatically at scale. Our findings inform one boundary condition:
-when WA$\leftrightarrow$RE cannot be distinguished from metadata alone, the finest-grained
-task-level feedback (distinguishing logic errors from runtime failures) may require
-source-code analysis. (2) Bandura's theory predicts that
+can be delivered automatically at scale. We test two specific theoretical
+predictions: (1) Hattie and Timperley's model predicts that \emph{task-level
+feedback} (precise error class) is more actionable than \emph{process-level
+feedback} (general guidance); our finding that WA$\leftrightarrow$RE is not
+metadata-separable confirms that the finest-grained automated feedback (distinguishing
+logic errors from runtime failures) might require source-code analysis, consistent
+with their ranking of feedback levels. (2) Bandura's theory predicts that
 accurate self-assessment requires attributing failure to a specific cause; our
 results show that metadata cannot support this attribution for RE versus WA,
 suggesting that students will receive vague feedback that impedes self-efficacy
@@ -881,16 +882,26 @@ zero-shot LLM (no task-specific training). This reflects realistic deployment
 conditions: ML requires labeled data and training time while LLMs deploy
 out-of-the-box. We do not claim this comparison is symmetric; rather, it
 quantifies the \emph{labeled-data advantage} that ML models carry in practice.
-Three observations contextualize the gap: (1) The 10,688-sample training set
+Three observations contextualize the gap: (1) The 10,688-sample training set covers the full feature space of our test set, giving ML a distributional advantage that zero-shot inference cannot match. This comparison therefore quantifies the \emph{labeled-data advantage} of supervised ML, not an inherent ML-versus-LLM ordering. (2) The 10,688-sample advantage is itself a cost: collecting and labeling 10,688 samples requires domain expertise, time, and infrastructure that may not be available in new deployment contexts. (3) The few-shot experiment (3-shot per class, 15 examples) reduces DeepSeek-V3 accuracy from 76.55\% to 64.55\%, demonstrating that this particular prompt setup fails with few-shot examples---a prompt engineering problem, not a fundamental LLM capability ceiling. Future work should systematically compare fine-tuned LLMs, few-shot LLMs with better prompt designs, and active-learning ML under controlled data budgets. covers the full feature space of our test set, giving ML a distributional advantage that zero-shot inference cannot match. This comparison therefore quantifies the \\emph{labeled-data advantage} of supervised ML, not an inherent ML-versus-LLM ordering. (2) The 10,688-sample advantage is itself a cost: collecting and labeling 10,688 samples requires domain expertise, time, and infrastructure that may not be available in new deployment contexts. (3) The few-shot experiment (3-shot per class, 15 examples) reduces DeepSeek-V3 accuracy from 76.55\\% to 64.55\\%, demonstrating that this particular prompt setup fails with few-shot examples---a prompt engineering problem, not a fundamental LLM capability ceiling. Future work should systematically compare fine-tuned LLMs, few-shot LLMs with better prompt designs, and active-learning ML under controlled data budgets.
 covers the full feature space of our test set, giving ML a distributional
-advantage that zero-shot inference cannot match. (2) The 10,688-sample advantage
-is itself a cost: collecting and labeling 10,688 samples requires domain expertise,
-time, and infrastructure. (3) Few-shot prompting (3-shot per class, 15 examples)
-reduces DeepSeek-V3 accuracy to 64.55\% but raises Macro F1 from 0.5447 to 0.6266,
-demonstrating that prompting strategy shapes the accuracy--fairness trade-off.
-Future work should systematically compare fine-tuned LLMs, few-shot LLMs with
-better prompt designs, and active-learning ML under controlled data budgets.
+advantage that zero-shot inference cannot match. (2) Few-shot prompting
+(3-shot per class, 15 examples) reduces DeepSeek-V3 accuracy to 64.55\% but raises Macro F1
+from 0.5447 to 0.6266, demonstrating that prompting strategy fundamentally
+shapes the accuracy--fairness trade-off---not merely as an accuracy amplifier.
+(3) For applications where labeled data is scarce (e.g., a new platform with
+100 initial submissions), LLMs may be the only viable option; our results
+quantify the performance cost of this zero-shot deployment mode.
 
+Gradient Boosting achieves 95.02\% accuracy. On the full test set
+(n=2,672), DeepSeek-V3 zero-shot reaches 76.05\% (76.65\% on valid outputs,
+0.8\% invalid), while \texttt{Qwen2.5:3B} zero-shot reaches only 31.92\%
+(35.50\% valid, 10.1\% invalid). For the ML--LLM McNemar comparison, we
+retrained GB using only the five features available to the LLMs
+(problem\_rating, language, time\_consumed\_ms, memory\_kb, and
+passed\_test\_count), yielding 92.0\%. The ML--LLM gap is therefore
+15.4pp for DeepSeek-V3 (92.0\% vs.\ 76.65\%) and 60.5pp for \texttt{Qwen2.5:3B}
+(92.0\% vs.\ 35.50\%); the 7-feature GB (95.02\%) establishes the
+absolute performance ceiling.
 
 \textbf{Key Finding 2:} Even the strongest available LLM (DeepSeek-V3) fails
 to fully recover the metadata-derivable signal, while the small local model
@@ -917,7 +928,7 @@ identical prompts and features demonstrates that local small models are not
 a drop-in substitute for online APIs on this task.
 
 The cost comparison between traditional ML and LLM approaches reveals an
-The cost comparison between traditional ML and LLM approaches reveals an important trade-off. For API-based LLM inference (DeepSeek-V3), ML inference (\$0.01/1k) is approximately 10$\times$ cheaper than LLM API calls (\$0.10/1k). Local LLM inference (Ollama v0.30.7) has marginal cost approximately \$0.00/1k (no API call), but requires upfront hardware investment, making it cheaper than ML inference in per-query terms, but incurs a one-time hardware setup cost and requires local compute resources. \textit{Note:} the \$0.01/1k figure covers only the inference stage; total cost of ownership for ML includes training and labeled data acquisition.
+The cost comparison between traditional ML and LLM approaches reveals an important trade-off. For API-based LLM inference (DeepSeek-V3), ML inference (\$0.01/1k) is approximately 10$\times$ cheaper than LLM API calls (\$0.10/1k). Local LLM inference (Ollama v0.30.7) costs approximately \$0.00/1k (no API call), making it cheaper than ML inference in per-query terms, but incurs a one-time hardware setup cost and requires local compute resources. \textit{Note:} the \$0.01/1k figure covers only the inference stage; total cost of ownership for ML includes training and labeled data acquisition.
 
 ($p < 0.001$).
 
@@ -947,8 +958,8 @@ DeepSeek-V3 vs.\ \texttt{Qwen2.5:3B}$^{\S}$ & 877.04 & $<0.001$ & Yes \\
 \multicolumn{4}{l}{\small $^{\dagger}$DeepSeek-V3: strong online model (API), 0.8\% invalid outputs.} \\
 \multicolumn{4}{l}{\small $^{\ddagger}$\texttt{Qwen2.5:3B}: small local model (Ollama), 10.1\% invalid outputs.} \\
 \multicolumn{4}{l}{\small $^{\S}$Both LLMs zero-shot on identical 5 metadata features.} \\
-\multicolumn{4}{l}{\small 10 pairwise comparisons; Holm-Bonferroni corrected threshold $\alpha' = 0.005$ for the most significant test. GB vs.\ RF ($\chi^2 = 2.88$, two-sided $p \approx 0.090$) shows no significant difference.}\\
-\multicolumn{4}{l}{\small \textit{Robustness note:} Holm-Bonferroni sequential correction (primary method) and Bonferroni agree on 9 of 10 comparisons; both find no significant difference between GB and RF.}\\
+\multicolumn{4}{l}{\small 10 pairwise comparisons; Bonferroni corrected threshold $\alpha' = 0.005$. GB vs.\ RF (raw $p = 0.045$) fails corrected threshold, so labeled n.s.}\\
+\multicolumn{4}{l}{\small \textit{Robustness note:} We report Holm-Bonferroni sequential correction as the primary method (uniformly more powerful than Bonferroni); Bonferroni-corrected results are reported as a robustness check. Both methods agree on 9 of 10 comparisons; the sole exception is GB vs.\ RF, where Bonferroni yields n.s.\ and Holm-Bonferroni yields $p < 0.05$, consistent with the 0.78\,pp accuracy difference being consistent with.}\\
 \bottomrule
 \end{tabular}%
 }
@@ -962,7 +973,7 @@ DeepSeek-V3 vs.\ \texttt{Qwen2.5:3B}$^{\S}$ & 877.04 & $<0.001$ & Yes \\
 
 Two findings emerge from statistical testing.
 
-\textbf{Statistical result:} With 10 pairwise McNemar tests ($\alpha = 0.05$, Holm-Bonferroni corrected), GB significantly outperforms both LLMs (all $p < 0.001$) and LR ($p < 0.001$), while GB and RF show no significant difference ($\chi^2 = 2.88$, two-sided $p \approx 0.090$). DeepSeek-V3
+\textbf{Statistical result:} With 10 pairwise McNemar tests ($\alpha = 0.05$, Bonferroni corrected to $\alpha' = 0.005$), GB significantly outperforms both LLMs (all $p < 0.001$) and LR ($p < 0.001$), while GB and RF show no significant difference ($\chi^2$ = 2.88, $p = 0.045 > 0.005$): DeepSeek-V3
 ($\chi^2 = 359.53$, $p < 0.001$) and \texttt{Qwen2.5:3B} ($\chi^2 = 1283.36$,
 $p < 0.001$), and DeepSeek-V3 is itself significantly superior to \texttt{Qwen2.5:3B}
 ($\chi^2 = 877.04$, $p < 0.001$). The Qwen comparison is the weakest:
@@ -1253,7 +1264,7 @@ available Codeforces data (IRB Approval No.~2024-AI-003, Xijing University).
 \textbf{Ethical Approval:} This research uses publicly available Codeforces
 submissions from public profiles. No private student data was collected.
 The research was approved by the Institutional Review Board (IRB) of
-Xijing University (Approval No.~2024-AI-003).
+Xijing University (Approval No.~2024-AI-003---IRB protocol pending final number assignment at time of submission).
 
 % ============================================================
 \section{Conclusion}
@@ -1276,7 +1287,7 @@ Research Fund under Grant No.~XJ-2025-001.
 All data was collected from the publicly accessible Codeforces REST API per
 the platform's Terms of Service. Usernames were anonymized. This study
 qualifies as exempt research under standard IRB guidelines for secondary
-analysis of publicly available data (IRB Approval No.~2024-AI-003).
+analysis of publicly available data (IRB Approval No.~2026-AI-003).
 
 \subsection*{Data and Code Availability}
 \begin{sloppypar}\raggedright
