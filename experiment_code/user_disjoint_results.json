@@ -1,0 +1,189 @@
+{
+  "split": "user-disjoint (GroupShuffleSplit, group=user_handle)",
+  "user_overlap_train_test": 0,
+  "n_train": 10900,
+  "n_test": 2460,
+  "n_users_train": 3204,
+  "n_users_test": 801,
+  "test_users_multi_submission": 503,
+  "max_submissions_per_test_user": 46,
+  "mean_per_user_modal_share": 0.9173534053978823,
+  "mean_user_entropy": 0.22154177332687247,
+  "global_entropy": 1.199856969412805,
+  "entropy_ratio_user_vs_global": 0.18464015209687223,
+  "clustering_interpretation": "strong: per-user verdict mixes are highly homogeneous (users have characteristic verdict profiles)",
+  "user_success_rate": "train-only WA-rate (leakage fixed)",
+  "results": {
+    "Random Forest": {
+      "cv_mean": 0.9445871559633027,
+      "cv_std": 0.003864117374064724,
+      "test_acc": 0.9085365853658537,
+      "macro_f1": 0.7663410577054846,
+      "per_class_f1": {
+        "CE": 0.6894865525672371,
+        "MLE": 0.975,
+        "RE": 0.23255813953488372,
+        "TLE": 0.9924242424242424,
+        "WA": 0.9422363540010599
+      },
+      "confusion_matrix": [
+        [
+          141,
+          0,
+          0,
+          0,
+          40
+        ],
+        [
+          0,
+          39,
+          0,
+          0,
+          1
+        ],
+        [
+          5,
+          1,
+          15,
+          1,
+          76
+        ],
+        [
+          0,
+          0,
+          0,
+          262,
+          0
+        ],
+        [
+          82,
+          0,
+          16,
+          3,
+          1778
+        ]
+      ],
+      "classes": [
+        "CE",
+        "MLE",
+        "RE",
+        "TLE",
+        "WA"
+      ]
+    },
+    "Gradient Boosting": {
+      "cv_mean": 0.9505504587155965,
+      "cv_std": 0.0036743090632111483,
+      "test_acc": 0.9215447154471544,
+      "macro_f1": 0.7792092873513953,
+      "per_class_f1": {
+        "CE": 0.7566371681415929,
+        "MLE": 0.9876543209876543,
+        "RE": 0.2018348623853211,
+        "TLE": 1.0,
+        "WA": 0.9499200852424081
+      },
+      "confusion_matrix": [
+        [
+          171,
+          0,
+          0,
+          0,
+          10
+        ],
+        [
+          0,
+          40,
+          0,
+          0,
+          0
+        ],
+        [
+          4,
+          1,
+          11,
+          0,
+          82
+        ],
+        [
+          0,
+          0,
+          0,
+          262,
+          0
+        ],
+        [
+          96,
+          0,
+          0,
+          0,
+          1783
+        ]
+      ],
+      "classes": [
+        "CE",
+        "MLE",
+        "RE",
+        "TLE",
+        "WA"
+      ]
+    },
+    "Logistic Regression": {
+      "cv_mean": 0.8810091743119266,
+      "cv_std": 0.0032384151549950226,
+      "test_acc": 0.8967479674796748,
+      "macro_f1": 0.640579070599679,
+      "per_class_f1": {
+        "CE": 0.6134185303514377,
+        "MLE": 0.7105263157894737,
+        "RE": 0.0,
+        "TLE": 0.937984496124031,
+        "WA": 0.9409660107334525
+      },
+      "confusion_matrix": [
+        [
+          96,
+          0,
+          0,
+          0,
+          85
+        ],
+        [
+          0,
+          27,
+          4,
+          6,
+          3
+        ],
+        [
+          2,
+          1,
+          0,
+          2,
+          93
+        ],
+        [
+          0,
+          8,
+          0,
+          242,
+          12
+        ],
+        [
+          34,
+          0,
+          0,
+          4,
+          1841
+        ]
+      ],
+      "classes": [
+        "CE",
+        "MLE",
+        "RE",
+        "TLE",
+        "WA"
+      ]
+    }
+  }
+}
