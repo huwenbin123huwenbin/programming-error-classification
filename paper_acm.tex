@@ -785,7 +785,7 @@ incorporating source-code-level features for improved RE classification.
 \label{sec:ablation}
 
 To rigorously quantify each feature's contribution and assess the model's
-robustness, we conducted a systematic feature ablation study. Table~\ref{tab:ablation} reports uncorrected ablation p-values; the Holm-Bonferroni correction (Section~\ref{sec:ml-eval}) applies to the primary ML--LLM McNemar comparisons. Each of the seven features was removed individually from the feature set, the Gradient Boosting model was retrained on the remaining six features, and performance was measured on the same held-out test set of 2,672 samples.
+robustness, we conducted a systematic feature ablation study. Table~\ref{tab:ablation} reports uncorrected ablation p-values; the Holm-Bonferroni correction (Section~\ref{sec:llm-eval}) applies to the primary ML--LLM McNemar comparisons. Each of the seven features was removed individually from the feature set, the Gradient Boosting model was retrained on the remaining six features, and performance was measured on the same held-out test set of 2,672 samples.
 
 \begin{table}[htbp]
 \centering
