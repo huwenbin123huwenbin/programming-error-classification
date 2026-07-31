@@ -250,7 +250,7 @@ understanding and generation~\cite{barke2023grounded,becker2023programming}. Bar
 
 Feng et al.\ showed that CodeBERT achieves state-of-the-art performance on code-level benchmarks including defect detection, but is primarily evaluated on source code features; its effectiveness on submission metadata alone remains unclear. Messeri et al.\ reported significant performance degradation on error identification compared to code generation, indicating that current LLMs are better suited as code generators than error diagnosticians~\cite{prather2024code}. Leerentveld et al.\ found that LLM-generated programming error messages were ``ineffective in practice'' in a controlled classroom study, aligning with our finding that RE remains the most challenging category. Lee et al.\ found that LLM explanations of compiler errors often contained hallucinated details for runtime errors, directly relevant to our metadata-only setting where \texttt{Qwen2.5:3B} also struggled with RE classification.
 
-Recent work has explored hybrid approaches combining ML classification with LLM explanation generation~\cite{kazemitabaar2024impact,finnie2022robots}, but these have been evaluated primarily on synthetic datasets. Our work extends this line by providing, to our knowledge, the first comprehensive ML--LLM comparison on real-world competitive programming data. Keuning et al.\ provide a systematic review of AI for programming education~\cite{keuning2017systematic}.
+Recent work has explored hybrid approaches combining ML classification with LLM explanation generation~\cite{kazemitabaar2024impact,finnie2022robots}, but these have been evaluated primarily on synthetic datasets. Prather et al.~\cite{prather2025irreplaceable} and Lo et al.~\cite{lo2025llmfeedback} further show that instructor oversight remains essential even with generative-AI feedback, and that automated error explanation at scale still faces reliability gaps on runtime failures. Our work extends this line by providing, to our knowledge, the first comprehensive ML--LLM comparison on real-world competitive programming data. Keuning et al.\ provide a systematic review of AI for programming education~\cite{keuning2017systematic}; more recent multi-platform deep-learning classification studies~\cite{keuning2026deep} suggest growing interest in this direction, though none isolate the metadata-only boundary we characterize.
 
 \subsection{Metadata-Based Classification in Educational Contexts}
 
@@ -615,8 +615,6 @@ Statistical significance of pairwise model comparisons was assessed using
 McNemar's test~\cite{mcnemar1947note} ($\alpha = 0.05$), a non-parametric test
 for paired nominal data appropriate for comparing classifiers on the same test
 set. Feature ablation was conducted by systematically removing each feature,
-retraining GB on the remaining six features, and measuring the accuracy
-drop on the test set. Feature ablation was conducted by systematically removing each feature,
 retraining GB on the remaining six features, and measuring the accuracy
 drop on the test set. Seven features were ablated; no multiple-comparison correction was applied to the ablation study. All reported ablation p-values ($p < 0.001$) are reported as-is. The Bonferroni-corrected threshold ($\alpha' = 0.05/7 \approx 0.007$) is noted: all ablation p-values satisfy this threshold. Ablation results are exploratory; the primary multiple-comparison correction is applied to the 10 pairwise model comparisons in Table~\ref{tab:mcnemar} (Bonferroni $\alpha' = 0.005$).
 
@@ -1181,6 +1179,19 @@ GB n\_estimators=100); LR's underperformance may partly reflect un-tuned regular
 though the gap to majority-class baseline suggests a structural limitation rather than 
 mere suboptimal tuning.
 
+\textbf{Paired-Test Independence Assumption:} McNemar's test assumes that the
+paired predictions compared (e.g., GB vs.\ DeepSeek-V3 on the same 2,672 submissions)
+are independent across test instances. In our data, multiple submissions originate
+from the same Codeforces user; this user-level clustering means predictions are not
+strictly independent, potentially understating $p$-values for user-correlated errors.
+We did not compute an intraclass correlation (ICC) to quantify this effect because the
+unit of analysis is the submission, not the user, and per-user sample sizes are small.
+As a mitigation, we report bootstrap 95\% CIs (Table~\ref{tab:llm-results}) that
+account for sample variation, and we caution against over-interpreting marginal
+McNemar $p$-values where user clustering is plausible. A user-disjoint train/test
+split (StratifiedGroupKFold) would provide stricter independence and is recommended
+for confirmatory replications.
+
 \textbf{Feature Set Limitations:} We used only 7 metadata features and did not
 collect or evaluate source-code features (ASTs, token sequences, code embeddings).
 Consequently, the claim that source-code analysis is \emph{necessary} to resolve the
@@ -1258,12 +1269,39 @@ utility.
 \section*{Reproducibility Statement}
 
 \begin{sloppypar}\raggedright
-All code, processed datasets, and models are publicly available at
+All code, processed datasets, models, and the exact LLM prompts are publicly
+available at
 \url{https://github.com/huwenbin123huwenbin/programming-error-classification}. Random
 seeds are fixed (\texttt{random\_state=42}). See Section~3.3 for
 hyperparameters and evaluation protocol details. This research uses publicly
 available Codeforces data (IRB Approval No.~2024-AI-003, Xijing University).
 \end{sloppypar}
+
+\subsection*{LLM Prompt Template (Zero-Shot)}
+\label{sec:prompt-template}
+Both LLM configurations received the same zero-shot prompt. The five metadata
+fields (\texttt{problem\_rating}, \texttt{language}, \texttt{time\_consumed\_ms},
+\texttt{memory\_kb}, \texttt{passed\_test\_count}) were serialized as a
+structured text block and appended to the instruction below. Temperature was set
+to 0 for DeepSeek-V3 (deterministic) and the default sampling setting was used for
+\texttt{Qwen2.5:3B} via Ollama. The model was required to return a single label
+from the set \{CE, TLE, MLE, WA, RE\}.
+
+\begin{verbatim}
+You are a competitive programming submission classifier. Given the
+following submission metadata, output exactly one verdict label from
+{Compilation Error, Time Limit Exceeded, Memory Limit Exceeded,
+Wrong Answer, Runtime Error}.
+
+Submission metadata:
+- Problem rating: <problem_rating>
+- Language: <language>
+- Time consumed (ms): <time_consumed_ms>
+- Memory used (KB): <memory_kb>
+- Tests passed: <passed_test_count>
+
+Verdict:
+\end{verbatim}
 
 \textbf{Ethical Approval:} This research uses publicly available Codeforces
 submissions from public profiles. No private student data was collected.
