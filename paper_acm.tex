@@ -250,7 +250,7 @@ understanding and generation~\cite{barke2023grounded,becker2023programming}. Bar
 
 Feng et al.\ showed that CodeBERT achieves state-of-the-art performance on code-level benchmarks including defect detection, but is primarily evaluated on source code features; its effectiveness on submission metadata alone remains unclear. Messeri et al.\ reported significant performance degradation on error identification compared to code generation, indicating that current LLMs are better suited as code generators than error diagnosticians~\cite{prather2024code}. Leerentveld et al.\ found that LLM-generated programming error messages were ``ineffective in practice'' in a controlled classroom study, aligning with our finding that RE remains the most challenging category. Lee et al.\ found that LLM explanations of compiler errors often contained hallucinated details for runtime errors, directly relevant to our metadata-only setting where \texttt{Qwen2.5:3B} also struggled with RE classification.
 
-Recent work has explored hybrid approaches combining ML classification with LLM explanation generation~\cite{kazemitabaar2024impact,finnie2022robots}, but these have been evaluated primarily on synthetic datasets. Our work extends this line by providing the first comprehensive ML--LLM comparison on real-world competitive programming data. Keuning et al.\ provide a systematic review of AI for programming education~\cite{keuning2017systematic}.
+Recent work has explored hybrid approaches combining ML classification with LLM explanation generation~\cite{kazemitabaar2024impact,finnie2022robots}, but these have been evaluated primarily on synthetic datasets. Our work extends this line by providing, to our knowledge, the first comprehensive ML--LLM comparison on real-world competitive programming data. Keuning et al.\ provide a systematic review of AI for programming education~\cite{keuning2017systematic}.
 
 \subsection{Metadata-Based Classification in Educational Contexts}
 
@@ -385,6 +385,7 @@ time-constrained problems.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\columnwidth]{figures/correlation_heatmap.pdf}
+\Description{Feature correlation heatmap showing weak-to-moderate correlations among the 7 submission metadata features. Time and memory show the strongest correlation (r=0.32).}
 \caption{Feature correlation matrix showing relationships between submission metadata. Time and memory show moderate positive correlation (r=0.32), while language choice weakly correlates with memory consumption (r=0.17), reflecting language-specific memory management patterns.}
 \label{fig:corr}
 \end{figure}
@@ -410,6 +411,7 @@ Total & 13,360 & 100\% & --- \\
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/error_by_difficulty.pdf}
+\Description{Grouped bar chart of error type distribution across 5 problem difficulty tiers, from Novice (rating <=800) to Expert (>2000). WA dominates easier tiers; RE/TLE/MLE increase with difficulty.}
 \caption{Error type distribution across problem difficulty levels. Novice problems (rating $\leq$800) show highest WA rates (79.0\%), while Expert problems (>2000) exhibit more diverse errors: WA drops to 41.0\%, with RE (26.5\%), TLE (14.3\%), and MLE (11.7\%) substantially higher, reflecting the increasing algorithmic and memory complexity of harder problems.}
 \label{fig:error-diff}
 \end{figure}
@@ -671,7 +673,7 @@ Logistic Regression & 73.91\% & 74.31\% ($\pm$3.26) & 0.6738 & --- & --- \\
 \textit{Balanced Accuracy (BAcc):} GB=0.89, RF=0.87, LR=0.62 (average of per-class recall, reported in Supplementary Materials).}
 \end{table}
 
-The Gradient Boosting achieves balanced accuracy (BAcc) of 0.89 and 95.02\% overall accuracy, representing an 12.4\,pp lift in BAcc over the majority-class baseline ($0.89$ vs. $0.20$) (and 15.4\,pp for the fair 5-feature GB variant) over the majority-class baseline (76.6\%); overall accuracy is dominated by WA (76.6\% of test set, F1=0.97), while RE (4.9\% of test set) has F1=0.52 consistent with three verdicts being near-deterministically encoded in execution metrics while the WA$\leftrightarrow$RE boundary is not metadata-separable. The perfect ROC-AUC for MLE/TLE (1.000) reflects this deterministic relationship; the critical challenge lies in the WA and RE boundary (AUC 0.778), where execution metadata provides only partial signal.
+The Gradient Boosting achieves balanced accuracy (BAcc) of 0.89 and 95.02\% overall accuracy, representing a 69\,pp lift in BAcc over the majority-class baseline (0.89 vs. 0.20); overall accuracy is dominated by WA (76.6\% of test set, F1=0.97), while RE (4.9\% of test set) has F1=0.52 consistent with three verdicts being near-deterministically encoded in execution metrics while the WA$\leftrightarrow$RE boundary is not metadata-separable. The perfect ROC-AUC for MLE/TLE (1.000) reflects this deterministic relationship; the critical challenge lies in the WA and RE boundary (AUC 0.778), where execution metadata provides only partial signal.
 
 The 21\,pp gap between ensemble methods and linear regression confirms that error classification benefits from models capturing non-linear feature interactions. Prior work~\cite{altadmri2015most,luxton2018introductory} established that runtime errors are persistently difficult to classify, consistent with our findings.
 
@@ -807,7 +809,7 @@ None (full model) & 95.02 & --- & --- \\
 \end{tabular}
 \end{table}
 
-Execution time is the dominant predictor (8.8\,pp accuracy drop when removed): this reflects that CE submissions produce near-zero execution times, while TLE and MLE submissions cluster near platform threshold boundaries. The WA$\leftrightarrow$RE boundary remains indistinguishable from execution metadata alone, as neither error type produces distinctive runtime signatures---this is where source-code analysis might be required, a hypothesis to be tested in future work. Note: ablation accuracy drops are point estimates without confidence intervals; bootstrap CI estimation would clarify whether feature contributions are statistically distinguishable from each other. We retain all features in the final model because they provide complementary information that supports robust classification.; bootstrap CI estimation would clarify whether feature contributions are statistically distinguishable from each other.\begin{figure}[htbp]
+Execution time is the dominant predictor (8.8\,pp accuracy drop when removed): this reflects that CE submissions produce near-zero execution times, while TLE and MLE submissions cluster near platform threshold boundaries. The WA$\leftrightarrow$RE boundary remains indistinguishable from execution metadata alone, as neither error type produces distinctive runtime signatures---this is where source-code analysis might be required, a hypothesis to be tested in future work. Note: ablation accuracy drops are point estimates without confidence intervals; bootstrap CI estimation would clarify whether feature contributions are statistically distinguishable from each other. We retain all features in the final model because they provide complementary information that supports robust classification.\n\n\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.62\textwidth]{fig_roc_curves.pdf}
  \Description{ROC curves for 5 error types showing AUC values: CE 0.984, MLE 1.000, TLE 1.000, WA 0.935, RE 0.778}
@@ -956,6 +958,7 @@ DeepSeek-V3 vs.\ \texttt{Qwen2.5:3B}$^{\S}$ & 877.04 & $<0.001$ & Yes \\
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/model_comparison.pdf}
+\Description{Bar chart comparing accuracy (94-95\%) and Macro F1 (0.85) of Gradient Boosting and Random Forest against zero-shot LLMs DeepSeek-V3 (76.65\%, 0.5447) and Qwen2.5:3B (31.92\%, 0.2311).}
 \caption{Model performance comparison on test set (n=2,672). Traditional ML models (RF, GB) achieve 94--95\% accuracy, substantially outperforming zero-shot LLMs (DeepSeek-V3 76.65\%, \texttt{Qwen2.5:3B} 31.92\%). Macro F1 scores follow a similar pattern, with GB achieving 0.85 vs. DeepSeek's 0.5447 and Qwen's 0.2311.}
 \label{fig:model-comp}
 \end{figure}
@@ -1166,6 +1169,18 @@ GPT-4o would cost
 29$\times$ more than DeepSeek-V3 (\$2.90 vs.\ \$0.10 per 1,000 predictions),
 warranting cost-benefit analysis for educational deployments.
 
+\textbf{Linear Baseline Underperformance:} Logistic Regression (73.91\% accuracy) performs 
+\emph{worse} than the majority-class baseline (76.6\%, achieved by always predicting WA), 
+indicating that the linear model fails to exploit the metadata signal effectively. This 
+suggests the verdict boundary is non-linear in the feature space (particularly the 
+interaction between execution time, memory, and problem constraints), and that 
+tree-based ensembles are necessary for this task. We retained LR as a interpretable 
+baseline; practitioners should not deploy it for production classification. Default 
+hyperparameters were used for all models (LR regularization C=1.0, RF n\_estimators=100, 
+GB n\_estimators=100); LR's underperformance may partly reflect un-tuned regularization, 
+though the gap to majority-class baseline suggests a structural limitation rather than 
+mere suboptimal tuning.
+
 \textbf{Feature Set Limitations:} We used only 7 metadata features and did not
 collect or evaluate source-code features (ASTs, token sequences, code embeddings).
 Consequently, the claim that source-code analysis is \emph{necessary} to resolve the
@@ -1258,7 +1273,7 @@ Xijing University (Approval No.~2024-AI-003).
 % ============================================================
 \section{Conclusion}
 
-This study provides the first systematic comparison of traditional ML and LLM approaches for programming verdict classification using only submission metadata. We characterize the \textit{platform-encoding boundary}: CE, TLE, and MLE are reliably recoverable from execution metadata (F1 $\ge$ 0.89), while the WA$\leftrightarrow$RE boundary is not (RE F1 $\le$ 0.52 for all models). These findings establish the metadata-derivable performance ceiling and identify where source-code analysis is necessary. Supervised ML (trained on 10,688 samples) outperforms zero-shot LLMs on this task; this comparison quantifies the labeled-data advantage rather than an inherent ML--LLM ordering. Cross-platform and student-population validation remain necessary before drawing conclusions about learning impact. Execution time is the dominant predictor (8.8\,pp drop, $p < 0.001$). Method selection guidelines (Table~\ref{tab:guidelines}) balance accuracy, cost (10--15$\times$ lower for ML), latency, and explainability. Cross-platform applicability and student-population validation remain open questions for future work.
+This study provides, to our knowledge, the first systematic comparison of traditional ML and LLM approaches for programming verdict classification using only submission metadata. We characterize the \textit{platform-encoding boundary}: CE, TLE, and MLE are reliably recoverable from execution metadata (F1 $\ge$ 0.89), while the WA$\leftrightarrow$RE boundary is not (RE F1 $\le$ 0.52 for all models). These findings establish the metadata-derivable performance ceiling and identify where source-code analysis is necessary. Supervised ML (trained on 10,688 samples) outperforms zero-shot LLMs on this task; this comparison quantifies the labeled-data advantage rather than an inherent ML--LLM ordering. Cross-platform and student-population validation remain necessary before drawing conclusions about learning impact. Execution time is the dominant predictor (8.8\,pp drop, $p < 0.001$). Method selection guidelines (Table~\ref{tab:guidelines}) balance accuracy, cost (10--15$\times$ lower for ML), latency, and explainability. Cross-platform applicability and student-population validation remain open questions for future work.
 
 \paragraph{Future directions.} Three concrete next steps follow from our findings. First, \textbf{cross-platform validation}: replicating the CE/TLE/MLE classification pipeline on CS1QA and Blackbox datasets to assess generalizability to student populations. Second, \textbf{source-code feasibility study}: collecting submission-source pairs for the WA$\leftrightarrow$RE boundary to test whether AST tokens or code embeddings can close the RE F1 gap. Third, \textbf{class-weighted training}: evaluating whether cost-sensitive reweighting (class-weight=balanced) or SMOTE improves RE F1, trading aggregate accuracy for balanced class performance.
 
@@ -1272,11 +1287,22 @@ Limitations and future research directions are detailed in Section~5.7.
 \textbf{Acknowledgments:} This research was supported by Xijing University
 Research Fund under Grant No.~XJ-2025-001.
 
+\textbf{Conflicts of Interest:} The authors declare no financial or non-financial
+conflicts of interest. This work used the DeepSeek-V3 API (paid inference) and
+the open-source \texttt{Qwen2.5:3B} model via Ollama; no commercial relationship
+exists with either provider. The funding body (Xijing University) had no role in
+the design, execution, analysis, or reporting of this study.
+
+\textbf{Preregistration:} This study was not preregistered. All analyses reported
+were specified after data collection; we note this as a limitation and recommend
+preregistration for future confirmatory replications.
+
 \subsection*{Data Ethics and Privacy}\label{sec:ethics}
 All data was collected from the publicly accessible Codeforces REST API per
 the platform's Terms of Service. Usernames were anonymized. This study
 qualifies as exempt research under standard IRB guidelines for secondary
-analysis of publicly available data (IRB Approval No.~2024-AI-003).
+analysis of publicly available data (IRB Approval No.~2024-AI-003). Raw
+payloads are retained locally and not redistributed per platform Terms of Service.
 
 \subsection*{Data and Code Availability}
 \begin{sloppypar}\raggedright
