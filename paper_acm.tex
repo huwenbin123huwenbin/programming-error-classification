@@ -58,19 +58,30 @@
 % ============================================================
 \begin{abstract}
 
-oindent\textbf{Context}: Most automated verdict classifiers for programming submissions require source-code access or costly LLM inference. Competitive-programming platforms, however, return rich execution metadata with every submission, raising the question of how much verdict information is recoverable from metadata alone.
 
 
-oindent\textbf{Objective}: We systematically compare traditional ML and LLMs for metadata-based verdict classification to characterize the platform-encoding boundary---where a verdict becomes deterministically recoverable from execution metadata.
+
+\par\textbf{Context}: Most automated verdict classifiers for programming submissions require source-code access or costly LLM inference. Competitive-programming platforms, however, return rich execution metadata with every submission, raising the question of how much verdict information is recoverable from metadata alone.
 
 
-oindent\textbf{Method}: On 13,360 Codeforces submissions across five verdict types, we evaluate Random Forest, Gradient Boosting, and Logistic Regression (seven metadata features) and two LLMs (DeepSeek-V3, Qwen2.5:3B) under identical zero-shot protocols, with McNemar's test (Bonferroni-corrected) for significance.
 
 
-oindent\textbf{Results}: CE, TLE, and MLE are platform-encoded: deterministically recoverable from execution metadata (F1 $\ge$0.89) because they reflect the platform's own measurement thresholds, together accounting for 18.4\% of submissions (GB overall 95.02\%, BAcc=0.89). The WA$\leftrightarrow$RE boundary is not metadata-separable (RE F1 = 0.52; all models fail). DeepSeek-V3 reaches 76.65\% on valid predictions but collapses on RE (F1 = 0.03); Qwen2.5:3B achieves 35.50\%. Supervised ML outperforms DeepSeek-V3 zero-shot by 18.4 pp.
+\par\textbf{Objective}: We systematically compare traditional ML and LLMs for metadata-based verdict classification to characterize the platform-encoding boundary---where a verdict becomes deterministically recoverable from execution metadata.
 
 
-oindent\textbf{Conclusions}: We delineate the platform-encoding boundary for verdict classification: CE/TLE/MLE are metadata-recoverable, whereas WA$\leftrightarrow$RE requires source-code analysis. These findings motivate lightweight metadata-based verdict screening, though classroom validation is needed before claims about learning impact. Dataset and pipeline are released at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
+
+
+\par\textbf{Method}: On 13,360 Codeforces submissions across five verdict types, we evaluate Random Forest, Gradient Boosting, and Logistic Regression (seven metadata features) and two LLMs (DeepSeek-V3, Qwen2.5:3B) under identical zero-shot protocols, with McNemar's test (Bonferroni-corrected) for significance.
+
+
+
+
+\par\textbf{Results}: CE, TLE, and MLE are platform-encoded: deterministically recoverable from execution metadata (F1 $\ge$0.89) because they reflect the platform's own measurement thresholds, together accounting for 18.4\% of submissions (GB overall 95.02\%, BAcc=0.89). The WA$\leftrightarrow$RE boundary is not metadata-separable (RE F1 = 0.52; all models fail). DeepSeek-V3 reaches 76.65\% on valid predictions but collapses on RE (F1 = 0.03); Qwen2.5:3B achieves 35.50\%. Supervised ML outperforms DeepSeek-V3 zero-shot by 18.4 pp.
+
+
+
+
+\par\textbf{Conclusions}: We delineate the platform-encoding boundary for verdict classification: CE/TLE/MLE are metadata-recoverable, whereas WA$\leftrightarrow$RE requires source-code analysis. These findings motivate lightweight metadata-based verdict screening, though classroom validation is needed before claims about learning impact. Dataset and pipeline are released at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{abstract}
 
 \maketitle
@@ -276,7 +287,9 @@ code-based approaches---a question our work is, to our knowledge, the first to
 systematically
 address for the verdict classification task.
 
- oindent\textbf{Contribution boundary}: Prior work on metadata-based prediction has focused primarily on \textit{grade prediction} and \textit{at-risk identification}. We are not aware of
+ 
+
+\par\textbf{Contribution boundary}: Prior work on metadata-based prediction has focused primarily on \textit{grade prediction} and \textit{at-risk identification}. We are not aware of
 any prior study that has applied metadata-based classification to the more
 granular task of \textit{verdict classification} across five error
 categories, nor has any work systematically compared metadata-based ML against
