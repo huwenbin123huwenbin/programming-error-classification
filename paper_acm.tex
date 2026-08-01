@@ -1133,20 +1133,10 @@ acknowledged.
 
 We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under zero-shot
 protocol (Section~\ref{sec:llm-eval}); recent benchmarks~\cite{denny2024prompt}
-confirm substantial LLM family variation. See below for detailed results including
-GPT-4o and Claude-3.5 Sonnet cost analysis.
+confirm substantial LLM family variation, and alternative model families (GPT-4o, Claude-3.5 Sonnet) would increase inference cost substantially (GPT-4o approx. 29\$\times$ DeepSeek-V3 per 1{,}000 predictions).
 
 \textbf{Student-population validation (critical gap):} Our dataset consists of competitive
 programmers (rating 800--3,500), not novice students. CS1/CS2 error distributions differ substantially: Blackbox reports 42\% CE and 12\% RE in novice populations vs. our 7.3\% CE and 4.9\% RE. Before classroom deployment, three validations are needed: (1) CE/TLE/MLE accuracy on student submissions; (2) WA$\leftrightarrow$RE boundary behavior with novice error profiles; (3) whether automated classification translates to improved learning outcomes (randomized controlled trial). We provide a theoretical CS1 baseline (Section~5.6) and skill-tier analysis (Section~4.7) as partial evidence, but these do not substitute for direct student-population validation.
-
-\textbf{Generalizability to Students:} Our dataset consists of competitive
-programmers (rating 800--3,500), not novice students. Error patterns differ
-(e.g., more syntax errors, fewer runtime errors). Future work should validate on
-student datasets (CS1QA\cite{lee2022cs1qa}, Blackbox\cite{brown2014blackbox}).
-
-GPT-4o would cost
-29$\times$ more than DeepSeek-V3 (\$2.90 vs.\ \$0.10 per 1,000 predictions),
-warranting cost-benefit analysis for educational deployments.
 
 \textbf{Linear Baseline Underperformance:} Logistic Regression (73.91\% accuracy, Table~\ref{tab:ml-results}) performs \emph{worse} than the majority-class baseline (76.6\%, achieved by always predicting WA), indicating that the linear model fails to exploit the metadata signal effectively under the standard random split. This suggests the verdict boundary is non-linear in the feature space (particularly the interaction between execution time, memory, and problem constraints), and that tree-based ensembles are necessary for this task. We retained LR as an interpretable baseline; practitioners should not deploy it for production classification. Default hyperparameters were used for all models (LR regularization C=1.0, RF n\_estimators=100, GB n\_estimators=100); LR's underperformance may partly reflect un-tuned regularization and the effect of user-level clustering on this feature, though the gap to majority-class baseline suggests a structural limitation. In the user-disjoint robustness check, LR retained 89.67\% accuracy, above the majority-class baseline, suggesting that clustering inflates the gap between LR and the majority baseline under random splitting, but does not eliminate the non-linearity motivation for ensemble models.
 
