@@ -1149,17 +1149,9 @@ GPT-4o would cost
 29$\times$ more than DeepSeek-V3 (\$2.90 vs.\ \$0.10 per 1,000 predictions),
 warranting cost-benefit analysis for educational deployments.
 
-\textbf{Linear Baseline Underperformance:} Logistic Regression (73.91\% accuracy) performs 
-\emph{worse} than the majority-class baseline (76.6\%, achieved by always predicting WA), 
-indicating that the linear model fails to exploit the metadata signal effectively. This 
-suggests the verdict boundary is non-linear in the feature space (particularly the 
-interaction between execution time, memory, and problem constraints), and that 
-tree-based ensembles are necessary for this task. We retained LR as a interpretable 
-baseline; practitioners should not deploy it for production classification. Default 
-hyperparameters were used for all models (LR regularization C=1.0, RF n\_estimators=100, 
-GB n\_estimators=100); LR's underperformance may partly reflect un-tuned regularization, 
-though the gap to majority-class baseline suggests a structural limitation rather than 
-mere suboptimal tuning.
+\textbf{Linear Baseline Underperformance:} Logistic Regression (73.91\% accuracy, Table~\ref{tab:ml-results}) performs \emph{worse} than the majority-class baseline (76.6\%, achieved by always predicting WA), indicating that the linear model fails to exploit the metadata signal effectively under the standard random split. This suggests the verdict boundary is non-linear in the feature space (particularly the interaction between execution time, memory, and problem constraints), and that tree-based ensembles are necessary for this task. We retained LR as an interpretable baseline; practitioners should not deploy it for production classification. Default hyperparameters were used for all models (LR regularization C=1.0, RF n\_estimators=100, GB n\_estimators=100); LR's underperformance may partly reflect un-tuned regularization and the effect of user-level clustering on this feature, though the gap to majority-class baseline suggests a structural limitation. In the user-disjoint robustness check, LR retained 89.67\% accuracy, above the majority-class baseline, suggesting that clustering inflates the gap between LR and the majority baseline under random splitting, but does not eliminate the non-linearity motivation for ensemble models.
+
+
 
 \textbf{Paired-Test Independence Assumption:} McNemar's test assumes that the
 paired predictions compared (e.g., GB vs.\ DeepSeek-V3 on the same 2,672 submissions)
