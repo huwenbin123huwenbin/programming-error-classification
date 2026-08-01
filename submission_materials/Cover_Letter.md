@@ -2,7 +2,7 @@
 
 **To:** Editor-in-Chief, ACM Transactions on Computing Education  
 **From:** Wenbin Hu, School of Computer Science, Xijing University  
-**Date:** July 30, 2026  
+**Date:** August 1, 2026  
 **Subject:** Manuscript Submission — "Automated Programming Verdict Classification from Submission Metadata: Comparing Machine Learning and Large Language Models in Competitive Programming"
 
 ---
@@ -19,11 +19,11 @@ The paper is directly relevant to TOCE readers: it provides educators with cost-
 
 ## Novelty and Contributions
 
-1. **First controlled ML–LLM comparison** for programming verdict classification from metadata alone, with identical protocols across three ML models (Random Forest, Gradient Boosting, Logistic Regression) and two LLM configurations (DeepSeek-V3, Qwen2.5:3B).
+1. **First controlled ML–LLM comparison** for programming verdict classification from metadata alone, with identical protocols across three ML models (Random Forest, Gradient Boosting, Logistic Regression) and two LLM configurations (DeepSeek-V3, Qwen2.5:3B). The full zero-shot prompt template is provided in the paper's Reproducibility Statement.
 
 2. **The platform-encoding boundary**: Compile-time errors (CE), time limit exceeded (TLE), and memory limit exceeded (MLE)—together 18.4% of submissions—are deterministically recoverable from execution metadata (F1 ≥ 0.89) because platform measurement thresholds define these outcomes. The WA↔RE boundary is not metadata-separable (RE F1 = 0.52), delineating where source-code analysis may be required.
 
-3. **Statistical and deployment rigor**: Holm-Bonferroni-corrected McNemar tests, ablation analysis, Gini importance, leave-one-user-out cross-validation (82.5% accuracy), cross-difficulty generalization (71–94% across problem difficulties), and method-selection guidelines balancing accuracy, cost, and latency across six deployment contexts.
+3. **Statistical and deployment rigor**: Holm-Bonferroni-corrected McNemar tests, ablation analysis, Gini importance, leave-one-user-out cross-validation (82.5% accuracy), cross-difficulty generalization (71–94% across problem difficulties), user-disjoint replication confirming robustness to user-level clustering and look-ahead leakage (GroupShuffleSplit, zero train/test user overlap; GB 92.2%, RF 90.9%), and method-selection guidelines balancing accuracy, cost, and latency across six deployment contexts.
 
 4. **Data and code publicly released**: https://github.com/huwenbin123huwenbin/programming-error-classification
 
@@ -43,11 +43,11 @@ Supervised ML (95.02%) outperforms DeepSeek-V3 zero-shot (76.65%) by 18.4 pp. Ev
 This work speaks to TOCE's interest in:
 - **Automated assessment tools**: Lightweight metadata-based verdict screening is computationally tractable for resource-constrained educational settings.
 - **Feedback automation**: Characterizes which verdicts benefit from immediate automated feedback (CE, TLE, MLE) and which require human expert review (WA, RE).
-- **Empirical computing education research**: Controlled comparison of ML and LLM methods with transparent statistical analysis.
+- **Empirical computing education research**: Controlled comparison of ML and LLM methods with transparent statistical analysis, including robustness to user-level clustering.
 
 ## Submission Materials
 
-- Manuscript: 28 pages, 9 tables, 8 figures
+- Manuscript: 30 pages, 9 tables, 8 figures
 - Highlights: 5 key contributions
 - Supplementary Materials: per-class F1 scores, Cohen's h effect sizes, balanced accuracy, confusion matrices, statistical test p-values, ROC/PR curves
 
@@ -59,4 +59,4 @@ Best regards,
 
 **Wenbin Hu**  
 School of Computer Science, Xijing University  
-Email: wenbin.hu2026@outlook.com  
+Email: wenbin.hu2026@outlook.com

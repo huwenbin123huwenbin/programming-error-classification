@@ -1,158 +1,68 @@
 # Submission Checklist for ACM TOCE
 
-## ✅ Pre-Submission Checklist
+**Last Updated: 2026-08-01**
 
-### Manuscript
-- [x] Title page with author information
-- [x] Abstract (166 words, ≤200 required) ✓
-- [x] Keywords (5 keywords)
-- [x] Main text (19 pages, within limit)
-- [x] References (66 citations, all verified)
-- [x] Figures (11 figures, all included)
-- [x] Tables (multiple tables, formatted)
-- [x] LaTeX source file (paper.tex, paper_acm_format.tex)
-- [x] Compiled PDF (paper.pdf, paper_acm_format.pdf)
+## ✅ Manuscript
+- [x] Title: "Automated Programming Verdict Classification from Submission Metadata: Comparing Machine Learning and Large Language Models in Competitive Programming"
+- [x] LaTeX source: `paper_acm.tex` (30 pages, 0 errors, 0 undefined refs)
+- [x] Compiled PDF: `paper_acm.pdf` (30 pages, 852KB)
+- [x] GitHub repository: `huwenbin123huwenbin/programming-error-classification` (all commits pushed to `main`)
+- [x] Abstract structured (Context/Objective/Method/Results/Conclusions, 260 words)
+- [x] Keywords (5): programming verdict classification, machine learning, large language models, competitive programming, metadata-based classification
+- [x] CCS categories: Social and professional topics ~ Computing education
+- [x] IRB/ethics statement (IRB No. 2024-AI-003, Xijing University)
+- [x] Data availability statement (GitHub URL in paper + Cover Letter)
+- [x] Conflicts of interest statement (Xijing University Research Fund Grant No. XJ-2025-001)
+- [x] Preregistration statement (not preregistered, limitations acknowledged)
+- [x] Author: Wenbin Hu, School of Computer Science, Xijing University, wenbin.hu2026@outlook.com
 
-### Formatting
-- [x] ACM format (paper_acm_format.tex) ✓
-- [x] Alternative format (paper.tex, A4)
-- [x] Bibliography in ACM format (apalike)
+## ✅ Supplementary Materials
+- [x] Per-class F1 scores, Cohen's h effect sizes, balanced accuracy
+- [x] Confusion matrices (RF, GB)
+- [x] ROC/PR curves
+- [x] Statistical test p-values (McNemar, Holm-Bonferroni corrected)
+- [x] Feature ablation results
+- [x] Gini importance
+- [x] Leave-one-user-out CV (82.5% accuracy)
+- [x] Cross-difficulty generalization (71–94%)
+- [x] Student-proxy experiment (novice 96.0%, intermediate 95.2%, advanced 88.5%)
+- [x] User-disjoint replication (GroupShuffleSplit, GB 92.2%, RF 90.9%)
 
-### Supplementary Materials
-- [x] README.md with repository structure
-- [x] LICENSE (MIT)
-- [x] Source code (experiment_code/)
-- [x] Experimental results (experiment_results/)
-- [x] LLM evaluation results (llm_experiments/)
-- [x] Generalizability analysis (generalizability_results/)
+## ✅ Submission Materials (this folder)
+- [x] Cover_Letter.md / Cover_Letter.tex / Cover_Letter.pdf (updated Aug 1, 2026)
+- [x] Highlights.md / Highlights.tex / Highlights.pdf (updated Aug 1, 2026)
+- [x] SUBMISSION_CHECKLIST.md (this file)
 
-### Data Availability
-- [x] Dataset description in paper
-- [x] GitHub repository prepared
-- [ ] GitHub repository published (requires gh auth login)
+## ✅ GitHub Repository Contents
+- [x] Dataset: `codeforces_final_real.csv` (13,360 submissions)
+- [x] Source code: `experiment_code/` (preprocessing, ML training, replication scripts)
+- [x] LLM experiments: `llm_experiments/` (DeepSeek, Qwen scripts)
+- [x] Results: `experiment_results/` (JSON, figures)
+- [x] README.md, LICENSE (MIT)
+- [x] User-disjoint replication: `user_disjoint_replication.py` + `user_disjoint_results.json`
 
-### Author Information
-- [x] Name: Wenbin Hu
-- [x] Affiliation: Xijing University
-- [x] Email: wenbin.hu2026@outlook.com
-- [ ] ORCID: (optional)
+## ✅ Suggested Reviewers (5)
+1. **Dr. Brett A. Becker** — University College Dublin (CS1, programming education)
+2. **Dr. Juho Leinonen** — Aalto University (automated assessment, ML in education)
+3. **Dr. Paul Denny** — University of Auckland (programming tools, code assessment)
+4. **Dr. Arto Hellas** — University of Helsinki (learning analytics, programming education)
+5. **Dr. Stefanos Gkiokas** — ATHENA RC / UCL (CS education, automated feedback)
 
----
+## ⏳ Pending (Author Action Required)
+- [ ] Register at ScholarOne: https://mc.manuscriptcentral.com/acm/toce
+- [ ] Upload paper_acm.pdf as main manuscript
+- [ ] Upload Cover_Letter.pdf and Highlights.pdf
+- [ ] Add suggested reviewers (5 names above)
+- [ ] Confirm ORCID (optional)
+- [ ] Verify CCS categories match TOCE scope
 
-## 📝 Cover Letter
+## 📋 Key Findings for Submission
+| Approach | Accuracy | Cost/1K |
+|----------|---------|---------|
+| Gradient Boosting (7 feat.) | **95.02%** | $0.01 |
+| Gradient Boosting (5 feat.) | 92.0% | $0.01 |
+| DeepSeek-V3 zero-shot | 76.65% | $0.10 |
+| Qwen2.5:3B zero-shot | 35.50% | $0.00 (local) |
 
-### To: ACM Transactions on Computing Education
-
-**Dear Editor,**
-
-We are pleased to submit our manuscript entitled "**Comparative Analysis of Machine Learning and Large Language Models for Programming Error Pattern Recognition in Competitive Programming**" for consideration in ACM Transactions on Computing Education.
-
-**Novelty and Significance:**
-
-This work presents the **first systematic comparison** of traditional ML classifiers and LLM-based methods for programming error classification using **only submission metadata** (no source code access). Our key contributions include:
-
-1. **Novel ML-LLM comparison** using identical evaluation protocols on a large dataset (13,360 samples)
-2. **Execution time dominance finding** with ablation validation (8.8pp accuracy drop, p<0.001)
-3. **Cost-effectiveness analysis**: ML achieves superior accuracy at 10-15× lower cost
-4. **Actionable guidelines** for educators and platform developers
-
-**Relevance to TOCE:**
-
-This research directly addresses the "CS1 problem" by providing educators with practical tools for automated error diagnosis. Our metadata-only approach enables deployment at platform scale without privacy concerns associated with source code access.
-
-**Key Findings:**
-
-- Gradient Boosting achieves 95.02% accuracy, significantly outperforming DeepSeek (78.29% 0-shot, 17.37% 5-shot)
-- Execution time is the dominant predictor (42.5% feature importance)
-- ML offers 10-15× cost advantage with faster inference (2ms vs. 3s)
-
-**Data and Code Availability:**
-
-All data, code, and experimental results will be made publicly available on GitHub upon acceptance.
-
-**Previous Presentation:**
-
-This manuscript has not been published previously and is not under consideration elsewhere.
-
-We believe this work makes significant contributions to computing education research and would be suitable for publication in TOCE.
-
-Sincerely,
-
-Wenbin Hu
-School of Computer Science
-Xijing University
-wenbin.hu2026@outlook.com
-
----
-
-## 🎯 Highlights
-
-1. **First ML-LLM comparison** for error classification using metadata only
-2. **95.02% accuracy** achieved by Gradient Boosting (10-15× lower cost than LLMs)
-3. **Execution time dominance** identified via ablation study (8.8pp drop, p<0.001)
-4. **Platform-scale deployment** enabled without source code access
-5. **Practical guidelines** for ML vs. LLM selection across educational contexts
-6. **Open dataset and code** for reproducibility
-
----
-
-## 📧 Author Contact Information
-
-**Corresponding Author:**
-- Name: Wenbin Hu
-- Email: wenbin.hu2026@outlook.com
-- Affiliation: School of Computer Science, Xijing University
-- Address: Xi'an, China
-
----
-
-## 📋 Suggested Reviewers
-
-1. **Dr. Brett A. Becker**
-   - University College Dublin
-   - Expertise: Programming education, CS1
-   - Email: (to be searched)
-
-2. **Dr. Juho Leinonen**
-   - Aalto University
-   - Expertise: Automated assessment, ML in education
-   - Email: (to be searched)
-
-3. **Dr. Paul Denny**
-   - University of Auckland
-   - Expertise: Programming tools, code assessment
-   - Email: (to be searched)
-
----
-
-## 📄 Data Availability Statement
-
-The dataset and code supporting this study will be made publicly available in a GitHub repository upon acceptance. The repository includes:
-- Curated dataset (13,360 samples)
-- Python scripts for data preprocessing and model training
-- All experimental results (JSON format)
-- Figure generation scripts
-
-During the review process, data and code are available upon request from the corresponding author.
-
----
-
-## ⚖️ Ethics Statement
-
-This research uses publicly available data from Codeforces competitive programming platform. No human subjects were involved. The data consists of submission metadata without personal identification information.
-
----
-
-## 💰 Funding Statement
-
-This research received no specific grant from any funding agency in the public, commercial, or not-for-profit sectors.
-
----
-
-## 🔗 Conflicts of Interest
-
-The author declares no conflicts of interest.
-
----
-
-**Last Updated: 2026-06-26**
+**ML > LLM by 18.4 pp** (Holm-Bonferroni-corrected McNemar, p < 0.001)
+**Platform-encoding boundary**: CE/TLE/MLE recoverable (F1≥0.89, 18.4% of submissions); WA↔RE not separable (RE F1=0.52)

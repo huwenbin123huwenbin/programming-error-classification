@@ -9,7 +9,7 @@
 \noindent\textbf{Cover Letter}\\[1ex]
 \noindent\textbf{To:} Editor-in-Chief, ACM Transactions on Computing Education\\
 \textbf{From:} Wenbin Hu, School of Computer Science, Xijing University\\
-\textbf{Date:} July 30, 2026\\
+\textbf{Date:} August 1, 2026\\
 \textbf{Subject:} Manuscript Submission --- ``Automated Programming Verdict Classification from Submission Metadata: Comparing Machine Learning and Large Language Models in Competitive Programming''\\[2ex]
 
 \noindent Dear Editor,\\[1ex]
@@ -20,17 +20,17 @@ We are pleased to submit our manuscript, ``Automated Programming Verdict Classif
 
 \noindent\textbf{Novelty and Contributions.}
 \begin{itemize}\setlength\itemsep{0.4em}
-\item \textbf{First controlled ML--LLM comparison} for programming verdict classification from metadata alone, with identical protocols across three ML models (Random Forest, Gradient Boosting, Logistic Regression) and two LLM configurations (DeepSeek-V3, Qwen2.5:3B).
+\item \textbf{First controlled ML--LLM comparison} for programming verdict classification from metadata alone, with identical protocols across three ML models (Random Forest, Gradient Boosting, Logistic Regression) and two LLM configurations (DeepSeek-V3, Qwen2.5:3B). The full zero-shot prompt template is disclosed in the paper's Reproducibility Statement.
 \item \textbf{The platform-encoding boundary}: CE, TLE, and MLE (18.4\% of submissions) are deterministically recoverable from execution metadata (F1 $\ge$ 0.89) because platform measurement thresholds define these outcomes. The WA$\leftrightarrow$RE boundary is not metadata-separable (RE F1 = 0.52), indicating where source-code analysis may be required.
-\item \textbf{Statistical and deployment rigor}: Holm-Bonferroni-corrected McNemar tests, ablation analysis, Gini importance, leave-one-user-out cross-validation (82.5\% accuracy), and cross-difficulty generalization (71--94\% across problem difficulties).
+\item \textbf{Statistical and deployment rigor}: Holm-Bonferroni-corrected McNemar tests, ablation analysis, Gini importance, leave-one-user-out cross-validation (82.5\% accuracy), cross-difficulty generalization (71--94\% across problem difficulties), and user-disjoint replication confirming robustness to user-level clustering and look-ahead leakage (GroupShuffleSplit, zero train/test user overlap; GB 92.2\%, RF 90.9\%).
 \item \textbf{Open dataset and code}: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}
 \end{itemize}
 
 \noindent\textbf{Key Findings.} Gradient Boosting (95.02\%) outperforms DeepSeek-V3 zero-shot (76.65\%) by 18.4 pp; even with identical features GB (92.0\%) surpasses DeepSeek-V3 by 15.4 pp. Execution time is the dominant predictor (8.8 pp accuracy drop when removed). We note that this comparison is asymmetric: ML models were trained on 10,688 labeled samples while LLMs received no task-specific training.\\[1ex]
 
-\noindent\textbf{Relevance to TOCE Scope.} This work speaks to TOCE's interest in: (1) automated assessment tools for resource-constrained settings; (2) feedback automation characterizing which verdicts benefit from immediate feedback (CE, TLE, MLE) and which require human expert review; (3) empirical computing education research with transparent statistical analysis.\\[1ex]
+\noindent\textbf{Relevance to TOCE Scope.} This work speaks to TOCE's interest in: (1) automated assessment tools for resource-constrained settings; (2) feedback automation characterizing which verdicts benefit from immediate feedback (CE, TLE, MLE) and which require human expert review; (3) empirical computing education research with transparent statistical analysis, including robustness to user-level clustering.\\[1ex]
 
-\noindent\textbf{Submission Materials.} Manuscript: 28 pages, 9 tables, 8 figures. Highlights: 5 key contributions. Supplementary: per-class F1 scores, Cohen's $h$ effect sizes, balanced accuracy, confusion matrices, ROC/PR curves.\\[1ex]
+\noindent\textbf{Submission Materials.} Manuscript: 30 pages, 9 tables, 8 figures. Highlights: 5 key contributions. Supplementary: per-class F1 scores, Cohen's $h$ effect sizes, balanced accuracy, confusion matrices, ROC/PR curves.\\[1ex]
 
 We confirm this manuscript is original, has not been published elsewhere, and is not under review at any other venue.\\[2ex]
 
