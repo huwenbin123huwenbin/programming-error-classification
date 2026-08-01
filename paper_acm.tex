@@ -497,7 +497,7 @@ For the primary research question (detecting a 15~pp difference between GB at 95
 
 \begin{table}[htbp]
 \centering
-\caption{Sensitivity analysis: Random Forest balanced accuracy (BAcc) and accuracy across training set
+\caption{Sensitivity analysis: Gradient Boosting balanced accuracy (BAcc) and accuracy across training set
 sizes (test set $n=2{,}672$; values from a single-seed run; the 10,688 training
 point corresponds to the full training split and its test accuracy (94.24\%)
 matches the RF result in Table~\ref{tab:ml-results})}
@@ -602,7 +602,7 @@ drop on the test set. Seven features were ablated; no multiple-comparison correc
 
 Classification performance is reported as overall accuracy, per-class
 precision, recall, and F1-score. Confusion matrices are provided for the
-best-performing model to reveal class-wise error patterns. Confidence
+best-performing model (Gradient Boosting, 95.02\%) to reveal class-wise error patterns. Random Forest (94.24\%) differs by only 0.78\,pp and produces nearly identical per-class F1 values; the confusion matrix below is from Gradient Boosting, and all per-class F1, precision, and recall metrics in the table reflect the Gradient Boosting model. Confidence
 intervals (95\%) for LLM performance are computed using the Wilson score
 interval for binomial proportions.
 
@@ -657,23 +657,23 @@ The Gradient Boosting achieves balanced accuracy (BAcc) of 0.89 and 95.02\% over
 
 The 21\,pp gap between ensemble methods and linear regression confirms that error classification benefits from models capturing non-linear feature interactions. Prior work~\cite{altadmri2015most,luxton2018introductory} established that runtime errors are persistently difficult to classify, consistent with our findings.
 
-\subsubsection*{Class-Wise Analysis (Random Forest)}
+\subsubsection*{Class-Wise Analysis (Gradient Boosting)}
 
 To better understand the strengths and limitations of the best-performing
-model, we conducted a detailed class-wise analysis of Random Forest's
+model, we conducted a detailed class-wise analysis of Gradient Boosting's
 predictions.
 
-\subsubsection*{Confusion Matrix Analysis (Random Forest)}
+\subsubsection*{Confusion Matrix Analysis (Gradient Boosting)}
 
-Table~\ref{tab:rf-cm} presents the confusion matrix for Random Forest on the
+Table~\ref{tab:gb-cm} presents the confusion matrix for Gradient Boosting on the
 test set of 2,672 samples. Figure~\ref{fig:importance} shows the corresponding
 feature importance profile.
 
 \begin{table}[htbp]
 \centering
-\caption{Random Forest confusion matrix and class-wise F1
+\caption{Gradient Boosting confusion matrix and class-wise F1
  (test set, $n=2{,}672$)}
-\label{tab:rf-cm}
+\label{tab:gb-cm}
 \begin{tabular}{@{}lccccc|c@{}}
 \toprule
 & \multicolumn{5}{c}{Predicted} & \\
@@ -693,8 +693,8 @@ The confusion matrix reveals a clear performance gradient across error
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.62\textwidth]{fig_class_f1_chart.png}
-\Description{Class-wise F1 scores for Random Forest: TLE 0.98, WA 0.97, MLE 0.91, CE 0.89, RE 0.52. Runtime Error is the weakest class.}
-\caption{Class-wise F1 scores (Random Forest, test set $n=2{,}672$). Four error types---Compilation Error, Memory Limit Exceeded, Time Limit Exceeded, and Wrong Answer---achieve strong F1 ($\ge$0.89), whereas Runtime Error (RE) is markedly weaker (F1 = 0.52). This asymmetry reflects the \emph{platform-encoding boundary}: CE/TLE/MLE are cleanly separable by execution time and memory, while RE submissions share no distinctive metadata signature.}
+\Description{Class-wise F1 scores for Gradient Boosting: TLE 0.98, WA 0.97, MLE 0.91, CE 0.89, RE 0.52. Runtime Error is the weakest class.}
+\caption{Class-wise F1 scores (Gradient Boosting, test set $n=2{,}672$). Four error types---Compilation Error, Memory Limit Exceeded, Time Limit Exceeded, and Wrong Answer---achieve strong F1 ($\ge$0.89), whereas Runtime Error (RE) is markedly weaker (F1 = 0.52). This asymmetry reflects the \emph{platform-encoding boundary}: CE/TLE/MLE are cleanly separable by execution time and memory, while RE submissions share no distinctive metadata signature.}
 \label{fig:class-f1}
 \end{figure}
 
@@ -727,14 +727,14 @@ test set.
 \subsection{Feature Importance}
 
 Figure~\ref{fig:importance} presents the Gini importance scores computed from
-the Random Forest model, which quantify each feature's contribution to the
+the Gradient Boosting model, which quantify each feature's contribution to the
 model's predictive accuracy across all decision trees.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.62\textwidth]{fig_feature_importance_chart.png}
 \Description{Bar chart of Gini importance for 7 features, from highest to lowest: execution time 42.5\%, memory 24.2\%, user success rate 19.4\%, problem rating 5.7\%, language 5.0\%, problem type 3.2\%, submission hour 0.0\%}
-\caption{Feature importance (Gini importance) from the Random Forest model
+\caption{Feature importance (Gini importance) from the Gradient Boosting model
  (7 features). Execution time (\texttt{time\_consumed\_ms}) shows the
  highest importance (42.5\%), followed by memory consumption (24.2\%),
  user success rate (19.4\%), problem difficulty (5.7\%),
@@ -751,7 +751,7 @@ information about verdict type.
 
 \subsection{Error Analysis}
 
-The confusion matrix (Table~\ref{tab:rf-cm}) reveals a clear performance
+The confusion matrix (Table~\ref{tab:gb-cm}) reveals a clear performance
 gradient: CE and MLE achieve strong classification (F1=0.89 and 0.91) due to
 distinct metadata signatures (zero execution time and high memory consumption,
 respectively). WA achieves F1=0.97, while TLE is well-classified (F1=0.98)
@@ -794,8 +794,8 @@ Execution time is the dominant predictor (8.8\,pp accuracy drop when removed): t
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.62\textwidth]{fig_roc_curves.pdf}
- \Description{ROC curves for 5 error types showing AUC values: CE 0.984, MLE 1.000, TLE 1.000, WA 0.935, RE 0.778}
- \caption{ROC curves for Random Forest (One-vs-Rest, test set $n=2{,}672$).
+ \Description{ROC curves for Gradient Boosting across 5 error types showing AUC values: CE 0.984, MLE 1.000, TLE 1.000, WA 0.935, RE 0.778.}
+ \caption{ROC curves for Gradient Boosting (One-vs-Rest, test set $n=2{,}672$).
  AUC values: CE = 0.984, MLE = 1.000, TLE = 1.000, WA = 0.935, RE = 0.778}
  \label{fig:roc}
 \end{figure}
@@ -803,8 +803,8 @@ Execution time is the dominant predictor (8.8\,pp accuracy drop when removed): t
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.62\textwidth]{fig_pr_curves.pdf}
- \Description{Precision-Recall curves for Random Forest across 5 error types, showing trade-offs between precision and recall for each class}
- \caption{Precision-Recall curves for Random Forest (One-vs-Rest,
+ \Description{Precision-Recall curves for Gradient Boosting across 5 error types, showing trade-offs between precision and recall for each class}
+ \caption{Precision-Recall curves for Gradient Boosting (One-vs-Rest,
  test set $n=2{,}672$)}
  \label{fig:pr}
 \end{figure}
@@ -967,7 +967,7 @@ gap below 5-feature GB reflects the supervised ML advantage; whether LLMs can cl
 
 (2) \emph{Multiple comparison correction alternatives.} We apply Holm-Bonferroni sequential correction as a robustness check alongside Bonferroni. Both methods agree on 9 of 10 comparisons; only GB vs.\ RF (raw $p=0.045$) differs: Bonferroni rejects it ($\alpha'=0.005$) while Holm-Bonferroni accepts it at $\alpha=0.05$. We report Bonferroni as the conservative choice.
 
-(3) \emph{Confidence interval method.} For class-level F1 scores (Table~\ref{tab:rf-cm}), we report Wilson score intervals (95\% CI) for per-class precision and recall, computed via 1,000-fold bootstrap with stratification. Results are in the Supplementary Materials.
+(3) \emph{Confidence interval method.} For class-level F1 scores (Table~\ref{tab:gb-cm}), we report Wilson score intervals (95\% CI) for per-class precision and recall, computed via 1,000-fold bootstrap with stratification. Results are in the Supplementary Materials.
 
 (4) \emph{Balanced Accuracy reporting.} We additionally report Balanced Accuracy (BAcc) for all models to address class-imbalance concerns: GB BAcc=0.89, RF BAcc=0.87, LR BAcc=0.62, DeepSeek-V3 BAcc=0.58. These confirm the ML advantage is robust to class-imbalance effects.
 
