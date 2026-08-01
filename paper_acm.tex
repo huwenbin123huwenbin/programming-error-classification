@@ -897,10 +897,8 @@ programming verdict classification at scale.
 On the full 2,672-sample test set, \texttt{Qwen2.5:3B} accuracy was 31.92\% with
 269/2,672 (10.1\%) invalid predictions, versus DeepSeek-V3's 76.05\% with
 only 21/2,672 (0.8\%) invalid. The 44.1pp gap between the two LLMs on
-identical prompts and features demonstrates that local small models are not
-a drop-in substitute for online APIs on this task.
+identical prompts and features demonstrates that local small models are not a drop-in substitute for online APIs on this task.
 
-The cost comparison between traditional ML and LLM approaches reveals an
 The cost comparison between traditional ML and LLM approaches reveals an important trade-off. For API-based LLM inference (DeepSeek-V3), ML inference (\$0.01/1k) is approximately 10$\times$ cheaper than LLM API calls (\$0.10/1k). Local LLM inference (Ollama v0.30.7) has marginal cost approximately \$0.00/1k (no API call), but requires upfront hardware investment, making it cheaper than ML inference in per-query terms, but incurs a one-time hardware setup cost and requires local compute resources. \textit{Note:} the \$0.01/1k figure covers only the inference stage; total cost of ownership for ML includes training and labeled data acquisition.
 
 ($p < 0.001$).
