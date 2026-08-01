@@ -1146,7 +1146,7 @@ acknowledged.
 
 We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under zero-shot
 protocol (Section~\ref{sec:llm-eval}); recent benchmarks~\cite{denny2024prompt}
-confirm substantial LLM family variation, and alternative model families (GPT-4o, Claude-3.5 Sonnet) would increase inference cost substantially (GPT-4o approx. 29\$\times$ DeepSeek-V3 per 1{,}000 predictions).
+confirm substantial LLM family variation, and alternative model families (GPT-4o, Claude-3.5 Sonnet) would increase inference cost substantially ($29\times$ DeepSeek-V3 per 1{,}000 predictions).
 
 \textbf{Student-population validation (critical gap):} Our dataset consists of competitive
 programmers (rating 800--3,500), not novice students. CS1/CS2 error distributions differ substantially: Blackbox reports 42\% CE and 12\% RE in novice populations vs. our 7.3\% CE and 4.9\% RE. Before classroom deployment, three validations are needed: (1) CE/TLE/MLE accuracy on student submissions; (2) WA$\leftrightarrow$RE boundary behavior with novice error profiles; (3) whether automated classification translates to improved learning outcomes (randomized controlled trial). We provide a theoretical CS1 baseline (Section~5.6) and skill-tier analysis (Section~4.7) as partial evidence, but these do not substitute for direct student-population validation.
