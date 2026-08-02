@@ -143,8 +143,8 @@ Our contributions are:
  \item \textbf{Characterization of the platform-encoding boundary}: The WA$\leftrightarrow$RE boundary
  is not metadata-separable (RE F1 $\le$ 0.53 for all models) because neither error
  type produces distinctive execution signatures; CE, TLE, and MLE are
- reliably recoverable (F1 $\ge$ 0.89) from execution metadata, establishing
- cross-platform applicability of the metadata-based approach; source-code analysis
+ reliably recoverable (F1 $\ge$ 0.89) from execution metadata, motivating
+ cross-platform evaluation of the metadata-based approach; source-code analysis
  is hypothesized (not demonstrated) as the next step for the WA$\leftrightarrow$RE boundary.
  \item \textbf{Quantitative deployment guidelines}: execution time and memory
  are the dominant predictors (8.8 pp accuracy drop when removed), with
@@ -313,6 +313,15 @@ and error verdict; (2) it represents an ecologically valid competitive
 programming environment with high participant engagement; and (3) it has a
 large, diverse problem set covering a wide range of algorithmic domains and
 difficulty levels.
+
+These properties make Codeforces uniquely suited to the present research
+questions. Its per-submission execution telemetry (time, memory, verdict) is
+exactly the metadata required to test the platform-encoding boundary, and its
+scale supports both class-balanced evaluation across five verdict types and
+user-level clustering analysis (Section~\ref{sec:threats}). We acknowledge that
+competitive programmers differ from CS1/CS2 students (Section~\ref{sec:threats});
+cross-population validation on CS1QA and Blackbox remains future work
+(Section~\ref{sec:future}).
 
 Submissions were retrieved from competitive programmers with Codeforces
 ratings spanning 800 to 3500 (corresponding to Newbie through Legendary
@@ -850,6 +859,8 @@ DeepSeek-V3 Zero-Shot (online, valid) & 76.65\% & [75.0, 78.2] & 0.5447 & \$0.10
 
 Supervised ensembles dominate both LLM baselines (Figure~\ref{fig:accuracy}).
 
+\paragraph{Fairness of the ML--LLM comparison.} Both LLMs receive only five submission-metadata fields (\texttt{problem\_rating}, \texttt{time\_consumed\_ms}, \texttt{memory\_kb}, \texttt{language}, \texttt{problem\_type}), excluding \texttt{hour} and \texttt{user\_success\_rate}. To avoid a feature advantage, the ML--LLM McNemar test (Table~\ref{tab:mcnemar}) therefore uses a 5-feature GB variant (92.0\%) on the identical field set, not the full 7-feature GB (95.0\%). This handicaps the ML baseline below its ceiling and is conservative for the ML $>$ LLM conclusion; the outcome is unchanged with the 7-feature GB.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.62\textwidth]{fig_accuracy_chart.png}
@@ -964,7 +975,7 @@ verdicts whose outcome is deterministically encoded in execution metrics.
 DeepSeek-V3, by contrast, is a genuine (if weaker) competitor, and its 15.4pp
 gap below 5-feature GB reflects the supervised ML advantage; whether LLMs can close this gap with few-shot prompting or fine-tuning warrants further investigation.
 
-\paragraph{Additional robustness checks.} To address reviewer concerns about McNemar test assumptions and multiple comparison correction:
+\paragraph{Additional robustness checks.}\label{sec:robust} To address reviewer concerns about McNemar test assumptions and multiple comparison correction:
 
 (1) \emph{Sample independence and user-level clustering.} Submissions are not all independent: 503 of 801 test users (63\%) contribute multiple submissions (up to 46 each). We quantified this clustering directly: the mean per-user modal-verdict share is 0.92 (random baseline 0.20), and the ratio of user-level to global verdict-distribution entropy is 0.19---i.e., a given user's submissions concentrate around a characteristic verdict. Consequently, the McNemar $p$-values in Table~\ref{tab:mcnemar} should be read as a \emph{lower bound} on uncertainty rather than exact probabilities. To confirm that conclusions survive this dependence, we performed a fully user-disjoint replication (GroupShuffleSplit on \texttt{user\_handle}, zero train/test user overlap; \texttt{user\_success\_rate} recomputed on training users only to eliminate look-ahead leakage): Gradient Boosting retained 92.2\% accuracy and Random Forest 90.9\% (vs.\ 95.0\% and 94.2\% under random splitting), and the WA$\leftrightarrow$RE boundary remained unresolved. The ML $>$ LLM ranking and the platform-encoding conclusion are therefore robust to both clustering and leakage; a cluster-robust McNemar correction is recommended for confirmatory replications seeking exact $p$-values.
 
@@ -1168,23 +1179,15 @@ programmers (rating 800--3,500), not novice students. CS1/CS2 error distribution
 
 
 
-\textbf{Paired-Test Independence Assumption:} McNemar's test assumes that the
-paired predictions compared (e.g., GB vs.\ DeepSeek-V3 on the same 2,672 submissions)
-are independent across test instances. In our data, multiple submissions originate
-from the same Codeforces user: 503 of 801 test users (63\%) contribute multiple
-submissions (up to 46 each), and these are not independent---the mean per-user
-modal-verdict share is 0.92 (random baseline 0.20) and the user-level-to-global
-verdict-entropy ratio is 0.19, indicating that a given user's submissions cluster
-around a characteristic verdict. This user-level clustering means the reported
-McNemar $p$-values are best interpreted as a lower bound on uncertainty rather than
-exact probabilities. We therefore performed a fully user-disjoint replication
-(GroupShuffleSplit on \texttt{user\_handle} with zero train/test user overlap, and
-\texttt{user\_success\_rate} recomputed from training users only): Gradient Boosting
-retained 92.2\% accuracy and Random Forest 90.9\% (vs.\ 95.0\% and 94.2\% under
-random splitting), confirming that the platform-encoding conclusion and the ML $>$
-LLM ranking are robust to both clustering and look-ahead leakage. A cluster-robust
-McNemar variant is recommended for confirmatory replications seeking exact
-$p$-values.
+\textbf{Paired-Test Independence Assumption:} McNemar's test assumes independence
+across the 2,672 paired test instances, but 503 of 801 test users (63\%) contribute
+multiple submissions clustered around a characteristic verdict (mean modal-verdict
+share 0.92; random baseline 0.20). We therefore report the McNemar $p$-values as a
+\emph{lower bound} on uncertainty, not exact probabilities, and confirmed robustness
+through a fully user-disjoint replication (Section~\ref{sec:robust}): Gradient
+Boosting retained 92.2\% accuracy and the ML $>$ LLM ranking held. A cluster-robust
+McNemar variant is recommended for confirmatory replications seeking exact $p$-values.
+The small RE ($n=131$) and MLE ($n=40$) test subsets further limit per-class F1 precision.
 
 \textbf{Feature Set Limitations:} We used only 7 metadata features and did not
 collect or evaluate source-code features (ASTs, token sequences, code embeddings).
@@ -1192,19 +1195,11 @@ Consequently, the claim that source-code analysis is \emph{necessary} to resolve
 WA$\leftrightarrow$RE boundary (Sections~3.2 and~4.4) is a \emph{hypothesis} motivated by
 the uniform failure of all metadata models (RE F1 $\le$ 0.53), \emph{not} a result
 demonstrated within this study. Source-code features~\cite{allamanis2018learning}
-\emph{could} improve RE classification, but this remains to be verified in future work.
-
-\textbf{Error Type Granularity:} RE is a heterogeneous category (segfault,
-division by zero, assertion failure). Finer-grained error taxonomies
-could enable more targeted feedback~\cite{altadmri2015most}.
+\emph{could} improve RE classification, but this remains to be verified in future work. More granular taxonomies (e.g., distinguishing segfault, division-by-zero, and assertion failure within RE) could enable more targeted feedback~\cite{altadmri2015most}, but this is orthogonal to the metadata-separability question examined here.
 
 \textbf{LLM Inference Cost:} We used local Ollama (\texttt{Qwen2.5:3B}) at no
 API cost; future work should evaluate local LLM deployments for stable cost,
 performance, and privacy in educational settings.
-
-\textbf{Sample Size for Subgroup Analysis:} RE (n=131) and MLE (n=40) test
-subsets limit per-class F1 precision; larger datasets would enable more
-detailed per-class error analysis.
 
 \textbf{Ethical and Fairness Considerations:} Deploying automated verdict
 classifiers in educational settings introduces fairness risks that warrant
@@ -1305,7 +1300,7 @@ Institutional Review Board (IRB) of Xijing University (Approval No.~2024-AI-003)
 
 This study provides a systematic comparison of traditional ML and LLM approaches for programming verdict classification using only submission metadata. We characterize the \textit{platform-encoding boundary}: CE, TLE, and MLE are reliably recoverable from execution metadata (F1 $\ge$ 0.89), while the WA$\leftrightarrow$RE boundary is not (RE F1 $\le$ 0.53 for all models). These findings establish the metadata-derivable performance ceiling and identify where source-code analysis is necessary. Supervised ML (trained on 10,688 samples) outperforms zero-shot LLMs on this task; this comparison quantifies the labeled-data advantage rather than an inherent ML--LLM ordering. Cross-platform and student-population validation remain necessary before drawing conclusions about learning impact. Execution time is the dominant predictor (8.8\,pp drop, $p < 0.001$). Method selection guidelines (Table~\ref{tab:guidelines}) balance accuracy, cost (10--15$\times$ lower for ML), latency, and explainability. Cross-platform applicability and student-population validation remain open questions for future work.
 
-\paragraph{Future directions.} Three concrete next steps follow from our findings. First, \textbf{cross-platform validation}: replicating the CE/TLE/MLE classification pipeline on CS1QA and Blackbox datasets to assess generalizability to student populations. Second, \textbf{source-code feasibility study}: collecting submission-source pairs for the WA$\leftrightarrow$RE boundary to test whether AST tokens or code embeddings can close the RE F1 gap. Third, \textbf{class-weighted training}: evaluating whether cost-sensitive reweighting (class-weight=balanced) or SMOTE improves RE F1, trading aggregate accuracy for balanced class performance.
+\paragraph{Future directions.}\label{sec:future} Three concrete next steps follow from our findings. First, \textbf{cross-platform validation}: replicating the CE/TLE/MLE classification pipeline on CS1QA and Blackbox datasets to assess generalizability to student populations. Second, \textbf{source-code feasibility study}: collecting submission-source pairs for the WA$\leftrightarrow$RE boundary to test whether AST tokens or code embeddings can close the RE F1 gap. Third, \textbf{class-weighted training}: evaluating whether cost-sensitive reweighting (class-weight=balanced) or SMOTE improves RE F1, trading aggregate accuracy for balanced class performance.
 
 Practically, the platform-encoding boundary tells educational platform developers
 exactly where to draw the line between fully automated classification and
