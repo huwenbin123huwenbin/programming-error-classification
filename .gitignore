@@ -55,7 +55,7 @@ Thumbs.db
 # Temporary
 /tmp/
 *.tmp
-paper_acm.pdf
+# paper_acm.pdf is intentionally tracked: it is the submission artifact.
 
 # Local backups (kept on disk, out of the repo)
 .backups/
