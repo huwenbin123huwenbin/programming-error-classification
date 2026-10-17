@@ -5,7 +5,7 @@
 ## Manuscript
 
 - [x] Title: "Where the Metadata Ends: Observational Equivalence and the Limits of Verdict Classification from Submission Logs"
-- [x] LaTeX source: `paper_acm.tex` — 32 pages, 0 errors, 0 undefined references, 0 overfull boxes
+- [x] LaTeX source: `paper_acm.tex` — 34 pages, 0 errors, 0 undefined references, 0 overfull boxes
 - [x] Compiled PDF: `paper_acm.pdf`
 - [x] Abstract structured per JARS: Context / Objectives / Participants / Study Methods / Findings / Implications
 - [x] Keywords (6): programming verdict classification, observational equivalence, platform encoding, metadata-based classification, machine learning, large language models
@@ -84,11 +84,11 @@ These were claimed in the August checklist but are no longer in the paper, and t
 
 | Approach | Test accuracy | 95% CI | Macro F1 | Cost/1K |
 |---|---|---|---|---|
-| Random Forest (6 fields) | 91.80% | [90.7, 92.8] | 0.798 | $0.01 |
-| Gradient Boosting (6 fields) | 91.77% | [90.7, 92.8] | 0.799 | $0.01 |
-| Gradient Boosting (5 fields) | 91.69% | [90.6, 92.7] | 0.797 | $0.01 |
-| Logistic Regression | 85.63% | [84.2, 86.9] | 0.494 | $0.01 |
-| DeepSeek-V3, valid outputs | 76.65% | [75.0, 78.2] | 0.545 | $0.10 |
+| Random Forest (6 fields) | 91.80% | [90.7, 92.8] | 0.798 | $0.0002 |
+| Gradient Boosting (6 fields) | 91.77% | [90.7, 92.8] | 0.799 | $0.0002 |
+| Gradient Boosting (5 fields) | 91.69% | [90.6, 92.7] | 0.797 | $0.0002 |
+| Logistic Regression | 85.63% | [84.2, 86.9] | 0.494 | $0.0002 |
+| DeepSeek-V3 (three-shot), valid outputs | 76.65% | [75.0, 78.2] | 0.545 | $0.01 |
 | Qwen2.5:3B, valid outputs | 35.50% | [33.6, 37.4] | 0.231 | $0.00 |
 
 - Majority-class rule: 76.61%
@@ -97,3 +97,25 @@ These were claimed in the August checklist but are no longer in the paper, and t
 - Observational equivalence: all-zero cell 1,504 rows (11.3%), CE F1 cap 0.767, model 0.770
 - Execution-encoded classes (CE + TLE + MLE): 18.5% of submissions
 - Ablation: time −7.30 pp, memory −1.80 pp, leakage-free history aggregate −2.13 pp
+
+---
+
+## Round 9 audit (2026-10-17, 23:00–24:00) — protocol labels and stale-data sweep
+
+Every remaining claim was re-derived from the authoritative artifacts. Findings and fixes:
+
+- [x] **LLM protocol relabelled three-shot.** The final LLM numbers come from `llm_experiments/*_fair_rerun_predictions.json`, whose prompt carries three worked examples (CE/TLE/MLE) and classifies eight submissions per call — not zero-shot. All 12 "zero-shot" mentions corrected; §3.4, Table 7, the Discussion and the appendix now describe the actual protocol (three examples, batch of 8, JSON array output, language normalised to family, temperature 0 for both models). The appendix prompt template is the prompt the code actually sends.
+- [x] **Superseded single-item zero-shot runs documented** (DeepSeek-V3 78.29%, Qwen2.5:3B 11.34% on the full partition; 207-submission pilot 75.85%) so no reader can mistake them for the reported results; ordering of ML above both LLMs unchanged.
+- [x] **Pilot note corrected.** "75.85% pilot vs 31.92% full for Qwen2.5:3B" mixed two models' numbers; 75.85% is DeepSeek-V3's single-item pilot. Rewritten.
+- [x] **Altadmri & Brown 2015 claim corrected.** "42% CE / 12% RE in novice populations" does not exist in the original (verified against the full text, KAR fp1187-altadmri.pdf): the paper reports 47.6% of 37.2M compilations failing (17,682,007/37,158,094) and has no runtime-verdict data at all. Both occurrences now cite the real figure.
+- [x] **Table 1 mean execution times were stale** (from the retired 14,673-row dataset). Recomputed: WA 81 / TLE 2,508 / RE 177 / CE 0 / MLE 775 ms; footnote now states the TLE mode (61.7% at exactly 2,000 ms) and MLE memory mode (65.3% at 262,100 KB) instead of the false "TLE mean equals the limit".
+- [x] **Figure 2 was generated from the retired dataset** (title read n=14,673; no tiering of the current data reproduces its bars). Regenerated from the authoritative rows by `regenerate_figures_v3.py`; caption and \Description now carry the recomputed tier shares (85.1/80.7% WA at the easy end; 55.4% WA, 19.3% TLE, 10.1% RE at Expert).
+- [x] **Figure 1 caption corrected**: language–memory correlation is r=0.032 (not 0.17); the strongest off-diagonal correlation is rating–slot r=0.74; heatmap has six fields (not seven).
+- [x] **Figure 3 axis labels corrected** ("zero-shot" → "three-shot"); caption notes invalid-as-wrong basis; Figure 4 \Description CE limit 0.79 → 0.77.
+- [x] **Skill-tier numbers were unsupported** (96.01/95.21/88.54 matched no artifact; the "novices are most accurate" claim was backwards). Recomputed from the pipeline: 92.21/93.60/87.55% for novice/intermediate/advanced tiers; paragraph rewritten as a composition effect.
+- [x] **Submitter-disjoint replication verified and archived.** The paper's 93.13/91.99/87.15 matched no artifact; `experiment_code/user_disjoint_replication_v3.py` reproduces them exactly under the six-feature protocol (user overlap 0, 10,900/2,460) and writes `user_disjoint_results_v3.json`. The old seven-feature run is archived under `experiment_code/deprecated/`.
+- [x] **Cost figures rebuilt from measurement.** RF/GB/LR inference latency measured (15.2 / 5.9 / 0.1 ms per 1,000, single core); DeepSeek-V3 cost recomputed at eight items per call (≈215 input + ≈22 output tokens): ≈$0.01/1k at standard list pricing, half at the promotional rate. The unsupported "2ms latency", "$0.10/1k", "tenfold" and "$29× GPT-4o/Claude" claims are gone; Table 7, §4.6, §5.2 and the limitations now carry the measured basis.
+- [x] **Table 3/7 bolding fixed** (Random Forest holds the accuracy maximum 91.80%; Gradient Boosting holds macro F1 0.799 and CV 92.42±0.33); Table 10 recommendations rewritten around measured latency/cost and the correct CV ranking (LR has the smallest SD).
+- [x] **DeepSeek narrative corrected**: the 415 false CEs are 385 WA + 27 RE + 3 TLE; "discovered the encoding" → "generalized it from a worked example".
+- [x] **references.bib repaired**: 9 entries were missing the comma before the added `publisher` field (bibtex skipped them — the bibliography was silently losing entries); CodeBERT DOI/pages corrected (10.18653/v1/2020.findings-emnlp.139, pp. 1536–1547); real DOIs added for Friedman 2001, McNemar 1947. Gate: 48/49 PASS (pedregosa JMLR URL verified live; bandura1997self is a book with no DOI by design).
+- [x] Recompiled: 34 pages, 0 errors, 0 undefined references, 0 overfull boxes. `audit_llm_numbers.py` re-run: AUDIT PASSED. Chinese companion, Highlights and Cover Letter synced.

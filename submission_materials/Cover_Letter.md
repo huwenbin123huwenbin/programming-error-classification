@@ -23,7 +23,7 @@ This reframes the practical question from *which classifier is better* to *what 
 
 1. **An identifiability account of the boundary.** The ceiling on metadata-based verdict classification is set by observational equivalence, not by model capacity. The argument is model-free: it holds for any classifier given these inputs, and it explains why the residual errors are irreducible rather than merely unfixed.
 
-2. **A systematic comparison under a shared protocol.** Three supervised models and two LLM configurations on one test partition and a common feature vocabulary, with five-fold cross-validation, per-field ablation, ten Bonferroni-corrected McNemar tests, and a submitter-disjoint replication. We are explicit that supervised ML beating a zero-shot LLM is a replication of known behaviour (Liu et al., NAACL 2024), not a discovery; what we analyse is the structure of the gap.
+2. **A systematic comparison under a shared protocol.** Three supervised models and two LLM configurations on one test partition and a common feature vocabulary, with five-fold cross-validation, per-field ablation, ten Bonferroni-corrected McNemar tests, and a submitter-disjoint replication. We are explicit that supervised ML beating a prompted LLM is a replication of known behaviour (Liu et al., NAACL 2024), not a discovery; what we analyse is the structure of the gap.
 
 3. **Deployment guidance with a leakage-free protocol.** Execution time carries 81.5% of Gini importance and costs 7.3 percentage points when removed; a submitter-history aggregate — the standard first feature in this literature — *loses* 2.1 points once computed without look-ahead, and is excluded. The final model uses six fields, all available at first contact with a submission, so it carries no cold-start penalty.
 
@@ -33,12 +33,12 @@ This reframes the practical question from *which classifier is better* to *what 
 
 | Approach | Test accuracy | 95% CI | Macro F1 | Cost / 1K |
 |---|---|---|---|---|
-| Random Forest (6 fields) | 91.80% | [90.7, 92.8] | 0.798 | $0.01 |
-| Gradient Boosting (6 fields) | 91.77% | [90.7, 92.8] | 0.799 | $0.01 |
-| Gradient Boosting (5 fields, LLM-comparable) | 91.69% | [90.6, 92.7] | 0.797 | $0.01 |
-| Logistic Regression | 85.63% | [84.2, 86.9] | 0.494 | $0.01 |
-| DeepSeek-V3 zero-shot, valid outputs | 76.65% | [75.0, 78.2] | 0.545 | $0.10 |
-| Qwen2.5:3B zero-shot, valid outputs | 35.50% | [33.6, 37.4] | 0.231 | $0.00 |
+| Random Forest (6 fields) | 91.80% | [90.7, 92.8] | 0.798 | $0.0002 |
+| Gradient Boosting (6 fields) | 91.77% | [90.7, 92.8] | 0.799 | $0.0002 |
+| Gradient Boosting (5 fields, LLM-comparable) | 91.69% | [90.6, 92.7] | 0.797 | $0.0002 |
+| Logistic Regression | 85.63% | [84.2, 86.9] | 0.494 | $0.0002 |
+| DeepSeek-V3 (three-shot), valid outputs | 76.65% | [75.0, 78.2] | 0.545 | $0.01 |
+| Qwen2.5:3B (three-shot), valid outputs | 35.50% | [33.6, 37.4] | 0.231 | $0.00 |
 
 The majority-class rule scores 76.61%, so DeepSeek-V3's headline accuracy is indistinguishable from always answering Wrong Answer — yet its balanced accuracy (0.708) and its recall of every compilation error show that it has in fact learned the platform encoding, and pays the full price of the equivalence cell because a prompted model has no calibrated prior to trade recall against precision. The two tree ensembles are statistically indistinguishable from each other (χ² = 0.00, p = 1.00); we report this as a null result rather than ranking them. Under submitter-disjoint evaluation the ordering and the boundary are preserved (GB 93.13%, RF 91.99%, LR 87.15%).
 

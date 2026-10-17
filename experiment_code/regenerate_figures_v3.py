@@ -19,7 +19,7 @@ plt.rcParams.update({'font.size': 10, 'axes.grid': True, 'grid.alpha': 0.3})
 
 # ---------------------------------------------------------------- accuracy --
 models = ['Gradient Boosting\n(6 fields)', 'Random Forest\n(6 fields)',
-          'Logistic Regression', 'DeepSeek-V3\n(zero-shot)', 'Qwen2.5:3B\n(zero-shot)']
+          'Logistic Regression', 'DeepSeek-V3\n(three-shot)', 'Qwen2.5:3B\n(three-shot)']
 vals = [A['Gradient Boosting']['test_accuracy'] * 100, A['Random Forest']['test_accuracy'] * 100,
         A['Logistic Regression']['test_accuracy'] * 100,
         R['llm']['deepseek_fair_rerun_predictions.json']['accuracy_invalid_as_wrong'] * 100,
@@ -120,4 +120,38 @@ fig.colorbar(im, ax=ax, shrink=0.8)
 plt.tight_layout(); plt.savefig(os.path.join(ROOT, 'figures', 'correlation_heatmap.pdf'))
 plt.close()
 print('corr max off-diagonal:', round(float(np.max(np.abs(C - np.eye(len(C))))), 3))
+
+# ------------------------------------------------- error by difficulty tier --
+from collections import Counter as _Counter
+tiers = [('Novice\n(<=800)', lambda r: r <= 800),
+         ('Easy\n(801-1200)', lambda r: 800 < r <= 1200),
+         ('Medium\n(1201-1600)', lambda r: 1200 < r <= 1600),
+         ('Hard\n(1601-2000)', lambda r: 1600 < r <= 2000),
+         ('Expert\n(>2000)', lambda r: r > 2000)]
+verdicts = ['WA', 'TLE', 'MLE', 'CE', 'RE']
+fig, ax = plt.subplots(figsize=(8.0, 4.4))
+width = 0.16
+for vi, v in enumerate(verdicts):
+    shares = []
+    for _, f in tiers:
+        sub = [r for r in rows if f(r['problem_rating'])]
+        c = _Counter(r['verdict'] for r in sub)
+        shares.append(100 * c[v] / len(sub))
+    ax.bar(np.arange(len(tiers)) + (vi - 2) * width, shares, width, label=v,
+           edgecolor='black', linewidth=0.4)
+ax.set_xticks(range(len(tiers)))
+ax.set_xticklabels([t for t, _ in tiers], fontsize=9)
+ax.set_ylabel('Share of tier (%)'); ax.set_xlabel('Problem difficulty')
+ax.set_ylim(0, 92)
+ax.legend(fontsize=8, ncol=5, loc='upper right')
+ax.set_title('Error type distribution across difficulty levels ($n=13{,}360$)',
+             fontsize=12, fontweight='bold')
+plt.tight_layout(); plt.savefig(os.path.join(ROOT, 'figures', 'error_by_difficulty.pdf'))
+plt.close()
+for name, f in tiers:
+    sub = [r for r in rows if f(r['problem_rating'])]
+    c = _Counter(r['verdict'] for r in sub)
+    print(name.replace('\n', ' '), 'n=%d' % len(sub),
+          {v: round(100 * c[v] / len(sub), 1) for v in verdicts})
+
 print('Saved all figures.')

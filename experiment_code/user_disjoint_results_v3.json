@@ -1,0 +1,58 @@
+{
+ "split": "user-disjoint (GroupShuffleSplit, group=user_handle, random_state=42)",
+ "n_train": 10900,
+ "n_test": 2460,
+ "user_overlap_train_test": 0,
+ "features": [
+  "problem_rating",
+  "time_consumed_ms",
+  "memory_kb",
+  "language_encoded",
+  "passed_test_count",
+  "problem_type"
+ ],
+ "results": {
+  "Gradient Boosting": {
+   "cv_mean": 0.9214678899082569,
+   "cv_std": 0.003325608983558115,
+   "test_accuracy": 0.9313008130081301,
+   "macro_f1": 0.7977278286181211,
+   "balanced_accuracy": 0.7984921857387144,
+   "per_class_f1": {
+    "CE": 0.7880299251870324,
+    "TLE": 1.0,
+    "MLE": 0.9876543209876543,
+    "WA": 0.9565446405056623,
+    "RE": 0.2564102564102564
+   }
+  },
+  "Random Forest": {
+   "cv_mean": 0.9197247706422018,
+   "cv_std": 0.006615690413695379,
+   "test_accuracy": 0.9199186991869919,
+   "macro_f1": 0.7779520738414739,
+   "balanced_accuracy": 0.7793735941043799,
+   "per_class_f1": {
+    "CE": 0.7263157894736842,
+    "TLE": 0.9904397705544933,
+    "MLE": 0.9411764705882353,
+    "WA": 0.9505783385909569,
+    "RE": 0.28125
+   }
+  },
+  "Logistic Regression": {
+   "cv_mean": 0.8563302752293579,
+   "cv_std": 0.001954795940611263,
+   "test_accuracy": 0.8715447154471545,
+   "macro_f1": 0.5176308023529532,
+   "balanced_accuracy": 0.5118323163827757,
+   "per_class_f1": {
+    "CE": 0.0106951871657754,
+    "TLE": 0.9475728155339805,
+    "MLE": 0.704225352112676,
+    "WA": 0.9256606569523339,
+    "RE": 0.0
+   }
+  }
+ }
+}

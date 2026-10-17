@@ -24,7 +24,7 @@ Submissions whose metadata vectors coincide while their verdicts differ are \emp
 \noindent\textbf{Contributions.}
 \begin{itemize}\setlength\itemsep{0.4em}
 \item \textbf{An identifiability account of the boundary.} The ceiling on metadata-based verdict classification is set by observational equivalence, not by model capacity. The argument is model-free: it holds for any classifier given these inputs, and it explains why the residual errors are irreducible rather than merely unfixed.
-\item \textbf{A systematic comparison under a shared protocol.} Three supervised models and two LLM configurations on one test partition and a common feature vocabulary, with five-fold cross-validation, per-field ablation, ten Bonferroni-corrected McNemar tests, and a submitter-disjoint replication. We are explicit that supervised ML beating a zero-shot LLM is a replication of known behaviour (Liu et al., NAACL 2024), not a discovery; what we analyse is the structure of the gap.
+\item \textbf{A systematic comparison under a shared protocol.} Three supervised models and two LLM configurations on one test partition and a common feature vocabulary, with five-fold cross-validation, per-field ablation, ten Bonferroni-corrected McNemar tests, and a submitter-disjoint replication. We are explicit that supervised ML beating a prompted LLM is a replication of known behaviour (Liu et al., NAACL 2024), not a discovery; what we analyse is the structure of the gap.
 \item \textbf{Deployment guidance with a leakage-free protocol.} Execution time carries 81.5\% of Gini importance and costs 7.3 percentage points when removed; a submitter-history aggregate --- the standard first feature in this literature --- \emph{loses} 2.1 points once computed without look-ahead, and is excluded. The final model uses six fields, all available at first contact with a submission, so it carries no cold-start penalty.
 \item \textbf{Dataset, pipeline and figures released}, with a single script that regenerates every number in the paper: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}
 \end{itemize}
@@ -40,8 +40,8 @@ Random Forest (6 fields) & 91.80\% & [90.7, 92.8] & 0.798 \\
 Gradient Boosting (6 fields) & 91.77\% & [90.7, 92.8] & 0.799 \\
 Gradient Boosting (5 fields, LLM-comparable) & 91.69\% & [90.6, 92.7] & 0.797 \\
 Logistic Regression & 85.63\% & [84.2, 86.9] & 0.494 \\
-DeepSeek-V3 zero-shot, valid outputs & 76.65\% & [75.0, 78.2] & 0.545 \\
-\texttt{Qwen2.5:3B} zero-shot, valid outputs & 35.50\% & [33.6, 37.4] & 0.231 \\
+DeepSeek-V3 (three-shot), valid outputs & 76.65\% & [75.0, 78.2] & 0.545 \\
+\texttt{Qwen2.5:3B} (three-shot), valid outputs & 35.50\% & [33.6, 37.4] & 0.231 \\
 \bottomrule
 \end{tabular}
 \end{center}
