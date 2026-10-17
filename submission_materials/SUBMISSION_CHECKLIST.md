@@ -38,7 +38,7 @@
 - [x] `pipeline_authoritative.py` regenerates results, tables and figures
 - [x] Submitter-disjoint replication reproduced: GroupShuffleSplit over `user_handle`, zero overlap, 10,900 / 2,460, GB 93.13 / RF 91.99 / LR 87.15
 - [x] Prompt template for both LLMs is in the appendix
-- [ ] **Pending**: push the current tree to GitHub `main` (local commit prepared; see below)
+- [ ] **Pending**: push to GitHub `main` — local commit `17ce2e2` created 2026-10-17; push failed twice (network 502 / <1 KB/s to github.com), retry when the network is available: `git push origin main`
 
 ## Submission materials
 
