@@ -96,8 +96,23 @@ python experiment_code/mcnemar_matrix.py
 #  involving an LLM) and print PASS/FAIL against the manuscript
 python experiment_code/audit_llm_numbers.py
 
+# alignment gate: every LLM prediction file must line up row-for-row with the
+# authoritative test partition. The LLM files are written one record per call
+# batch, so their file order is NOT the sample order — sort by `idx` first.
+# A McNemar row computed on misaligned files still prints a plausible
+# chi-square, which is why this runs before any table is quoted.
+python experiment_code/verify_mcnemar_alignment.py
+
 # mixed signature groups: entropy spectrum and signature-only ceiling (§4.3)
 python experiment_code/equivalence_spectrum.py
+
+# submitter-disjoint replication (§5.1): GroupShuffleSplit over user_handle,
+# zero overlap, writes user_disjoint_results_v3.json
+python experiment_code/user_disjoint_replication_v3.py
+
+# clustering diagnostic (§5.1): per-class ICC of the verdict, design effect
+# and effective sample size behind the "p-values are lower bounds" caveat
+python experiment_code/clustering_diagnostic.py
 
 # bibliography audit: every DOI/arXiv id and every title, checked against the
 # Crossref, DataCite, arXiv and OpenAlex registries. Exit code 0 = all clear.
@@ -106,6 +121,18 @@ python experiment_code/verify_references.py
 # figures
 python experiment_code/regenerate_figures_v3.py
 ```
+
+## What is *not* reproducible from this repository
+
+The two LLM result sets need live inference and are committed as JSON:
+
+- `llm_experiments/*_fair_rerun_predictions.json` — the reported numbers
+  (three-shot, eight submissions per call, temperature 0). Regenerating them
+  needs a DeepSeek API key (`DEEPSEEK_API_KEY`) and Ollama for
+  `qwen2.5:3b`.
+- Everything else in `llm_experiments/` predates the current protocol and is
+  superseded; see `deprecated_artifacts/README.md` for what those files are
+  and why they are not citable.
 
 Random seeds are fixed at 42 throughout. With scikit-learn 1.6.1 the output
 reproduces the manuscript numbers exactly; other versions may differ in the

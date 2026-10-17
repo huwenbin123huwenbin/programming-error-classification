@@ -119,3 +119,56 @@ Every remaining claim was re-derived from the authoritative artifacts. Findings 
 - [x] **DeepSeek narrative corrected**: the 415 false CEs are 385 WA + 27 RE + 3 TLE; "discovered the encoding" → "generalized it from a worked example".
 - [x] **references.bib repaired**: 9 entries were missing the comma before the added `publisher` field (bibtex skipped them — the bibliography was silently losing entries); CodeBERT DOI/pages corrected (10.18653/v1/2020.findings-emnlp.139, pp. 1536–1547); real DOIs added for Friedman 2001, McNemar 1947. Gate: 48/49 PASS (pedregosa JMLR URL verified live; bandura1997self is a book with no DOI by design).
 - [x] Recompiled: 34 pages, 0 errors, 0 undefined references, 0 overfull boxes. `audit_llm_numbers.py` re-run: AUDIT PASSED. Chinese companion, Highlights and Cover Letter synced.
+
+---
+
+## Round 10 audit (2026-10-18, 01:00–02:00) — McNemar alignment, M5 follow-up, ICC
+
+Started from the three items the previous round deferred. The scan for stale
+figures came back clean (`zero-shot|95.02|14,673|2,048` in the tex, the Chinese
+companion and the materials: only the deliberate "differences from the June
+version" table). The other two items turned up something bigger.
+
+- [x] **McNemar alignment verified end-to-end (Table 8 is sound).** The LLM
+  prediction files are written one record per call batch, so their file order
+  is not the sample order (the first eight records carry idx 0-7, the next
+  eight idx 24-31). A manual recompute that zipped file order against the
+  pipeline's test order produced chi2=282.25 for GB vs DeepSeek-V3 against the
+  manuscript's 364.23 — a 23% discrepancy that looked like a real defect.
+  Sorting by `idx` first gives byte-identical verdict, rating and language
+  sequences for all four LLM files against the authoritative partition
+  (2672/2672, zero differences), and reproduces every Table 8 row exactly.
+  The gate is now `experiment_code/verify_mcnemar_alignment.py`; it runs
+  before any McNemar number is quoted, because a scrambled pairing still
+  prints a plausible chi-square.
+- [x] **Review item M5 (few-shot results) resolved by provenance, not by
+  omission.** Both simulated reviews quote a "DeepSeek-V3 few-shot: 64.55%,
+  macro F1 0.6266" result and fault the paper for not reporting it. The file
+  exists (`fewshot_full_results_v4.json`) but no script in the repository
+  produces it, and its test-set class distribution (WA 1864, RE 294, TLE 235,
+  MLE 101, CE 178) cannot come from the authoritative stratified split
+  (WA 2047, RE 131, TLE 258, MLE 40, CE 196): RE and MLE are 2.2-2.5x their
+  expected counts, about 14 standard deviations out. The 64.55% and the
+  reported 76.65% were computed on different test sets, so the comparison the
+  reviews draw is not valid. Archived under `deprecated_artifacts/` with the
+  reasoning; the mechanistic claim the reviews ask for (examples spread
+  predictions more evenly) needs a re-run on the authoritative split, which
+  needs a DeepSeek API key.
+- [x] **Clustering quantified (was qualitative).** New
+  `experiment_code/clustering_diagnostic.py`: per-class one-way ICC of the
+  verdict is 0.41-0.53 (mean 0.483); with a mean of 3.34 submissions per
+  submitter the design effect is 2.13, so the 13,360 submissions carry the
+  information of about 6,300 independent ones. §5.1's "p-values are lower
+  bounds" now has a number behind it. The two previously reported diagnostics
+  reproduce exactly (modal share 0.920, entropy ratio 0.181).
+- [x] **Maximum submissions per submitter corrected** 46 -> 134 (the top
+  submitter is Petr with 134; the old figure matched no artifact). Abstract
+  participants block, §5.1 and the Chinese companion updated.
+- [x] **README reproduction section updated** with the three new scripts
+  (alignment gate, submitter-disjoint replication, clustering diagnostic) plus
+  a new "what is *not* reproducible from this repository" section covering the
+  LLM JSON sets and the archived files.
+- [x] Chinese companion synced (ICC paragraph, 134, replication steps).
+- [x] Recompiled after the §5.1 edits; all gates re-run green
+  (`verify_references.py` 48/49 with the two known exceptions,
+  `audit_llm_numbers.py` PASSED, `verify_mcnemar_alignment.py` PASSED).

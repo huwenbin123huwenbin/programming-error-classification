@@ -1145,7 +1145,7 @@ sequentially gives the same verdict on every row.
 
 \paragraph{Submitter-disjoint replication.} Submissions are not independent
 observations. The 4{,}005 submitters contribute a median of two submissions
-each (maximum 46), and their verdict mixes are strongly concentrated: the mean
+each (maximum 134), and their verdict mixes are strongly concentrated: the mean
 per-submitter modal-verdict share is 0.92 against a random baseline of 0.20,
 and the ratio of per-submitter to global verdict-distribution entropy is 0.18.
 A random split therefore places submissions from the same person on both sides
@@ -1164,9 +1164,14 @@ no submitter-level aggregate, the cold-start setting requires no re-engineering.
 
 \paragraph{Clustering-aware reading.} A cluster-robust correction (grouping
 standard errors by submitter) would widen the intervals reported here and is
-the appropriate choice for a confirmatory replication. We report unadjusted
-McNemar statistics with the clustering diagnostic above so that the direction
-and rough magnitude of the dependence are visible.
+the appropriate choice for a confirmatory replication. The dependence is
+substantial rather than marginal: the one-way intraclass correlation of the
+verdict is 0.48 (per-class 0.41--0.53), so two submissions from the same
+programmer agree on the verdict about half the time beyond chance. With a mean
+of 3.34 submissions per submitter this implies a design effect of 2.13, i.e.\
+the 13{,}360 submissions carry the information of roughly 6{,}300 independent
+ones. We report unadjusted McNemar statistics with the clustering diagnostic
+above so that the direction and rough magnitude of the dependence are visible.
 
 \paragraph{Class imbalance.} Balanced accuracy is GB 0.804, RF 0.791, LR 0.486, DeepSeek-V3 0.708 and
 \texttt{Qwen2.5:3B} 0.348. The ordering is preserved, so the ensemble advantage
