@@ -1,9 +1,9 @@
 # ScholarOne 投稿操作指南 — TOCE
 
-**论文**：Automated Programming Verdict Classification from Submission Metadata: Comparing Machine Learning and Large Language Models in Competitive Programming
+**论文**：Where the Metadata Ends: Observational Equivalence and the Limits of Verdict Classification from Submission Logs
 **期刊**：ACM Transactions on Computing Education (TOCE)
 **作者**：Wenbin Hu（School of Computer Science, Xijing University）
-**状态**：✅ 论文已定稿（30页 / 0 errors / 49条真实引用 / 已推送 GitHub）
+**状态**：论文已定稿（31页 / 0 errors / 0 undefined refs / 本地已提交，待推送 GitHub）
 
 ---
 
@@ -11,8 +11,8 @@
 
 | 文件 | 路径 | 说明 |
 |------|------|------|
-| 主文稿 PDF | `paper_acm.pdf` | 30页，ACM acmsmall 格式，0编译错误 |
-| Cover Letter | `Cover_Letter.pdf` | 含5位推荐审稿人 |
+| 主文稿 PDF | `paper_acm.pdf` | 32页，ACM acmsmall 格式，0编译错误 |
+| Cover Letter | `Cover_Letter.pdf` | 含贡献说明与关键数字 |
 | Highlights | `Highlights.pdf` | 3–5条研究亮点 |
 | 代码/数据 | https://github.com/huwenbin123huwenbin/programming-error-classification | 已公开，符合数据可用性声明 |
 

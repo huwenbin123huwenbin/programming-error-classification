@@ -1,0 +1,37 @@
+{
+ "source": "../01_原始数据/codeforces_final_real.csv",
+ "n_samples": 13360,
+ "n_features": 6,
+ "features": [
+  "problem_rating",
+  "time_consumed_ms",
+  "memory_kb",
+  "language_encoded",
+  "passed_test_count",
+  "problem_type"
+ ],
+ "note": "problem_slot was released as problem_type in earlier versions; passed_test_count replaces the hour field, which cannot be constructed because the public payload carries no timestamp",
+ "class_distribution": {
+  "WA": 10234,
+  "CE": 980,
+  "TLE": 1288,
+  "RE": 656,
+  "MLE": 202
+ },
+ "classes": [
+  "CE",
+  "MLE",
+  "RE",
+  "TLE",
+  "WA"
+ ],
+ "languages": 35,
+ "train_test_split": {
+  "method": "stratified",
+  "test_size": 0.2,
+  "random_state": 42,
+  "expected_train": 10688,
+  "expected_test": 2672
+ },
+ "dropped_rows": 0
+}

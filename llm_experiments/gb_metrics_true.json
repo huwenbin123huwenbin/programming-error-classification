@@ -1,0 +1,25 @@
+{
+ "feature_importance": {
+  "problem_rating": 1.44,
+  "time_consumed_ms": 57.31,
+  "memory_kb": 5.14,
+  "language_encoded": 0.55,
+  "problem_type": 0.44,
+  "hour": 0.0,
+  "user_success_rate": 35.12
+ },
+ "roc_auc": {
+  "CE": 0.997,
+  "MLE": 1.0,
+  "TLE": 1.0,
+  "WA": 0.988,
+  "RE": 0.943
+ },
+ "class_f1": {
+  "CE": 0.897,
+  "TLE": 0.994,
+  "MLE": 0.962,
+  "WA": 0.971,
+  "RE": 0.53
+ }
+}

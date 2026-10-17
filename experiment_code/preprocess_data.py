@@ -1,129 +1,110 @@
 #!/usr/bin/env python3
 """
-数据预处理脚本 - 为SCI论文增强实验准备数据
-从原始Codeforces数据生成特征工程后的数据集
+Preprocess the raw Codeforces export into the analysis dataset.
+
+Input : ../01_原始数据/codeforces_final_real.csv  (13,360 failing submissions)
+Output: preprocessed_data.csv      (one row per submission, six model fields
+                                    plus user/verdict identifiers)
+        feature_config.json        (field list, class distribution, split sizes)
+
+This script is the first stage of the reproducibility chain documented in the
+paper. Stage two is pipeline_authoritative.py, which retrains every model and
+regenerates every number and figure in the manuscript.
+
+Run:  python3 preprocess_data.py
 """
+import csv, json, os
+from collections import Counter
 
-import pandas as pd
-import json
-from pathlib import Path
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+SRC = os.path.join(os.path.dirname(ROOT), '01_原始数据', 'codeforces_final_real.csv')
+if not os.path.exists(SRC):                       # repository-layout fallback
+    SRC = os.path.join(ROOT, '01_原始数据', 'codeforces_final_real.csv')
 
-# 读取原始数据
-data_path = Path(__file__).parent.parent / "01_原始数据" / "codeforces_submissions.csv"
-output_path = Path(__file__).parent
+KEEP = ['CE', 'TLE', 'MLE', 'WA', 'RE']
+FEATURES = ['problem_rating', 'time_consumed_ms', 'memory_kb',
+            'language_encoded', 'passed_test_count', 'problem_type']
 
-print("📂 读取原始数据...")
-df = pd.read_csv(data_path)
+EXPECTED = {'CE': 980, 'TLE': 1288, 'MLE': 202, 'WA': 10234, 'RE': 656}
 
-print(f"原始数据: {len(df)} 行")
-print(f"列名: {df.columns.tolist()}")
 
-# 过滤错误提交（非OK的）
-df_errors = df[df['verdict'] != 'OK'].copy()
-print(f"错误提交: {len(df_errors)} 行")
+def main():
+    rows, dropped = [], 0
+    with open(SRC, newline='', encoding='utf-8') as f:
+        for r in csv.DictReader(f):
+            if r['verdict'] not in KEEP:
+                dropped += 1
+                continue
+            try:
+                rating = float(r['problem_rating'])
+                time_ms = float(r['time_consumed_ms'])
+            except (ValueError, TypeError):
+                dropped += 1
+                continue
+            idx = (r['problem_index'] or '').strip().upper()
+            rows.append({
+                'submission_id': r['submission_id'],
+                'user_handle': r['user_handle'],
+                'problem_rating': rating,
+                'time_consumed_ms': time_ms,
+                'memory_kb': float(r['memory_kb']) if r['memory_kb'].strip() else 0.0,
+                'passed_test_count': float(r['passed_test_count']) if r['passed_test_count'].strip() else 0.0,
+                'language': (r['language'] or '').strip(),
+                'problem_slot': ord(idx[0]) - ord('A') + 1 if idx else 0,
+                'verdict': r['verdict'],
+            })
 
-# 错误类型映射
-error_mapping = {
-    'WRONG_ANSWER': 'Wrong Answer',
-    'TIME_LIMIT_EXCEEDED': 'Time Limit Exceeded',
-    'RUNTIME_ERROR': 'Runtime Error',
-    'COMPILATION_ERROR': 'Compilation Error',
-    'MEMORY_LIMIT_EXCEEDED': 'Memory Limit Exceeded'
-}
-df_errors['error_type'] = df_errors['verdict'].map(error_mapping)
+    langs = sorted({r['language'] for r in rows})
+    lang_map = {l: i for i, l in enumerate(langs)}
+    for r in rows:
+        r['language_encoded'] = lang_map[r['language']]
 
-# 特征工程
-print("🔧 进行特征工程...")
+    counts = Counter(r['verdict'] for r in rows)
+    out_csv = os.path.join(HERE, 'preprocessed_data.csv')
+    fields = (['submission_id', 'user_handle'] + FEATURES +
+              ['language', 'problem_slot', 'verdict'])
+    with open(out_csv, 'w', newline='', encoding='utf-8') as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: r.get(k, '') for k in fields})
 
-# 1. 编码编程语言
-language_map = {'GNU++17': 0, 'GNU++14': 1, 'Kotlin': 2, 'PyPy3': 3, 'Python3': 4}
-df_errors['language_encoded'] = df_errors['programming_language'].map(language_map).fillna(0).astype(int)
+    config = {
+        'source': os.path.relpath(SRC, ROOT),
+        'n_samples': len(rows),
+        'n_features': len(FEATURES),
+        'features': FEATURES,
+        'note': ('problem_slot was released as problem_type in earlier versions; '
+                 'passed_test_count replaces the hour field, which cannot be '
+                 'constructed because the public payload carries no timestamp'),
+        'class_distribution': dict(counts),
+        'classes': sorted(counts),
+        'languages': len(langs),
+        'train_test_split': {'method': 'stratified', 'test_size': 0.2,
+                             'random_state': 42,
+                             'expected_train': 10688, 'expected_test': 2672},
+        'dropped_rows': dropped,
+    }
+    with open(os.path.join(HERE, 'feature_config.json'), 'w', encoding='utf-8') as f:
+        json.dump(config, f, indent=1, ensure_ascii=False)
 
-# 2. 提取问题类型 (A, B, C, D...)
-def extract_problem_type(problem_index):
-    if pd.isna(problem_index):
-        return 0
-    problem_index = str(problem_index).upper()
-    if len(problem_index) > 0:
-        return ord(problem_index[0]) - ord('A') + 1
-    return 0
+    print(f'samples           : {len(rows)}')
+    print(f'class distribution: {dict(counts)}')
+    print(f'languages         : {len(langs)}')
+    print(f'written           : {out_csv}')
 
-df_errors['problem_type'] = df_errors['problem_index'].apply(extract_problem_type)
+    # ---- verification gate: abort loudly if the dataset drifted ----
+    problems = []
+    if len(rows) != 13360:
+        problems.append(f'sample count {len(rows)} != 13360')
+    for k, v in EXPECTED.items():
+        if counts.get(k) != v:
+            problems.append(f'class {k}: {counts.get(k)} != {v}')
+    if problems:
+        raise SystemExit('DATASET CHECK FAILED:\n  ' + '\n  '.join(problems))
+    print('dataset check     : OK (13,360 rows; class counts match the paper)')
 
-# 3. 提取提交时间（小时）
-if 'creation_time_seconds' in df_errors.columns:
-    df_errors['hour'] = pd.to_datetime(df_errors['creation_time_seconds'], unit='s').dt.hour
-elif 'time' in df_errors.columns:
-    df_errors['hour'] = pd.to_datetime(df_errors['time'], unit='s').dt.hour
 
-# 4. 计算用户历史成功率
-user_stats = df.groupby('user_handle').apply(
-    lambda x: (x['verdict'] == 'OK').mean()
-).to_dict()
-df_errors['user_success_rate'] = df_errors['user_handle'].map(user_stats).fillna(0.5)
-
-# 5. 选择用于实验的特征
-features = [
-    'problem_rating',
-    'language_encoded',
-    'passed_test_count',
-    'time_consumed_ms',
-    'memory_consumed_bytes',
-    'problem_type',
-    'hour',
-    'user_success_rate'
-]
-
-# 清理数据
-df_clean = df_errors.dropna(subset=['problem_rating', 'time_consumed_ms']).copy()
-
-# 转换内存为KB
-if 'memory_consumed_bytes' in df_clean.columns:
-    df_clean['memory_kb'] = df_clean['memory_consumed_bytes'] / 1024
-    features.append('memory_kb')
-else:
-    df_clean['memory_kb'] = 0
-
-# 选择最终特征列
-final_features = ['problem_rating', 'language_encoded', 'passed_test_count', 
-                   'time_consumed_ms', 'memory_kb', 'problem_type', 'hour', 'user_success_rate']
-
-# 创建最终数据集
-df_final = df_clean[final_features + ['error_type']].copy()
-df_final = df_final.dropna()
-
-# 标签编码
-label_map = {label: idx for idx, label in enumerate(df_final['error_type'].unique())}
-df_final['label'] = df_final['error_type'].map(label_map)
-
-print(f"\n📊 最终数据集统计:")
-print(f"- 样本数: {len(df_final)}")
-print(f"- 特征数: {len(final_features)}")
-print(f"- 类别数: {len(label_map)}")
-print(f"- 类别分布:\n{df_final['error_type'].value_counts()}")
-
-# 保存
-output_csv = output_path / "preprocessed_data.csv"
-output_json = output_path / "feature_config.json"
-
-df_final.to_csv(output_csv, index=False)
-print(f"\n✅ 保存预处理数据到: {output_csv}")
-
-# 保存特征配置
-config = {
-    'features': final_features,
-    'label_map': label_map,
-    'n_samples': len(df_final),
-    'n_features': len(final_features),
-    'n_classes': len(label_map)
-}
-with open(output_json, 'w') as f:
-    json.dump(config, f, indent=2)
-print(f"✅ 保存特征配置到: {output_json}")
-
-# 保存类别分布
-dist = df_final['error_type'].value_counts().to_dict()
-with open(output_path / "class_distribution.json", 'w') as f:
-    json.dump(dist, f, indent=2)
-
-print("\n🎉 预处理完成!")
+if __name__ == '__main__':
+    main()

@@ -56,3 +56,6 @@ Thumbs.db
 /tmp/
 *.tmp
 paper_acm.pdf
+
+# Local backups (kept on disk, out of the repo)
+.backups/
