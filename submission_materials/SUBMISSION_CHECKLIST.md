@@ -37,10 +37,11 @@
 
 - [x] `preprocess_data.py` runs in a clean environment and passes its gate
 - [x] `pipeline_authoritative.py` regenerates results, tables and figures
+- [x] `audit_llm_numbers.py` independently recomputes every LLM number the JSON does not store — per-class recall/precision (CE 1.00 / TLE 0.872 / MLE 0.875 / RE 0.016, CE precision 0.321 with 415 false positives), both prediction distributions, and all seven McNemar rows involving an LLM (364.23 / 334.72 / 92.37 / 1531.86 / 1521.91 / 1263.89 / 1052.07). All PASS. It recomputes the ML predictions from the pipeline rather than reading the archived dumps.
+- [x] Two stale prediction dumps archived under `experiment_results/deprecated/` — their GB scored 91.99%, not the reported 91.77%, and recomputing McNemar from them gives 376.30 instead of 364.23
 - [x] Submitter-disjoint replication reproduced: GroupShuffleSplit over `user_handle`, zero overlap, 10,900 / 2,460, GB 93.13 / RF 91.99 / LR 87.15
 - [x] Prompt template for both LLMs is in the appendix
-- [x] Pushed to GitHub `main` on 2026-10-17 — `3290887..3d7e5e0` (three commits: reframing + checklist). The two earlier push attempts failed on a network 502; the retry succeeded.
-- [ ] **Pending**: the later commits (`3d54cbf` spectrum, `b47cfea` cleanup, plus the compile fix) are still local. The proxy now returns `CONNECT tunnel failed, response 502` on every attempt and a direct connection to github.com:443 times out. Retry when the network recovers: `git push origin main`
+- [x] Pushed to GitHub `main` — all commits are on `origin/main` as of 2026-10-17 21:58 (`3290887..e741cc8`). Three push attempts failed on a proxy 502 before it went through; nothing is pending.
 
 ## Submission materials
 
