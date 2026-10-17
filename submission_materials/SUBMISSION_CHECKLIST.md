@@ -40,6 +40,7 @@
 - [x] Submitter-disjoint replication reproduced: GroupShuffleSplit over `user_handle`, zero overlap, 10,900 / 2,460, GB 93.13 / RF 91.99 / LR 87.15
 - [x] Prompt template for both LLMs is in the appendix
 - [x] Pushed to GitHub `main` on 2026-10-17 — `3290887..3d7e5e0` (three commits: reframing + checklist). The two earlier push attempts failed on a network 502; the retry succeeded.
+- [ ] **Pending**: the later commits (`3d54cbf` spectrum, `b47cfea` cleanup, plus the compile fix) are still local. The proxy now returns `CONNECT tunnel failed, response 502` on every attempt and a direct connection to github.com:443 times out. Retry when the network recovers: `git push origin main`
 
 ## Submission materials
 

@@ -823,7 +823,10 @@ suggests: 95 signature groups contain more than one verdict and together cover
 8{,}653 submissions (64.8\%). The mass, however, is concentrated in groups that
 are mixed only nominally. Twenty-five of them hold 6{,}761 submissions (50.6\% of
 the corpus) whose modal verdict accounts for 90--99\% of the group, so assigning
-the whole group to that verdict costs a small fraction of its rows. The remaining
+the whole group to that verdict costs a small fraction of its rows. All but one
+of these 25 groups is Wrong-Answer dominated, so their near-purity reflects the
+class prior rather than platform encoding and does not enlarge the set of
+verdicts that can be automated. The remaining
 70 groups hold 1{,}892 submissions (14.2\%), and these are the ones in which the
 verdict genuinely cannot be recovered. A rule that reads nothing but (time,
 memory, tests passed) and assigns each signature its majority verdict recovers
