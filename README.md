@@ -121,6 +121,14 @@ against the entry's, so a fabricated or mistyped reference fails loudly instead
 of reaching a reviewer. It exits non-zero if anything needs attention, which
 makes it usable as a pre-submission gate.
 
+The script checks that each reference *exists*. It does not check that the
+sentence citing it is true, and that turned out to be a separate problem of the
+same size: after the metadata was clean, an audit of all 67 citation instances
+against the source texts found ten more defects, including one paper credited
+with four authors who are not on it, and a CS1 projection built on an error
+distribution the cited paper never reports. If you re-use this bibliography,
+treat both checks as required.
+
 ## The two evaluation protocols
 
 - **Protocol A — stratified random 80/20.** The same partition used for the

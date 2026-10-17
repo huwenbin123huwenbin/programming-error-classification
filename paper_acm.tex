@@ -78,7 +78,10 @@
 % ============================================================
 \section{Introduction}
 
-Introductory programming courses report 30--40\% dropout rates~\cite{bennedsen2007failure,watson2014failure}, with debugging difficulty as a primary obstacle~\cite{watson2014failure,spohrer1986novice}. Prior work analyzed compilation behavior~\cite{jadud2006methods} and scaled to large populations via Blackbox~\cite{brown2014blackbox}, revealing systematic debugging differences between student groups. Competitive programming platforms such as Codeforces and LeetCode provide structured metadata (execution time, memory consumption, precise error verdicts, test cases passed) for every submission, making them valuable environments for studying programming error patterns at scale.
+Introductory programming courses report non-completion rates of roughly a
+third~\cite{bennedsen2007failure,watson2014failure}, with debugging difficulty as a primary obstacle~\cite{watson2014failure,spohrer1986novice}. Prior work analyzed compilation behavior~\cite{jadud2006methods} and scaled to
+large populations via Blackbox~\cite{brown2014blackbox}, which made
+IDE interaction logs from a worldwide novice population available for re-use. Competitive programming platforms such as Codeforces and LeetCode provide structured metadata (execution time, memory consumption, precise error verdicts, test cases passed) for every submission, making them valuable environments for studying programming error patterns at scale.
 
 A central methodological consideration motivates this work. Competitive
 programming platforms return structured verdicts for every submission, but the
@@ -126,9 +129,9 @@ We investigate three research questions:
 \end{itemize}
 
 \paragraph{What this study does, and does not, claim.} The overall ranking we
-report---supervised ML above zero-shot LLMs---is consistent with accumulating
-evidence that LLMs applied to serialized tabular inputs lean on semantic priors
-rather than on the numeric fields supplied to them~\cite{liu2024confronting}, and
+report---supervised ML above zero-shot LLMs---is consistent with evidence that
+LLM decisions on tabular inputs carry what the model inherited during
+pretraining rather than only what the supplied field values say~\cite{liu2024confronting}, and
 we therefore do not treat that ranking as our contribution. A ranking answers
 which model wins on one dataset; it does not tell an instructor which feedback can
 be automated and which cannot. What we contribute is the decomposition itself:
@@ -182,16 +185,20 @@ found that the tools available to novices rarely support them in diagnosing and
 fixing their own errors. This finding underscores the need for automated tools that can
 accelerate the development of debugging proficiency. Cognitive Load Theory~\cite{sweller2011cognitive} posits that debugging simultaneously
 taxes working memory across error diagnosis, code comprehension, and solution planning,
-creating intrinsic overload that constrains novice self-correction~\cite{kirschner2018cognitive}. In this vein, Jadud~\cite{jadud2006methods} pioneered compilation event analysis using the BlueJ IDE, establishing compilation behavior as a data source for educational mining. The Blackbox project~\cite{brown2014blackbox} scaled this to 200,000+ users, revealing that compilation errors cluster early in programming episodes and that high-performing students compile more strategically.
+creating intrinsic overload that constrains novice self-correction~\cite{kirschner2018cognitive}. In this vein, Jadud~\cite{jadud2006methods} pioneered compilation event analysis using the BlueJ IDE, establishing compilation behavior as a data source for educational mining. The Blackbox project~\cite{brown2014blackbox} scaled this to a perpetual, worldwide collection from BlueJ users---over one hundred thousand opted in during its first year---and released the data for re-use by other researchers.
 
-Large-scale analyses~\cite{ahadi2015exploring,luxton2018introductory} established that runtime errors persist across cohorts and resist standard interventions~\cite{altadmri2015most}, motivating automated diagnostic tools~\cite{barbosa2023feedback}.
+Large-scale analyses~\cite{ahadi2015exploring,luxton2018introductory} established that programming mistakes persist across cohorts and that the composition of those mistakes shifts over a course~\cite{altadmri2015most}, motivating automated diagnostic tools~\cite{barbosa2023feedback}.
 
 Spohrer and Soloway~\cite{spohrer1986novice} showed, in a study of novice LISP
 programs, that widely held assumptions about novice mistakes---including that
 they reduce to a few fundamental bug types---do not hold. Many errors that look
 superficial have deeper cognitive roots, indicating that effective automated
 feedback must identify the underlying error pattern rather than assume a small
-catalogue of causes. Students' self-efficacy beliefs compound this challenge. Gorson and O'Rourke~\cite{gorson2020why} found that CS1 students systematically overestimate their error severity, often attributing correct execution to luck rather than understanding---a metacognitive gap that automated tools could help correct.
+catalogue of causes. Students' self-efficacy beliefs compound this challenge. Gorson and O'Rourke~\cite{gorson2020why} surveyed 214 CS1 students across three
+universities and found that students reported negative self-assessments at each
+of thirteen ordinary programming moments---including after a program ran
+correctly---and that students who self-assessed negatively more often also
+reported lower self-efficacy.
 
 Busjahn et al.~\cite{busjahn2015eye} further revealed through eye-tracking studies that even expert programmers do not process code linearly, complicating error diagnosis and self-correction across all skill levels. 
 
@@ -202,7 +209,12 @@ challenges over the past fifteen years. Educational data mining has identified p
 
 Behavioral features from early assignments---compilation frequency, error diversity, time-on-task---can predict course outcomes~\cite{jadud2006methods,brown2014blackbox}, enabling early intervention through instructor-facing dashboards~\cite{jayaprakash2014early,verbert2013learning}.
 
-Robust behavioral modeling distinguishes productive from unproductive debugging~\cite{effenberger2021validity}, aligning with cognitive load principles~\cite{sweller2011cognitive}; interaction-sequence features can further improve predictive accuracy for programming behavior~\cite{effenberger2021validity}.
+Effenberger and Pel\'{a}nek~\cite{effenberger2021validity} show that the standard
+way of validating student models---predicting the correctness of the next
+answer---cannot distinguish models that use binary correctness from models that
+use richer process data, so richer performance signals need their own validation
+regime. Their point bears directly on our evaluation choices: an accuracy figure
+alone cannot tell whether a model has learned the verdict or the class prior.
 
 Prior work on verdict classification from submission data has shown that
 metadata features can achieve strong performance when combined with
@@ -234,7 +246,11 @@ understanding and generation~\cite{barke2023grounded,becker2023programming}. Bar
 top quartile of CS1 students on examination questions---solving ten of 23 on the
 first attempt and all but four within ten attempts---raising over-reliance concerns. Sarsa et al.\ showed that LLMs can generate usable programming exercises and
 explanations, though roughly a third of the generated sample solutions failed
-their own tests~\cite{sarsa2022automatic}, and Leinonen et al.~\cite{leinonen2023llm} showed that LLM-enhanced error messages measurably improve novice self-correction rates.
+their own tests~\cite{sarsa2022automatic}, and Leinonen et al.~\cite{leinonen2023llm} found that LLM-generated
+error-message explanations were rated an improvement over the original message
+in only about half of cases (54\%), with the accompanying fix correct roughly a
+third of the time---useful, but nowhere near reliable enough to hand to a novice
+unattended.
 
 Feng et al.~\cite{feng2020codebert} showed that CodeBERT achieves state-of-the-art performance on code-level benchmarks including defect detection, but is primarily evaluated on source code features; its effectiveness on submission metadata alone remains unclear. Evaluations of
 LLM-generated feedback caution that such feedback can be flawed or
@@ -255,21 +271,30 @@ While source-code analysis (ASTs, token sequences, code embeddings) has
 received considerable attention in computing education research, a parallel
 line of work has demonstrated that \textit{submission metadata alone} can
 achieve strong predictive performance for a range of educational outcomes.
-Jadud~\cite{jadud2006methods} showed that compilation frequency and
-error persistence patterns extracted from IDE interaction logs can predict
-course outcomes with moderate accuracy ($R^2 \approx 0.3$). The Blackbox
-project~\cite{brown2014blackbox} scaled this approach to over 200,000
-students worldwide, demonstrating that behavioral metadata (compilation
-sequences, time-on-task, submission frequency) constitute a rich and
+Jadud~\cite{jadud2006methods} introduced the error quotient, a measure of how
+efficiently a student clears syntax errors, and reported that it correlates
+significantly with conventional indicators of academic progress. The Blackbox
+project~\cite{brown2014blackbox} scaled the approach to a perpetual worldwide
+collection from BlueJ users---over one hundred thousand opted in within its
+first year---and released the data for re-use, establishing behavioural metadata
+(compilation sequences, time-on-task, submission frequency) as a rich and
 continuously available signal for educational data mining.
 
 Prior work has shown that features derived from early
 programming submissions---including compilation frequency, error diversity,
 and time-on-task---can predict final course grades using only metadata,
-without accessing student source code~\cite{altadmri2015most}. Ahadi et
+without accessing student source code~\cite{jadud2006methods,brown2014blackbox}. Ahadi et
 al.~\cite{ahadi2015exploring} extended this line with supervised learning on
 naturally accumulating programming process data, separating high- and
-low-performing students after the first week of an introductory course. Altadmri and Brown~\cite{altadmri2015most} further classified 37M Java submissions, finding that approximately 42\% of novice errors are compile-time errors, with runtime errors and wrong-answer errors accounting for most of the remainder. This distribution differs substantially from competitive programming, motivating cross-population validation of automated classification tools: Petersen et
+low-performing students after the first week of an introductory course. Altadmri and Brown~\cite{altadmri2015most} analysed 37M Java
+compilations from over 250{,}000 Blackbox users and grouped the
+compiler-detected mistakes they found into three categories---syntax, type and
+other semantic---with mismatched brackets the single most frequent. The dataset
+records no runtime-error or wrong-answer verdicts at all, because those failures
+produce no compiler diagnostic, so it yields no submission-level verdict
+distribution for a novice population. This is a different measurement problem
+from ours rather than a comparable baseline, and it motivates cross-population
+validation of automated classification tools: Petersen et
 al.~\cite{petersen2015exploration} showed that even an established behavioral
 metric such as the Error Quotient shifts meaningfully across course contexts, and
 argued that such metrics are typically developed and validated in narrow
@@ -278,12 +303,12 @@ settings. Related work further established that
 intervention without privacy-invasive code monitoring~\cite{jadud2006methods,brown2014blackbox}.
 
 In the context of competitive programming platforms, Alnahhas and
-Mourtada~\cite{alnahhas2020predicting} used account-level metadata (contestant
-rating, participation frequency, problem difficulty distribution) to predict
-overall competitive programming performance, reporting 78\% accuracy using
-only non-code features. Their findings indicate that metadata alone carries
-substantial signal for programming behavior analysis, motivating our focus on
-metadata-based verdict classification.
+Mourtada~\cite{alnahhas2020predicting} used account-level metadata (historical
+rating sequences) to predict contestants' future ratings, finding that a deep
+model beat five classical baselines. Their task is regression on a rating
+trajectory rather than classification of a submission, but it establishes the
+premise we build on: account-level metadata alone carries substantial signal
+about programming behaviour.
 
 The advantages of metadata-based classification are both practical and
 privacy-preserving: (1) no source code access is required, avoiding
@@ -1390,26 +1415,36 @@ for experienced programmers producing diverse error types.
 \textbf{Population external validity:} The skill-tier analysis demonstrates
 internal generalizability across competitive programming expertise levels, but
 the gap to CS1/CS2 student populations~\cite{yadav2021collaborative}
-remains open. Competitive programmers differ from novices in error profile (more CE, fewer complex RE)~\cite{altadmri2015most}, error cause (novice RE dominated by null pointer/array bounds violations), and submission behavior (iterative learning vs. competitive time pressure).
+remains open. Competitive programmers differ from novices in error cause and
+submission behavior (iterative learning under low time pressure versus
+competitive time pressure), and the two populations are measured differently:
+the largest novice corpus records only compiler-detected mistakes~\cite{altadmri2015most},
+so no published figure puts novice runtime-error rates beside ours.
 Validation on student datasets (\emph{CS1QA}~\cite{lee2022cs1qa}, Blackbox)
 is needed before drawing conclusions for novice education.
 
 
 
-\textbf{Theoretical CS1 projection:}\label{sec:cs1-projection} As an illustrative arithmetic projection---not an
-empirical result---we combine Blackbox's CS1 error distribution (~42\% CE, 12\% RE,
-46\% WA in novice Java submissions)~\cite{altadmri2015most} with our per-class F1
-(CE 0.77, RE 0.33, WA 0.95) at the rates they were measured. The result is a
-weighted F1 of approximately 0.80, which is \emph{lower} than our corpus figure
-because a novice distribution shifts mass toward CE, the class the equivalence
-cell constrains most tightly. We report the arithmetic to make a point about
-transfer: a projection of this kind is only as good as the assumption that
-per-class F1 is invariant across populations, and Section~5.3 gives reason to
-doubt it---in a population where compilation errors are 42\% rather than 7\%,
-the all-zero cell would be composed differently, and CE F1 would move with the
-composition rather than staying at 0.77. Direct validation on student datasets
-(\emph{CS1QA}~\cite{lee2022cs1qa}, Blackbox) is required before any claim about CS1
-populations.
+\textbf{Theoretical CS1 projection:}\label{sec:cs1-projection} We cannot compute a
+submission-level weighted F1 for a CS1 population, because no published novice
+dataset records the verdict distribution we would need: the largest such
+corpus~\cite{altadmri2015most} contains only compiler-detected mistakes, and
+runtime and wrong-answer failures produce no diagnostic and therefore never
+enter it. What that corpus does show is the direction of the shift. Among the
+mistakes it can see, compile-time categories dominate---the single most frequent
+mistake alone (mismatched brackets) accounts for roughly a third of all
+occurrences---whereas compilation errors are 7.3\% of our corpus. If a novice
+population moved even a modest share of its mass from WA toward CE, the weighted
+F1 would fall, because CE is the class the equivalence cell constrains most
+tightly (F1 0.77 against a 0.767 identifiability ceiling) while WA sits at 0.95.
+We therefore report the direction rather than a number, and we report it for the
+same reason we report the equivalence ceiling: a transfer claim is only as good
+as the assumption that per-class F1 is invariant across populations, and
+Section~5.3 gives reason to doubt it. In a population where compilation errors
+dominated, the all-zero cell would be composed differently, and CE F1 would move
+with the composition rather than staying at 0.77. Direct validation on student
+datasets (\emph{CS1QA}~\cite{lee2022cs1qa}, Blackbox) is required before any
+claim about CS1 populations.
 
 
 

@@ -1,0 +1,54 @@
+====================================================================
+LLM number audit — recomputed from raw prediction dumps
+====================================================================
+
+DeepSeek-V3: n=2672 valid=2651 invalid=21
+
+-- Sec. 4.7 claims (valid outputs only) --
+  [PASS] CE recall: computed=1.0000 manuscript=1.0 (tol 0.005)
+  [PASS] TLE recall: computed=0.8721 manuscript=0.872 (tol 0.005)
+  [PASS] MLE recall: computed=0.8750 manuscript=0.875 (tol 0.005)
+  [PASS] CE precision: computed=0.3208 manuscript=0.321 (tol 0.005)
+       CE false positives = 415 (manuscript: 415)
+  [PASS] RE recall: computed=0.0157 manuscript=0.016 (tol 0.005)
+       RE support = 127 (manuscript: 131)
+  macro F1 (valid) = 0.5447  (manuscript: 0.545)
+  accuracy (valid) = 0.7665  (manuscript: 0.7665)
+
+-- Qwen2.5:3B prediction distribution (Sec. 4.7) --
+  [PASS] CE: computed=263 manuscript=263
+  [PASS] TLE: computed=644 manuscript=644
+  [PASS] MLE: computed=317 manuscript=317
+  [PASS] WA: computed=715 manuscript=715
+  [PASS] RE: computed=464 manuscript=464
+  total = 2672
+
+recomputing ML predictions from pipeline_authoritative (this trains 3 models + 5-fold CV)...
+
+=== A: audit re-run === train 10688 / test 2672
+  Gradient Boosting      acc=91.77% F1m=0.7986 BAcc=0.804 cv=92.42
+     class F1: {'CE': 0.7702, 'TLE': 0.9923, 'MLE': 0.95, 'WA': 0.9489, 'RE': 0.3314}
+     Gini: {'problem_rating': 3.52, 'time_consumed_ms': 81.49, 'memory_kb': 7.46, 'language_encoded': 3.45, 'passed_test_count': 3.22, 'problem_type': 0.86}
+  Random Forest          acc=91.80% F1m=0.7979 BAcc=0.791 cv=92.36
+     class F1: {'CE': 0.7624, 'TLE': 0.979, 'MLE': 0.875, 'WA': 0.9498, 'RE': 0.4233}
+     Gini: {'problem_rating': 8.83, 'time_consumed_ms': 54.06, 'memory_kb': 14.24, 'language_encoded': 7.15, 'passed_test_count': 11.17, 'problem_type': 4.55}
+  Logistic Regression    acc=85.63% F1m=0.4940 BAcc=0.486 cv=86.03
+     class F1: {'CE': 0.049, 'TLE': 0.907, 'MLE': 0.5672, 'WA': 0.9177, 'RE': 0.0292}
+     LR iters: 91
+  McNemar:
+    Gradient Boosting vs Random Forest            p=1.00e+00 b=37 c=38
+    Gradient Boosting vs Logistic Regression      p=1.90e-18 b=255 c=91
+    Random Forest vs Logistic Regression          p=1.54e-19 b=247 c=82
+
+-- McNemar rows involving an LLM (Table 8), authoritative ML preds --
+  Gradient Boosting    vs DeepSeek-V3 : chi2=  364.23  b= 451 c=  31 p=2.33e-96
+  Random Forest        vs DeepSeek-V3 : chi2=  334.72  b= 474 c=  53 p=2.89e-85
+  Logistic Regression  vs DeepSeek-V3 : chi2=   92.37  b= 480 c= 224 p=4.96e-22
+  Gradient Boosting    vs Qwen2.5:3B   : chi2= 1531.86  b=1633 c=  34 p=0.00e+00
+  Random Forest        vs Qwen2.5:3B   : chi2= 1521.91  b=1640 c=  40 p=0.00e+00
+  Logistic Regression  vs Qwen2.5:3B   : chi2= 1263.89  b=1531 c=  96 p=0.00e+00
+  DeepSeek-V3          vs Qwen2.5:3B   : chi2= 1052.07  b=1249 c=  70 p=1.25e-279
+
+====================================================================
+AUDIT PASSED
+====================================================================
