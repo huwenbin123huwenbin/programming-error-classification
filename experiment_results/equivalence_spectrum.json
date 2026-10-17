@@ -1,0 +1,152 @@
+{
+ "n_rows": 13360,
+ "n_signature_groups": 2775,
+ "n_mixed_groups": 95,
+ "rows_in_mixed_groups": 8653,
+ "share_in_mixed_groups": 0.6477,
+ "entropy_norm": {
+  "median": 0.8113,
+  "q25": 0.4648,
+  "q75": 1.0,
+  "max": 1.0
+ },
+ "high_entropy_groups": {
+  "n": 70,
+  "rows": 1892,
+  "share_of_corpus": 0.1416
+ },
+ "low_entropy_groups": {
+  "n": 25,
+  "rows": 6761,
+  "share_of_corpus": 0.5061
+ },
+ "modal_rule_signature_only": {
+  "errors": 885,
+  "error_rate": 0.0662,
+  "by_verdict": {
+   "CE": {
+    "total": 980,
+    "recovered": 980,
+    "lost": 0,
+    "recall_under_modal_rule": 1.0
+   },
+   "TLE": {
+    "total": 1288,
+    "recovered": 1288,
+    "lost": 0,
+    "recall_under_modal_rule": 1.0
+   },
+   "MLE": {
+    "total": 202,
+    "recovered": 202,
+    "lost": 0,
+    "recall_under_modal_rule": 1.0
+   },
+   "WA": {
+    "total": 10234,
+    "recovered": 9719,
+    "lost": 515,
+    "recall_under_modal_rule": 0.9497
+   },
+   "RE": {
+    "total": 656,
+    "recovered": 286,
+    "lost": 370,
+    "recall_under_modal_rule": 0.436
+   }
+  }
+ },
+ "top_groups": [
+  {
+   "signature": {
+    "time_ms": 31.0,
+    "memory_kb": 0.0,
+    "passed_tests": 1.0
+   },
+   "size": 1738,
+   "composition": {
+    "WA": 1682,
+    "RE": 56
+   },
+   "entropy": 0.1424,
+   "entropy_norm": 0.2054,
+   "modal_share": 0.9678
+  },
+  {
+   "signature": {
+    "time_ms": 0.0,
+    "memory_kb": 0.0,
+    "passed_tests": 0.0
+   },
+   "size": 1504,
+   "composition": {
+    "CE": 980,
+    "WA": 498,
+    "RE": 26
+   },
+   "entropy": 0.7152,
+   "entropy_norm": 0.651,
+   "modal_share": 0.6516
+  },
+  {
+   "signature": {
+    "time_ms": 15.0,
+    "memory_kb": 0.0,
+    "passed_tests": 0.0
+   },
+   "size": 1277,
+   "composition": {
+    "WA": 1223,
+    "RE": 54
+   },
+   "entropy": 0.1751,
+   "entropy_norm": 0.2527,
+   "modal_share": 0.9577
+  },
+  {
+   "signature": {
+    "time_ms": 15.0,
+    "memory_kb": 0.0,
+    "passed_tests": 1.0
+   },
+   "size": 1090,
+   "composition": {
+    "WA": 1051,
+    "RE": 39
+   },
+   "entropy": 0.1543,
+   "entropy_norm": 0.2226,
+   "modal_share": 0.9642
+  },
+  {
+   "signature": {
+    "time_ms": 46.0,
+    "memory_kb": 0.0,
+    "passed_tests": 1.0
+   },
+   "size": 859,
+   "composition": {
+    "WA": 840,
+    "RE": 19
+   },
+   "entropy": 0.1062,
+   "entropy_norm": 0.1532,
+   "modal_share": 0.9779
+  },
+  {
+   "signature": {
+    "time_ms": 31.0,
+    "memory_kb": 0.0,
+    "passed_tests": 0.0
+   },
+   "size": 717,
+   "composition": {
+    "WA": 691,
+    "RE": 26
+   },
+   "entropy": 0.1559,
+   "entropy_norm": 0.2249,
+   "modal_share": 0.9637
+  }
+ ]
+}

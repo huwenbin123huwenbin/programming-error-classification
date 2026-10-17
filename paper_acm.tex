@@ -154,8 +154,9 @@ Our contributions are:
  cross-validation, systematic ablation, corrected McNemar tests, and a
  submitter-disjoint replication.
  \item \textbf{Deployment guidance with a leakage-free protocol.} Execution time
- and memory dominate (7.3\,pp drop when time is removed; 89.0\% of Gini
- importance), a submitter-history aggregate does not survive leakage-free
+ and memory dominate (a 7.3\,pp drop when time is removed, and 89.0\% of Gini
+ importance between the two fields, 81.5\% of it from time alone), a
+ submitter-history aggregate does not survive leakage-free
  evaluation, and supervised ensembles lead the strongest zero-shot LLM by
  15.1\,pp at roughly a tenth of the inference cost.
  Dataset and code: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
@@ -816,6 +817,23 @@ also contain WA submissions in the same partition, 45 of them in cells holding
 at least five. For these submissions the WA and RE reports differ while every
 recorded number agrees.
 
+Table~\ref{tab:equivalence} lists the two largest mixed groups, which invites the
+question of what the other 93 account for. The count is larger than the table
+suggests: 95 signature groups contain more than one verdict and together cover
+8{,}653 submissions (64.8\%). The mass, however, is concentrated in groups that
+are mixed only nominally. Twenty-five of them hold 6{,}761 submissions (50.6\% of
+the corpus) whose modal verdict accounts for 90--99\% of the group, so assigning
+the whole group to that verdict costs a small fraction of its rows. The remaining
+70 groups hold 1{,}892 submissions (14.2\%), and these are the ones in which the
+verdict genuinely cannot be recovered. A rule that reads nothing but (time,
+memory, tests passed) and assigns each signature its majority verdict recovers
+CE, TLE and MLE at recall 1.00, WA at 0.95 and RE at 0.44, for 6.6\% total error.
+That rule is fitted on all labels, so it is a diagnostic ceiling rather than a
+deployable classifier; its point is that the three execution-defined verdicts
+need no learning at all once the judge's thresholds are read off, whereas RE is
+the one verdict the signature genuinely loses. The boundary is therefore local
+and locatable, not a diffuse failure spread across the feature space.
+
 \subsection{Confusion Matrix and Per-Class Performance}
 
 Table~\ref{tab:gb-cm} gives the full confusion matrix for Gradient Boosting and
@@ -892,9 +910,9 @@ Execution time carries 81.5\% of the importance and peak memory a further
 89.0\% of the model's decisions. The four fields that describe the
 \emph{problem} rather than the \emph{execution}---difficulty rating, language,
 tests passed, contest slot---share the remaining 11.0\%, and none exceeds
-3.6\%. Tests passed is the weakest of the substantive fields at 3.2\%, which is
-informative in its own right: the counter is informative about CE (always zero)
-but redundant with execution time for the other classes.
+3.6\%. Tests passed carries only 3.2\%, which is
+informative in its own right: the counter separates CE (always zero) but is
+redundant with execution time for the other classes.
 
 \subsection{Ablation Study}
 \label{sec:ablation}
