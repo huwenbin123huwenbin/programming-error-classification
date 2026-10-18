@@ -14,16 +14,31 @@ statistics in Table 8 can be read with a known margin:
            submitter. n_eff = n / deff is the effective sample size.
 
 Run:  /usr/bin/python3 clustering_diagnostic.py
+
+Output: experiment_results/clustering_diagnostic.json (the manuscript's
+§5.1 figures — ICC 0.41-0.53, mean 0.483, deff 2.13, n_eff ≈ 6,300 — are
+read from this artifact).
 """
+import json
 import os
 import sys
 
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
 import pipeline_authoritative as pa  # noqa: E402
+
+OUT = os.path.join(ROOT, 'experiment_results', 'clustering_diagnostic.json')
+
+# manuscript figures (§5.1): (quantity, printed, tolerance)
+EXPECTED = [
+    ('icc_min', 0.40, 0.005), ('icc_max', 0.53, 0.005), ('icc_mean', 0.483, 0.0005),
+    ('deff', 2.13, 0.005), ('n_eff', 6300, 50),
+    ('modal_share', 0.920, 0.0005), ('entropy_ratio', 0.181, 0.0005),
+]
 
 
 def main():
@@ -83,9 +98,35 @@ def main():
     print(f'mean per-submitter modal share = {np.mean(modal):.3f}')
     print(f'mean entropy ratio (within/global) = {np.mean(ent_ratio):.3f}')
 
+    report = {
+        'n': int(n), 'n_submitters': len(sizes),
+        'submissions_per_submitter': {'mean': kbar,
+                                      'median': float(np.median(list(sizes.values()))),
+                                      'max': int(max(sizes.values()))},
+        'icc_per_class': {c: float(v) for c, v in iccs.items()},
+        'icc_min': float(min(iccs.values())), 'icc_max': float(max(iccs.values())),
+        'icc_mean': icc_mean, 'deff': float(deff), 'n_eff': float(n / deff),
+        'modal_share': float(np.mean(modal)),
+        'entropy_ratio': float(np.mean(ent_ratio)),
+    }
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    with open(OUT, 'w', encoding='utf-8') as f:
+        json.dump(report, f, indent=2)
+    print(f'wrote {OUT}')
+
+    print('\nManuscript check (§5.1):')
+    ok = True
+    for q, printed, tol in EXPECTED:
+        actual = report[q]
+        good = abs(actual - printed) <= tol
+        ok &= good
+        print(f"  [{'PASS' if good else 'FAIL'}] {q:14s} "
+              f"manuscript {printed:>8}  artifact {actual:.4g}")
     print('=' * 60)
-    print(f'SUMMARY ICC={icc_mean:.3f} DEFF={deff:.2f} NEFF={n / deff:.0f}')
+    print('CLUSTERING ' + ('PASSED' if ok else 'FAILED'))
+    print('=' * 60)
+    return 0 if ok else 1
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

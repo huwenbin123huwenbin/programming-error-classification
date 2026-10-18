@@ -231,3 +231,63 @@ outranks all of them.
 - Environment note: the analysis venv (`~/.workbuddy/binaries/python/envs/
   default`) now carries numpy/pandas/scikit-learn/scipy/pypdf; the machine's
   system python has no scientific stack.
+
+---
+
+## Round 12 audit (2026-10-18, 16:15–17:20) — full-paper number audit; three provenance gaps closed
+
+Round 11 closed the open review items; this round asked the broader question
+— does *every* number in the manuscript trace to an artifact? Three sections
+did not, and one printed figure was wrong.
+
+- [x] **§5.5 difficulty tiers had no producing script.** The paper's
+  92.21 / 93.60 / 87.55% (with tier compositions, per-tier RE F1, WA recall)
+  were recomputed once in an interactive session during round 9 and never
+  persisted. New `experiment_code/difficulty_tier_analysis.py` rebuilds the
+  protocol-A partition, re-fits the Table 3 Gradient Boosting model, and
+  reproduces all 26 printed figures exactly (artifact:
+  `experiment_results/difficulty_tiers.json`).
+- [x] **Table 1, its footnote and the Figure 2 caption had no producing
+  script.** New `experiment_code/dataset_descriptives.py` reproduces all 32
+  printed figures from the authoritative rows: per-verdict counts and mean
+  execution times (WA 81.2 / TLE 2,508.2 / RE 176.7 / CE 0 / MLE 775.1 ms),
+  the TLE limit mode (61.7% at exactly 2,000 ms), the MLE memory mode (65.3%
+  at 262,100 KB), submitter statistics (4,005 users, median 2, 773 with >= 5),
+  rating range/median, the five figure-caption tier shares, and the 18.5%
+  platform-encoded share.
+- [x] **The latency/cost figures in Table 7, Table 10, the Cost paragraph and
+  the deployment example were "measured" with no artifact.** New
+  `experiment_code/latency_benchmark.py` measures them (single core, best and
+  median of five) and writes `latency_benchmark.json` with the host CPU. The
+  original figures (RF 15.2 ms, GB 5.9 ms, LR 0.1 ms per 1,000, "$0.0002/1k")
+  matched no artifact and no longer reproduce on this machine; the manuscript
+  now carries the measured values with noise-robust rounding (RF about 11 ms,
+  GB about 5 ms, LR about 0.3 ms per 1,000; about $10^-7 per 1,000 at
+  $0.04/vCPU-hour) and states that latency is machine-dependent. Run-to-run
+  variance (GB 4.4-5.4 ms) is why the figures are rounded rather than
+  decimal-precise. Two stale claims were removed in the same pass:
+  "roughly a tenth of the inference cost" (contributions and conclusion — the
+  measured ratio is four to five orders of magnitude) and "roughly two orders
+  of magnitude" in the deployment paragraph (four to six).
+- [x] **One printed figure was wrong: the ICC range.** §5.1 says per-class ICC
+  0.41-0.53; the recomputed minimum is 0.4047, which rounds to 0.40. Corrected
+  to 0.40-0.53. `clustering_diagnostic.py` now persists its artifact
+  (`clustering_diagnostic.json`) and checks all seven manuscript figures
+  (ICC mean 0.483, deff 2.13, n_eff 6,279, modal share 0.920, entropy ratio
+  0.181 — all reproduce).
+- [x] **Superseded artifact archived.** `student_proxy_experiment.json`
+  (submitter-rating tiers, 96.01/95.21/88.54%) is not cited by the manuscript
+  and depends on `user_ratings.json`, which is not released; moved to
+  `deprecated_artifacts/` with the reason. Its script carries a labelling bug
+  (`n_users_with_rating` counted rows, 13,305, not users, 4,005) — fixed and
+  documented in the script's docstring.
+- [x] **Master gate added.** `experiment_code/verify_paper_numbers.py` chains
+  nine checks (Table 1/footnote/Figure 2, difficulty tiers, clustering,
+  few-shot mechanism, LLM numbers, McNemar alignment, bibliography, §5.3
+  corpus claims, latency info) and exits non-zero if any required check fails.
+  Current run: ALL PAPER NUMBERS VERIFIED.
+- [x] README updated: master gate as the one-command entry point, repository
+  tree and reproduction section extended with the four new scripts, the
+  deprecated student-proxy file noted.
+- [x] Chinese companion synced (cost table, table footnote, cost paragraph).
+- [x] Recompiled: 34 pages, 0 errors, 0 overfull, 0 undefined references.

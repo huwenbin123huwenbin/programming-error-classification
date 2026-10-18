@@ -1,0 +1,25 @@
+{
+  "machine": "Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz",
+  "os": "macOS-13.7.8-x86_64-i386-64bit-Mach-O",
+  "threads_pinned": 1,
+  "n_predictions": 2672,
+  "repeats": 5,
+  "price_per_vcpu_hour_usd": 0.04,
+  "models": {
+    "Random Forest": {
+      "median_ms_per_1000": 11.4,
+      "best_ms_per_1000": 11.2,
+      "usd_per_1000": 1.27e-07
+    },
+    "Gradient Boosting": {
+      "median_ms_per_1000": 6.1,
+      "best_ms_per_1000": 5.1,
+      "usd_per_1000": 6.8e-08
+    },
+    "Logistic Regression": {
+      "median_ms_per_1000": 0.3,
+      "best_ms_per_1000": 0.3,
+      "usd_per_1000": 3e-09
+    }
+  }
+}

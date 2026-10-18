@@ -1,0 +1,88 @@
+{
+  "source": "Gradient Boosting (six features, pipeline_authoritative hyperparameters), protocol A test partition",
+  "tier_cuts": {
+    "novice": "problem_rating < 1400",
+    "intermediate": "1400 <= problem_rating < 2000",
+    "advanced": "problem_rating >= 2000"
+  },
+  "tiers": {
+    "novice": {
+      "n": 1464,
+      "accuracy": 0.9221311475409836,
+      "macro_f1": 0.7939174403991751,
+      "balanced_acc": 0.8263832161589107,
+      "class_f1": {
+        "CE": 0.7464788732394366,
+        "TLE": 1.0,
+        "MLE": 0.8571428571428571,
+        "WA": 0.9557090613571719,
+        "RE": 0.41025641025641024
+      },
+      "re_f1": 0.41025641025641024,
+      "wa_recall": 0.9514563106796117,
+      "verdict_composition": {
+        "CE": 116,
+        "TLE": 49,
+        "MLE": 3,
+        "WA": 1236,
+        "RE": 60
+      },
+      "tle_share": 3.3469945355191255,
+      "mle_share": 0.20491803278688525,
+      "re_share": 4.098360655737705,
+      "re_count": 60
+    },
+    "intermediate": {
+      "n": 734,
+      "accuracy": 0.9359673024523161,
+      "macro_f1": 0.7655394274632024,
+      "balanced_acc": 0.7765448400142836,
+      "class_f1": {
+        "CE": 0.7157894736842105,
+        "TLE": 1.0,
+        "MLE": 1.0,
+        "WA": 0.9580615097856477,
+        "RE": 0.15384615384615385
+      },
+      "re_f1": 0.15384615384615385,
+      "wa_recall": 0.9625468164794008,
+      "verdict_composition": {
+        "CE": 41,
+        "TLE": 126,
+        "MLE": 11,
+        "WA": 534,
+        "RE": 22
+      },
+      "tle_share": 17.166212534059945,
+      "mle_share": 1.4986376021798364,
+      "re_share": 2.997275204359673,
+      "re_count": 22
+    },
+    "advanced": {
+      "n": 474,
+      "accuracy": 0.8755274261603375,
+      "macro_f1": 0.8107394647362481,
+      "balanced_acc": 0.8025763818440457,
+      "class_f1": {
+        "CE": 0.9230769230769231,
+        "TLE": 0.9764705882352941,
+        "MLE": 0.9411764705882353,
+        "WA": 0.903114186851211,
+        "RE": 0.30985915492957744
+      },
+      "re_f1": 0.30985915492957744,
+      "wa_recall": 0.9422382671480144,
+      "verdict_composition": {
+        "CE": 39,
+        "TLE": 83,
+        "MLE": 26,
+        "WA": 277,
+        "RE": 49
+      },
+      "tle_share": 17.51054852320675,
+      "mle_share": 5.485232067510548,
+      "re_share": 10.337552742616033,
+      "re_count": 49
+    }
+  }
+}

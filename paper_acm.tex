@@ -161,7 +161,8 @@ Our contributions are:
  importance between the two fields, 81.5\% of it from time alone), a
  submitter-history aggregate does not survive leakage-free
  evaluation, and supervised ensembles lead the strongest prompted LLM by
- 15.1\,pp at roughly a tenth of the inference cost.
+ 15.1\,pp at four to five orders of magnitude lower per-prediction inference
+ cost (measured; Table~\ref{tab:llm-results}).
  Dataset and code: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{enumerate}
 
@@ -1038,10 +1039,10 @@ supervised models on the identical test partition.
 \toprule
 Model & Test Acc & 95\% CI & Macro F1 & Cost/1k$^{\dagger}$ \\
 \midrule
-Random Forest & \textbf{91.80\%} & [90.7, 92.8] & 0.798 & \$0.0002 \\
-Gradient Boosting & 91.77\% & [90.7, 92.8] & \textbf{0.799} & \$0.0002 \\
-Gradient Boosting, five fields$^{*}$ & 91.69\% & [90.6, 92.7] & 0.797 & \$0.0002 \\
-Logistic Regression & 85.63\% & [84.2, 86.9] & 0.494 & \$0.0002 \\
+Random Forest & \textbf{91.80\%} & [90.7, 92.8] & 0.798 & $<\$10^{-6}$ \\
+Gradient Boosting & 91.77\% & [90.7, 92.8] & \textbf{0.799} & $<\$10^{-6}$ \\
+Gradient Boosting, five fields$^{*}$ & 91.69\% & [90.6, 92.7] & 0.797 & $<\$10^{-6}$ \\
+Logistic Regression & 85.63\% & [84.2, 86.9] & 0.494 & $<\$10^{-6}$ \\
 \midrule
 \multicolumn{5}{l}{\textit{LLMs, three-shot on the five prompt fields (eight submissions per call)}} \\
 DeepSeek-V3 (online), all outputs & 76.05\% & [74.4, 77.6] & --- & \$0.01 \\
@@ -1053,8 +1054,10 @@ DeepSeek-V3 (online), valid only & 76.65\% & [75.0, 78.2] & 0.545 & \$0.01 \\
 \multicolumn{5}{l}{\small $^{*}$Ablation variant restricted to the five fields the LLMs received; statistically}\\
 \multicolumn{5}{l}{\small indistinguishable from the six-field model ($\chi^2=0.03$, $p=0.87$).}\\
 \multicolumn{5}{l}{\small Invalid outputs: DeepSeek-V3 21/2{,}672 (0.8\%), \texttt{Qwen2.5:3B} 269/2{,}672 (10.1\%).}\\
-\multicolumn{5}{l}{\small $^{\dagger}$Supervised figures are priced from measured single-core inference (RF 15.2\,ms, GB 5.9\,ms,}\\
-\multicolumn{5}{l}{\small LR 0.1\,ms per 1,000) at \$0.04 per vCPU-hour. DeepSeek-V3 at standard list pricing}\\
+\multicolumn{5}{l}{\small $^{\dagger}$Supervised figures are priced from measured single-core inference (RF about 11\,ms, GB about 5\,ms,}\\
+\multicolumn{5}{l}{\small LR about 0.3\,ms per 1,000; median of five repeats, \texttt{experiment\_code/latency\_benchmark.py})}\\
+\multicolumn{5}{l}{\small at \$0.04 per vCPU-hour. Latency is machine-dependent; the artifact records the host CPU.}\\
+\multicolumn{5}{l}{\small DeepSeek-V3 at standard list pricing}\\
 \multicolumn{5}{l}{\small (\$0.27/\$1.10 per million input/output tokens; $\approx$215 input and $\approx$22 output tokens per}\\
 \multicolumn{5}{l}{\small eight-item call), half that at the promotional pricing in effect during data collection.}\\
 \multicolumn{5}{l}{\small \texttt{Qwen2.5:3B} runs locally; its figure excludes hardware amortization.}\\
@@ -1093,8 +1096,11 @@ documented failure mode of small local models on a task requiring numeric
 thresholding, not as evidence about ML--LLM ordering in general.
 
 \paragraph{Cost.} Supervised inference is effectively free: on a single CPU
-core a random forest classifies 1,000 submissions in 15\,ms (about \$0.0002 at
-commodity cloud rates), against roughly \$0.01 per thousand predictions for the
+core a random forest classifies 1,000 submissions in about 11\,ms, gradient
+boosting in about 5\,ms and logistic regression in about 0.3\,ms (median of
+five repeats, \texttt{experiment\_code/latency\_benchmark.py}; about
+$\$10^{-7}$ per 1,000 at
+\$0.04 per vCPU-hour), against roughly \$0.01 per thousand predictions for the
 API model at standard list pricing---half that at the promotional pricing in
 effect during data collection---and no network round trip. Both dollar figures
 are negligible at classroom scale, so the practical advantages of supervised
@@ -1166,7 +1172,7 @@ no submitter-level aggregate, the cold-start setting requires no re-engineering.
 standard errors by submitter) would widen the intervals reported here and is
 the appropriate choice for a confirmatory replication. The dependence is
 substantial rather than marginal: the one-way intraclass correlation of the
-verdict is 0.48 (per-class 0.41--0.53), so two submissions from the same
+verdict is 0.48 (per-class 0.40--0.53), so two submissions from the same
 programmer agree on the verdict about half the time beyond chance. With a mean
 of 3.34 submissions per submitter this implies a design effect of 2.13, i.e.\
 the 13{,}360 submissions carry the information of roughly 6{,}300 independent
@@ -1414,7 +1420,7 @@ Balanced accuracy & 0.348 & 0.708 & --- \\
 \toprule
 \textbf{Context} & \textbf{Method} & \textbf{Rationale} \\
 \midrule
-Post-submission verdict screening & Gradient Boosting & Fastest ensemble: 5.9\,$\mu$s per classification, $\approx$\$0.0002/1k compute \\
+Post-submission verdict screening & Gradient Boosting & Fastest ensemble: about 5\,$\mu$s per classification, $\approx$\$10$^{-7}$/1k compute \\
 Automated grading dashboards & Gradient Boosting & Ensemble-tier accuracy (91.8\%), best macro F1 (0.799), CV 92.4\% ($\pm$0.33) \\
 Personalized tutoring & Hybrid ML + LLM$^{*}$ & ML classification + LLM explanation \\
 Privacy-sensitive cases & Random Forest & Local-only, no API calls, no third-party data transmission \\
@@ -1436,11 +1442,11 @@ educational analytics. Platforms that cannot access student source code
 due to privacy policies (e.g., proctored exams, IRB constraints) can
 still deploy effective verdict classification systems.
 
-Second, the cost gap between traditional ML and frontier API models---roughly
-two orders of magnitude per prediction at list prices---has practical
+Second, the cost gap between traditional ML and frontier API models---four to
+six orders of magnitude per prediction at list prices---has practical
 significance for resource-constrained educational contexts. A semester-long
 deployment for 500 students generating approximately 500,000 submissions would
-cost approximately \$0.10 in Random Forest inference (15\,ms per thousand on a
+cost approximately \$0.06 in Random Forest inference (about 11\,ms per thousand on a
 single core) against roughly \$5 in DeepSeek-V3 API calls and \$47 at GPT-4o
 list prices; local Ollama inference has near-zero marginal cost (no API
 fees, only electricity) but requires upfront hardware investment, so the
@@ -1715,7 +1721,8 @@ verdicts---is what limits metadata-only classification, and the
 Wrong Answer$\leftrightarrow$Runtime Error boundary is the same phenomenon with
 a different pair of verdicts. A gradient-boosted model over six metadata fields
 reaches 91.77\% (balanced accuracy 0.80), leads the strongest prompted LLM by
-15.1\,pp at roughly a tenth of the inference cost, and is unchanged under
+15.1\,pp at four to five orders of magnitude lower per-prediction inference
+cost, and is unchanged under
 submitter-disjoint evaluation (93.13\%), which shows that the estimate does not
 depend on seeing the same person twice. Execution time is the dominant
 predictor (7.3\,pp drop, 81.5\% of Gini importance), and a submitter-history

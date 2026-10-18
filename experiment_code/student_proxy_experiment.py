@@ -1,3 +1,22 @@
+"""Student-proxy experiment (SUPERSECTED -- kept for provenance only).
+
+What it did: grouped the test partition by SUBMITTER rating (user_rating) and
+evaluated Gradient Boosting per band, producing the figures
+novice 96.01% / intermediate 95.21% / advanced 88.54%
+(experiment_results/student_proxy_experiment.json, since moved to
+deprecated_artifacts/).
+
+Why it is superseded: the manuscript's generalization analysis
+(Section 5.5, sec:skill-tier) segments by PROBLEM difficulty, not submitter
+skill, because (a) the user-skill grouping supported the backwards claim that
+novices are classified most accurately -- the effect was composition, and
+(b) `user_ratings.json` is not part of the released dataset. The replacement
+analysis is `difficulty_tier_analysis.py`, which reproduces the manuscript's
+92.21 / 93.60 / 87.55% exactly from the authoritative rows.
+
+Also fixed here: the saved field `n_users_with_rating` counted ROWS with a
+rating (13,305), not users (4,005); renamed to rows_with_rating.
+"""
 import pandas as pd
 import numpy as np
 import json
@@ -137,13 +156,13 @@ for group in ['novice', 'intermediate', 'advanced']:
     print(f"{group}: per-user acc mean={per_user.mean():.4f}, std={per_user.std():.4f}, median={per_user.median():.4f}")
 
 # Save results
-with open('/Users/mac/Desktop/SCI1/06_论文定稿/student_proxy_experiment.json', 'w') as f:
+with open('/Users/mac/Desktop/SCI1/06_论文定稿/deprecated_artifacts/student_proxy_experiment.json', 'w') as f:
     json.dump({
         'overall_accuracy': float(overall_acc),
         'groups': results,
         'rating_thresholds': {'novice': '<1400', 'intermediate': '1400-1999', 'advanced': '>=2000'},
         'n_users_total': int(df_clean['user_handle'].nunique()),
-        'n_users_with_rating': int(df_clean['user_rating'].notna().sum())
+        'rows_with_rating': int(df_clean['user_rating'].notna().sum())
     }, f, indent=2)
 
 print(f"\nResults saved to student_proxy_experiment.json")

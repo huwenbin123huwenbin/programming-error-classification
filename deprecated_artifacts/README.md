@@ -3,6 +3,27 @@
 Artifacts kept for provenance only. None of these feed any number in the
 manuscript; each is archived with the reason it cannot be used.
 
+## student_proxy_experiment.json
+
+Grouped the test partition by **submitter** rating and evaluated Gradient
+Boosting per band: novice 96.01% / intermediate 95.21% / advanced 88.54%.
+**Not citable:**
+
+- The manuscript's generalization analysis (Section 5.5) segments by
+  **problem** difficulty, not submitter skill. The user-skill grouping
+  supported the backwards claim that novices are classified most accurately;
+  the effect is composition (advanced problems carry a more diverse verdict
+  mix), not classifier behaviour.
+- The grouping depends on `user_ratings.json`, which is not part of the
+  released dataset, so the split cannot be reproduced from the repository.
+- The saved `n_users_with_rating` field counted rows with a rating (13,305),
+  not users (4,005) — a labelling bug, fixed in the script's successor
+  convention (`rows_with_rating`).
+
+Replacement: `experiment_code/difficulty_tier_analysis.py`, which reproduces
+the manuscript's 92.21 / 93.60 / 87.55% exactly from the authoritative rows
+and persists `experiment_results/difficulty_tiers.json`.
+
 ## fewshot_full_results_v4.json
 
 DeepSeek-V3 "3-shot per class, 15 examples" full-partition run, accuracy
