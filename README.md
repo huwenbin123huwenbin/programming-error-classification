@@ -69,6 +69,7 @@ timestamp, and a submitter-history aggregate fails a leakage-free evaluation
 │   ├── dataset_descriptives.py     # Table 1 + footnote + Figure 2 caption
 │   ├── difficulty_tier_analysis.py # problem-difficulty tiers (§5.5)
 │   ├── clustering_diagnostic.py    # per-class ICC, design effect (§5.1)
+│   ├── learning_curve.py           # accuracy vs training-set size (§4.4)
 │   ├── fewshot_mechanism_analysis.py    # what the worked examples do (§5, M5)
 │   ├── latency_benchmark.py        # measured per-1k inference cost (Table 7)
 │   ├── audit_llm_numbers.py        # independent check of the LLM numbers
@@ -85,6 +86,7 @@ timestamp, and a submitter-history aggregate fails a leakage-free evaluation
 │   ├── difficulty_tiers.json          # §5.5 tier table
 │   ├── equivalence_spectrum.json      # mixed-group spectrum
 │   ├── clustering_diagnostic.json     # ICC / design effect / n_eff
+│   ├── learning_curve.json            # accuracy vs training-set size
 │   ├── fewshot_mechanism.json         # zero-shot vs three-shot mechanism
 │   ├── latency_benchmark.json         # measured latency + host CPU
 │   └── deprecated/                    # superseded results, kept for audit only
@@ -152,6 +154,11 @@ python experiment_code/clustering_diagnostic.py
 # (CE recall 0.179), three-shot spreads to 62.6% (CE recall 1.000 at
 # precision 0.321). Writes experiment_results/fewshot_mechanism.json.
 python experiment_code/fewshot_mechanism_analysis.py
+
+# learning curve (§4.4): accuracy vs training-set size, five repeats per
+# size; the manuscript's 85.8 / 87.7 / 91.1 / 91.8% are the means. Writes
+# experiment_results/learning_curve.json; exit 0 = the printed figures match.
+python experiment_code/learning_curve.py
 
 # inference-latency benchmark (Table 7 footnote): per-1,000 latency for the
 # three fitted models, single core, best of five; writes latency_benchmark.json

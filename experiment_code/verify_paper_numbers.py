@@ -12,14 +12,15 @@ lines):
   1. dataset_descriptives.py      Table 1, its footnote, Figure 2 caption
   2. difficulty_tier_analysis.py  Section 5.5 tiers (92.21 / 93.60 / 87.55)
   3. clustering_diagnostic.py     Section 5.1 ICC / design effect / n_eff
-  4. fewshot_mechanism_analysis.py  Section 5 worked-example mechanism
-  5. audit_llm_numbers.py         every LLM number, incl. Table 8 chi-squares
-  6. verify_mcnemar_alignment.py  the pairing behind every McNemar row
-  7. verify_references.py         bibliography against the registries
-  8. equivalence_spectrum.py      Section 5.3 corpus-level claims (checked
+  4. learning_curve.py            Section 4.4 learning-curve figures
+  5. fewshot_mechanism_analysis.py  Section 5 worked-example mechanism
+  6. audit_llm_numbers.py         every LLM number, incl. Table 8 chi-squares
+  7. verify_mcnemar_alignment.py  the pairing behind every McNemar row
+  8. verify_references.py         bibliography against the registries
+  9. equivalence_spectrum.py      Section 5.3 corpus-level claims (checked
                                    here against its JSON, since that script
                                    only writes the artifact)
-  9. latency_benchmark.py         informational only: machine-dependent, so a
+ 10. latency_benchmark.py         informational only: machine-dependent, so a
                                    mismatch with the printed value is not a
                                    failure; the artifact is the record.
 
@@ -38,6 +39,7 @@ CHECKS = [
     ('Table 1 / footnote / Figure 2', 'dataset_descriptives.py', True),
     ('Difficulty tiers (§5.5)', 'difficulty_tier_analysis.py', True),
     ('Clustering diagnostic (§5.1)', 'clustering_diagnostic.py', True),
+    ('Learning curve (§4.4)', 'learning_curve.py', True),
     ('Few-shot mechanism (§5)', 'fewshot_mechanism_analysis.py', True),
     ('LLM numbers audit', 'audit_llm_numbers.py', True),
     ('McNemar alignment gate', 'verify_mcnemar_alignment.py', True),

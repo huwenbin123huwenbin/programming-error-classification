@@ -68,7 +68,7 @@
 
 \par\textbf{Findings}: The limit is set by observational equivalence rather than by model capacity. Of the 13,360 submissions, 1,504 (11.3\%) report 0\,ms, 0\,KB and 0 tests passed while spanning three verdicts---a compilation error, an early crash and a wrong answer on the first test all leave the same trace---so no metadata-only method can separate them, and Compilation Error is capped at F1 $\approx$ 0.77 by that class alone. Time Limit Exceeded (F1 0.99) and Memory Limit Exceeded (0.95) are fully recoverable because the platform's thresholds define them. Gradient Boosting reaches 91.77\% accuracy (balanced 0.80), Random Forest 91.80\%, and Logistic Regression 85.63\% but with Macro F1 0.49, since a linear boundary cannot represent a conjunction of zero-valued measurements. Runtime Error stays unreachable (F1 0.33; 94 of 131 errors reported as Wrong Answer), and more than half of those errors fall in signature cells shared with Wrong Answer. DeepSeek-V3 reaches 76.65\% on valid outputs, statistically indistinguishable from always answering Wrong Answer (76.61\%), while recovering every compilation error at 32\% precision; \texttt{Qwen2.5:3B} reaches 35.50\%. Supervised ML leads the strongest LLM by 15.1\,pp ($p < 0.001$), and a submitter-disjoint replication preserves both the ranking and the boundary (93.13\%).
 
-\par\textbf{Implications}: Metadata-only screening can automate feedback for platform-measured verdicts at negligible cost, latency, and privacy exposure, but it cannot substitute for code-level diagnosis at the Wrong Answer$\leftrightarrow$Runtime Error boundary. These results define what a submission log alone can and cannot tell a learner, and they motivate classroom validation before any claim about learning impact. Dataset and pipeline are released at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
+\par\textbf{Implications}: Metadata-only screening can automate feedback for platform-measured verdicts at negligible cost, latency, and privacy exposure, but it cannot separate Wrong Answer from Runtime Error, the boundary where the two verdicts differ by an event the log never records. These results define what a submission log alone can and cannot tell a learner, and they motivate classroom validation before any claim about learning impact. Dataset and pipeline are released at \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{abstract}
 
 \maketitle
@@ -190,9 +190,11 @@ creating intrinsic overload that constrains novice self-correction~\cite{kirschn
 
 Large-scale analyses~\cite{ahadi2015exploring,luxton2018introductory} established that programming mistakes persist across cohorts and that the composition of those mistakes shifts over a course~\cite{altadmri2015most}, motivating automated diagnostic tools~\cite{barbosa2023feedback}.
 
-Spohrer and Soloway~\cite{spohrer1986novice} showed, in a study of novice LISP
-programs, that widely held assumptions about novice mistakes---including that
-they reduce to a few fundamental bug types---do not hold. Many errors that look
+Spohrer and Soloway~\cite{spohrer1986novice} showed, in a study of novice
+Pascal programs, that the folk wisdom about novice mistakes cuts both ways: a
+few bug types do account for most mistakes, but most bugs do not stem from
+misconceptions about language constructs---they arise from difficulties
+composing plans. Many errors that look
 superficial have deeper cognitive roots, indicating that effective automated
 feedback must identify the underlying error pattern rather than assume a small
 catalogue of causes. Students' self-efficacy beliefs compound this challenge. Gorson and O'Rourke~\cite{gorson2020why} surveyed 214 CS1 students across three
@@ -217,14 +219,15 @@ use richer process data, so richer performance signals need their own validation
 regime. Their point bears directly on our evaluation choices: an accuracy figure
 alone cannot tell whether a model has learned the verdict or the class prior.
 
-Prior work on verdict classification from submission data has shown that
-metadata features can achieve strong performance when combined with
-source-code analysis. Yet the computational cost of extracting
-code-level features (ASTs, cyclomatic complexity, token diversity)
-limits scalability for platform-level deployment. Our approach demonstrates
-that metadata-only features---without source code access---can achieve
-competitive accuracy, offering a practical alternative for large-scale
-deployment. Allamanis et al.~\cite{allamanis2018learning} demonstrated that
+Verdict classification from submission data has been approached from two
+directions that have not met on this task: compilation-behavior analysis,
+which established that execution traces carry signal about novice
+mistakes~\cite{jadud2006methods,altadmri2015most}, and semantic
+representations of program structure. Neither asks what a submission log
+alone says about the judge's verdict. Our approach asks exactly that with
+metadata only---no source-code access, no code-feature extraction
+pipeline---and reaches 91.8\% accuracy on a five-class verdict task, a
+practical screening layer for platform-scale deployment. Allamanis et al.~\cite{allamanis2018learning} demonstrated that
 graph-based representations of program structure capture semantically
 meaningful features for code-related prediction tasks, motivating the
 incorporation of such learned representations into verdict classification.
@@ -246,14 +249,14 @@ Large language models have rapidly transformed expectations for automated code
 understanding and generation~\cite{barke2023grounded,becker2023programming}. Barke et al.~\cite{barke2023grounded} demonstrated that programmer interaction with code-generating models differs fundamentally from traditional IDE usage. Finnie-Ansley et al.~\cite{finnie2022robots} found that OpenAI Codex placed in the
 top quartile of CS1 students on examination questions---solving ten of 23 on the
 first attempt and all but four within ten attempts---raising over-reliance concerns. Sarsa et al.\ showed that LLMs can generate usable programming exercises and
-explanations, though roughly a third of the generated sample solutions failed
-their own tests~\cite{sarsa2022automatic}, and Leinonen et al.~\cite{leinonen2023llm} found that LLM-generated
+explanations, though only about 30\% of the generated sample solutions passed
+the tests generated alongside them~\cite{sarsa2022automatic}, and Leinonen et al.~\cite{leinonen2023llm} found that LLM-generated
 error-message explanations were rated an improvement over the original message
 in only about half of cases (54\%), with the accompanying fix correct roughly a
 third of the time---useful, but nowhere near reliable enough to hand to a novice
 unattended.
 
-Feng et al.~\cite{feng2020codebert} showed that CodeBERT achieves state-of-the-art performance on code-level benchmarks including defect detection, but is primarily evaluated on source code features; its effectiveness on submission metadata alone remains unclear. Evaluations of
+Feng et al.~\cite{feng2020codebert} showed that CodeBERT achieves state-of-the-art performance on natural-language code search and code documentation generation, but is evaluated on source-code inputs; its effectiveness on submission metadata alone remains unclear. Evaluations of
 LLM-generated feedback caution that such feedback can be flawed or
 misleading---and therefore detrimental to learning---and that the automated
 judges used to score it can be systematically over-optimistic~\cite{koutcheme2024opensource}---directly relevant to our finding that RE remains the most challenging category, where \texttt{Qwen2.5:3B} also struggled.
@@ -928,8 +931,9 @@ The execution-encoded verdicts behave as the platform-encoding account
 predicts. Time Limit Exceeded is recovered perfectly (recall $1.00$, four false
 positives), Memory Limit Exceeded at F1 $0.95$, and Wrong Answer at F1 $0.95$;
 together these three classes account for 87.8\% of the test partition. Their
-errors are almost entirely exchanges with CE inside the all-zero cell, not
-confusions between execution-based categories.
+errors are dominated by exchanges with CE inside the all-zero cell (79 of
+98); only four are confusions between execution-based categories (two
+WA$\rightarrow$TLE, one WA$\rightarrow$MLE, one MLE$\rightarrow$TLE).
 
 Runtime Error is the one class that fails, and it fails in the way the
 equivalence analysis predicts: recall is 0.22, with 94 of 131 runtime errors
@@ -1017,9 +1021,14 @@ report the leakage-free variant and exclude the field. Section~\ref{sec:robust}
 shows that the exclusion changes nothing when submitters are disjoint.
 
 Learning curves confirm that the gap to the LLMs is not a data-volume artefact.
-Accuracy rises from 87.8\% at 400 training submissions to 91.5\% at 2{,}800 and
-91.8\% at 10{,}688, i.e.\ it saturates by roughly a quarter of the available
-data; adding submissions beyond that point buys at most 0.3\,pp.
+Accuracy rises from 85.8\% at 200 training submissions to 87.7\% at 400 and
+91.1\% at 2{,}800, reaching 91.8\% on the full 10{,}688-submission training
+partition (mean of five repeats per size;
+\texttt{experiment\_code/learning\_curve.py}). Already at 400
+submissions---3.7\% of the available data---the model leads the strongest
+prompted LLM by 11.1\,pp, so the 15.1\,pp gap at full data reflects the
+feature class rather than the sample size; the remaining 0.7\,pp accrues over
+the final three quarters of the training set.
 
 \subsection{LLM Performance Comparison}
 \label{sec:llm-eval}

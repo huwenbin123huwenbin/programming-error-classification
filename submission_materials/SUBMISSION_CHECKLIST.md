@@ -291,3 +291,83 @@ did not, and one printed figure was wrong.
   deprecated student-proxy file noted.
 - [x] Chinese companion synced (cost table, table footnote, cost paragraph).
 - [x] Recompiled: 34 pages, 0 errors, 0 overfull, 0 undefined references.
+
+---
+
+## Round 13 audit (2026-10-18, 19:35–20:10) — claims audit: every assertion against its source
+
+Round 12 asked whether every *number* has an artifact. Round 13 asked whether
+every *assertion* has a source. Two related-work characterizations were
+factually wrong, one was unsupported, one was overstated, one internal claim
+was imprecise, and one more section had no producing script.
+
+- [x] **Sarsa et al. statistic was inverted.** The manuscript said "roughly a
+  third of the generated sample solutions failed their own tests." The ICER
+  2022 paper reports the opposite: only about 30% of the sample solutions
+  passed the tests Codex generated alongside them (i.e. roughly two thirds
+  failed). Verified against the original and two independent secondary
+  sources (Denny et al. arXiv 2210.15157; TOCE 2024 survey). Corrected.
+- [x] **Spohrer & Soloway: wrong language and inverted finding.** The study
+  analysed novice **Pascal** programs, not LISP; and the "few fundamental bug
+  types" folk wisdom was *confirmed* (a few bug types do account for most
+  mistakes), while the refuted wisdom was that most bugs stem from
+  misconceptions about language constructs (they arise from plan-composition
+  difficulties). The manuscript had both the language and the direction of
+  the finding wrong. Corrected against the CACM 1986 abstract and two
+  independent characterizations.
+- [x] **CodeBERT claim overstated.** The manuscript credited CodeBERT with
+  "state-of-the-art performance on code-level benchmarks including defect
+  detection." The Findings-of-EMNLP abstract claims SOTA on natural-language
+  code search and code documentation generation only; defect detection is not
+  in the SOTA claim. Corrected to the abstract's actual scope.
+- [x] **Unsupported "competitive accuracy" claim removed.** The related-work
+  paragraph asserted that "prior work on verdict classification from
+  submission data has shown that metadata features can achieve strong
+  performance when combined with source-code analysis" (no such prior work
+  cited; none identified) and that "the computational cost of extracting
+  code-level features limits scalability" (uncited), then claimed our
+  metadata-only approach achieves "competitive accuracy" — competitive with
+  what, in a paper that runs no code-level baseline. Rewritten to state the
+  two literatures the work draws on, what neither asks, and the measured
+  91.8% on a five-class task.
+- [x] **"Almost entirely" error claim tightened.** §4.3 said TLE/MLE/WA
+  errors are "almost entirely exchanges with CE inside the all-zero cell,
+  not confusions between execution-based categories." Recomputed from the
+  authoritative confusion matrix: 79 of 98 such errors are WA->CE inside the
+  all-zero cell (80.6%), and four ARE execution-based confusions. Replaced
+  with the exact counts.
+- [x] **Abstract implication reframed.** "cannot substitute for code-level
+  diagnosis at the WA<->RE boundary" asserted something about code-level
+  diagnosis the paper never tests. Replaced with the supported claim: the
+  boundary is where two verdicts differ by an event the log never records.
+- [x] **The learning curve had no producing script (fourth such finding in
+  two rounds).** The printed figures (87.8% at 400, 91.5% at 2,800, 91.8% at
+  10,688; "saturates by roughly a quarter of the available data... buys at
+  most 0.3pp") matched no artifact, and the middle point sits 0.4pp above
+  every reproducible variant (single-seed spread at n=2,800 is 90.6-91.6%).
+  New `experiment_code/learning_curve.py` rebuilds the protocol-A partition
+  and fits the Table 3 model on training subsets, five repeats per size.
+  Measured: 85.8% at 200, 87.7% at 400, 91.1% at 2,800, 91.8% at full. The
+  saturation claim was also wrong (gain beyond 2,800 is 0.65pp, not 0.3pp).
+  The paragraph now carries the argument on the 400-submission point: the
+  model leads the strongest prompted LLM by 11.1pp with 3.7% of the data,
+  so the 15.1pp gap at full data is a feature-class effect, not a sample-
+  size effect.
+- [x] **Verified and left unchanged** (all checked against primary sources):
+  Blackbox "over one hundred thousand opted in during its first year";
+  Finnie-Ansley ten-of-23 first attempt / all but four within ten attempts /
+  top quartile (17th of 71); Leinonen 54% improvement rating and fix correct
+  33% of the time (original SIGCSE '23 PDF); Koutcheme GPT-4 "bias toward
+  positively rating feedback"; Gorson & O'Rourke 214 students / three
+  universities / thirteen moments; Altadmri & Brown 37M compilations / over
+  250,000 users / three categories / mismatched brackets most frequent;
+  Petersen et al. EQ context-sensitivity; Table 5's two equivalence classes
+  (1,504 and 1,738 rows, compositions exact); the 87.8% TLE+MLE+WA share;
+  the 7.3% corpus CE share; the 18.5% platform-encoded share; the
+  no-timestamp feature claim (raw CSV columns).
+- [x] Master gate now chains ten checks (learning curve added); current run:
+  ALL PAPER NUMBERS VERIFIED. README updated (tree + reproduction section).
+- [x] Chinese companion synced (error-composition sentence in §4.3; the
+  learning-curve sentence in §4.5; its related-work section is condensed and
+  carried none of the wrong claims).
+- [x] Recompiled: 34 pages, 0 errors, 0 overfull, 0 undefined references.
