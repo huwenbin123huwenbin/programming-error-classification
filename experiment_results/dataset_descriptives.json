@@ -148,5 +148,13 @@
   "tier_gt2000_MLE": 6.550868486352357,
   "tier_gt2000_WA": 55.38461538461539,
   "tier_gt2000_RE": 10.074441687344914,
-  "platform_encoded_share_pct": 18.48802395209581
+  "platform_encoded_share_pct": 18.48802395209581,
+  "lang_cpp23_pct": 41.05538922155689,
+  "lang_cpp17_pct": 24.146706586826348,
+  "lang_cpp20_pct": 19.610778443113773,
+  "lang_python_pct": 6.212574850299402,
+  "lang_java_pct": 3.2559880239520957,
+  "lang_cpp_total_pct": 85.17215568862275,
+  "max_submitter_share_train_pct": 0.9824101796407185,
+  "max_submitter_share_test_pct": 1.0853293413173652
 }

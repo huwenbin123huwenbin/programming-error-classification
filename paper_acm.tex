@@ -425,7 +425,8 @@ own label enter its own predictor; built from earlier training submissions
 only, such a field adds no gain that survives correction
 (Section~\ref{sec:ablation}), so we excluded submitter-level aggregates from
 the model after testing them. Stratified sampling ensures that no single
-submitter dominates any fold (maximum 0.8\% of a fold). To confirm that the
+submitter dominates any fold (the largest submitter occupies 1.1\% of the test
+fold). To confirm that the
 reported accuracy does not depend on seeing the same person on both sides of the
 partition, we additionally ran a fully submitter-disjoint replication, with zero
 overlap and no aggregate features available for unseen submitters; Gradient
@@ -434,9 +435,9 @@ Boosting retained 93.13\% (Section~\ref{sec:robust}).
 The final dataset comprises 13,360 error submissions from competitive programmers
 across hundreds of Codeforces contests. Table~\ref{tab:error-dist} summarizes
 the error type distribution. The language distribution
-is predominantly C++ (C++23 41.1\%, C++17 22.0\%, C++20 18.6\%), with
-Python (7.1\%), Java (5.5\%), and other languages representing smaller
-fractions. This linguistic skew reflects the competitive programming
+is predominantly C++ (C++23 41.1\%, C++17 24.1\%, C++20 19.6\%; 85.2\% of
+submissions in total), with Python and PyPy (6.2\%), Java (3.3\%), and other
+languages representing smaller fractions. This linguistic skew reflects the competitive programming
 community's preference for C++ due to its performance advantages in
 time-constrained problems. Pairwise feature correlations are weak to moderate (Figure~\ref{fig:corr}).
 
@@ -493,7 +494,7 @@ neither source code nor an authenticated session:
  \item \textbf{memory\_kb}: peak memory reported by the judge, in kilobytes.
  \item \textbf{problem\_slot}: the lettered position of the problem within its
  contest (A, B, C, \ldots), an ordinal proxy for expected difficulty within a
- round; it correlates with \texttt{problem\_rating} at $\rho=0.74$.
+ round; it correlates with \texttt{problem\_rating} at $r=0.74$.
  \item \textbf{passed\_test\_count}: the number of judge tests the submission
  passed before the run was stopped.
 \end{enumerate}
@@ -603,8 +604,9 @@ first-test wrong answer have in common.
 For the primary research question---detecting the difference between Gradient
 Boosting at 91.77\% and DeepSeek-V3 at 76.65\% on 2,672 test submissions---a
 retrospective power analysis confirms adequate sensitivity: the minimum
-detectable effect at $n=2{,}672$ and $\alpha=0.05$ is approximately 2.5\,pp,
-well below the 15.1\,pp gap. The same analysis shows why the comparison between
+detectable effect at $n=2{,}672$ and $\alpha=0.05$ is approximately 2.3\,pp
+under the paired (McNemar) framework at the observed discordant-pair rate
+(17.9\% of the test partition), well below the 15.1\,pp gap. The same analysis shows why the comparison between
 the two tree ensembles is reported as a null result rather than a ranking: their
 0.04\,pp difference is an order of magnitude below the detection floor.
 Five-fold cross-validation on the training set yields 92.42\% (SD 0.33), within
@@ -614,18 +616,22 @@ against training-set size.
 \begin{table}[htbp]
 \centering
 \caption{Learning curve: Gradient Boosting accuracy against training-set size
- (test set $n=2{,}672$; single seed). The final row is the full training split.}
+ (test set $n=2{,}672$; mean of five repeats per size,
+ \texttt{experiment\_code/learning\_curve.py}). The final row is the full
+ training split, where the five repeats are identical by construction.}
 \label{tab:sensitivity}
 \begin{tabular}{@{}ccc@{}}
 \toprule
 N (Training) & Test Accuracy & Gap to Full \\
 \midrule
-400 & 87.80\% & $-3.97$ pp \\
-600 & 89.97\% & $-1.80$ pp \\
-800 & 89.90\% & $-1.87$ pp \\
-1,600 & 90.34\% & $-1.43$ pp \\
-2,800 & 91.47\% & $-0.30$ pp \\
-5,300 & 91.62\% & $-0.15$ pp \\
+200 & 85.8\% & $-$6.01 pp \\
+400 & 87.7\% & $-$4.06 pp \\
+800 & 89.8\% & $-$1.99 pp \\
+1,600 & 90.5\% & $-$1.22 pp \\
+2,800 & 91.1\% & $-$0.65 pp \\
+4,200 & 91.5\% & $-$0.30 pp \\
+5,600 & 91.8\% & $+$0.02 pp \\
+8,400 & 91.8\% & $+$0.00 pp \\
 10,688 & 91.77\% & --- \\
 \bottomrule
 \end{tabular}
@@ -805,11 +811,11 @@ structure, not as a competitive method.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.78\textwidth]{fig_accuracy_chart.png}
-\Description{Bar chart of test accuracy (invalid LLM outputs counted as errors): Gradient Boosting 91.8\%, Random Forest 91.8\%, Logistic Regression 85.6\%, DeepSeek-V3 76.1\%, Qwen2.5:3B 31.9\%, against a majority-class reference of 76.6\%.}
+\Description{Bar chart of test accuracy (invalid LLM outputs counted as errors): Gradient Boosting 91.8\%, Random Forest 91.8\%, Logistic Regression 85.6\%, DeepSeek-V3 76.0\%, Qwen2.5:3B 31.9\%, against a majority-class reference of 76.6\%.}
 \caption{Test-set accuracy across five models ($n=2{,}672$; LLM bars count
  invalid outputs as errors). The dotted line
  marks the majority-class rule (always predict WA, 76.6\%). Supervised
- ensembles lead the strongest LLM by 15.8\,pp on the plotted basis (15.1\,pp on
+ ensembles lead the strongest LLM by 15.7\,pp on the plotted basis (15.1\,pp on
  valid outputs); the strongest LLM sits at the majority-class
  reference rather than above it.}
 \label{fig:accuracy}
@@ -863,7 +869,7 @@ Boosting attains F1 $=0.770$ on CE, with recall $0.898$ and precision $0.674$.
 The model has reached the ceiling that the signature imposes: every one of its
 261 CE predictions lies inside the all-zero cell, and the 85 that are not
 compilation errors are precisely the wrong answers and runtime errors carrying
-that signature. The 23 percentage points of CE error are therefore not a
+that signature. The 23-point F1 shortfall is therefore not a
 modelling failure but the price of a verdict the platform never recorded.
 
 The second cell plays the same role for the other boundary. Of the 94 runtime
@@ -1082,8 +1088,9 @@ DeepSeek-V3 (online), valid only & 76.65\% & [75.0, 78.2] & 0.545 & \$0.01 \\
 \multicolumn{5}{l}{\small $^{*}$Ablation variant restricted to the five fields the LLMs received; statistically}\\
 \multicolumn{5}{l}{\small indistinguishable from the six-field model ($\chi^2=0.03$, $p=0.87$).}\\
 \multicolumn{5}{l}{\small Invalid outputs: DeepSeek-V3 21/2{,}672 (0.8\%), \texttt{Qwen2.5:3B} 269/2{,}672 (10.1\%).}\\
-\multicolumn{5}{l}{\small $^{\dagger}$Supervised figures are priced from measured single-core inference (RF about 11\,ms, GB about 5\,ms,}\\
-\multicolumn{5}{l}{\small LR about 0.3\,ms per 1,000; median of five repeats, \texttt{experiment\_code/latency\_benchmark.py})}\\
+\multicolumn{5}{l}{\small $^{\dagger}$Supervised figures are priced from measured single-core inference (RF about 12--23\,ms, GB about 5--11\,ms,}\\
+\multicolumn{5}{l}{\small LR about 0.2\,ms per 1,000; median of five repeats per run, ranges spanning repeated runs under varying load,}\\
+\multicolumn{5}{l}{\small \texttt{experiment\_code/latency\_benchmark.py})}\\
 \multicolumn{5}{l}{\small at \$0.04 per vCPU-hour. Latency is machine-dependent; the artifact records the host CPU.}\\
 \multicolumn{5}{l}{\small DeepSeek-V3 at standard list pricing}\\
 \multicolumn{5}{l}{\small (\$0.27/\$1.10 per million input/output tokens; $\approx$215 input and $\approx$22 output tokens per}\\
@@ -1104,11 +1111,11 @@ LLM reaches 76.65\% on the 2{,}651 outputs it rendered in valid form, which is
 statistically indistinguishable from always answering Wrong Answer (76.61\%).
 Its per-class behaviour nevertheless shows that it is not a degenerate majority
 classifier: it recovers every compilation error (recall $1.00$) and most TLE
-and MLE submissions (0.872 and 0.875). It does so by applying a hard zero-time
-rule---one it was shown as a worked example---to every zero-time submission, so
-precision on CE falls to 0.321: 415 submissions with other verdicts (385 wrong
-answers, 27 runtime errors and 3 TLEs) that also carry the all-zero signature
-are reported as compilation errors. DeepSeek-V3 has generalized the platform
+and MLE submissions (0.872 and 0.875). It does so by applying the
+zero-time$\rightarrow$CE mapping from its worked example to submissions with
+very short execution times, so precision on CE falls to 0.321: 415 submissions
+whose true verdict is otherwise (385 wrong answers, 27 runtime errors and 3
+TLEs) are reported as compilation errors. DeepSeek-V3 has generalized the platform
 encoding from its worked example and then paid the full price
 of the equivalence class, because a prompted model has no calibrated prior over
 the cell to trade recall against precision. Runtime Error is effectively
@@ -1124,10 +1131,11 @@ documented failure mode of small local models on a task requiring numeric
 thresholding, not as evidence about ML--LLM ordering in general.
 
 \paragraph{Cost.} Supervised inference is effectively free: on a single CPU
-core a random forest classifies 1,000 submissions in about 12\,ms, gradient
-boosting in about 5\,ms and logistic regression in about 0.2\,ms (median of
-five repeats, \texttt{experiment\_code/latency\_benchmark.py}; about
-$\$10^{-7}$ per 1,000 at
+core a random forest classifies 1,000 submissions in about 12--23\,ms, gradient
+boosting in about 5--11\,ms and logistic regression in about 0.2\,ms (median of
+five repeats per run; the ranges span repeated runs of
+\texttt{experiment\_code/latency\_benchmark.py} on the measurement host under
+varying load; at most about $\$3\times10^{-7}$ per 1,000 at
 \$0.04 per vCPU-hour), against roughly \$0.01 per thousand predictions for the
 API model at standard list pricing---half that at the promotional pricing in
 effect during data collection---and no network round trip. Both dollar figures
@@ -1299,7 +1307,7 @@ removing it costs nothing and simplifies the deployment story.
 
 The class imbalance (WA 76.6\% against MLE 1.5\%) explains why accuracy is a
 poor summary of this task and why we report per-class F1 throughout. It does not
-explain the RE failure, which is not a scarcity effect: RE is the third largest
+explain the RE failure, which is not a scarcity effect: RE is the fourth largest
 class in the corpus (4.9\%), and the model sees 131 instances in the test
 partition alone. The failure is structural. RE is not a behaviour the platform
 measures; it is a behaviour the platform infers from the absence of a normal
@@ -1323,13 +1331,14 @@ single cut that argmax imposes cannot deliver both precision and coverage. This
 is what an equivalence class looks like from the model's side: the posterior is
 informative, the label is not.
 
-The practical consequence is that abstention can be operationalised rather than
-merely recommended. Moving off the argmax to an explicit precision floor of 0.60
-lets the system flag 70 submissions and recover 32\% of runtime errors, against
-44 flagged and 22\% under argmax; a floor of 0.50 reaches 37\% recall over 96
-flagged submissions. These are modest gains, and we report them as an operating
-characteristic rather than a solution: they show that the RE posterior carries
-usable ordering information even though the RE verdict does not survive
+The practical consequence is that abstention can be examined rather than merely
+recommended. Moving off the argmax to an explicit precision floor of 0.60 flags
+38 submissions at precision 0.71 and recovers 21\% of runtime errors, against
+44 flagged at precision 0.66 and 22\% recall under the argmax; a floor of 0.50
+flags the same 44 submissions. The trades are marginal---raising the floor buys
+a little precision with coverage it does not repay---and we report them as an
+operating characteristic rather than a solution: they show that the RE posterior
+carries usable ordering information even though the RE verdict does not survive
 thresholding. Precision--recall curves for all five classes are released with
 the reproduction script.
 
@@ -1351,16 +1360,19 @@ The per-class behaviour of the two LLMs explains why their accuracy figures are
 a poor guide to what they have learned (Table~\ref{tab:llm-analysis}).
 
 DeepSeek-V3 is best understood as a threshold rule with no prior. It identifies
-every compilation error in the test partition---recall 1.00---by firing on the
-zero-time signature, and it recovers most TLE and MLE submissions (0.87 and
-0.88). Because it applies the rule unconditionally, precision on CE falls to
-0.32: the 415 wrong answers and runtime errors that share the all-zero cell are
-reported as compilation errors. Its aggregate accuracy, 76.65\%, is
+every compilation error in the test partition---recall 1.00---by firing on
+submissions with very short execution times, and it recovers most TLE and MLE
+submissions (0.87 and 0.88). Because it applies the rule unconditionally,
+precision on CE falls to 0.321: 415 submissions whose true verdict is otherwise
+(385 wrong answers, 27 runtime errors and 3 TLEs) with short execution times---
+137 reporting exactly 0\,ms, the signature shown in the worked example, and the
+remaining 278 spanning 1--1000\,ms (238 at $\le$31\,ms, the modal wrong-answer
+times)---are reported as compilation errors. Its aggregate accuracy, 76.65\%, is
 indistinguishable from always answering Wrong Answer (76.61\%), yet its balanced
 accuracy is 0.708, close to the supervised model's 0.804. The LLM applies the
 same platform encoding the tree ensemble found---it was shown one instance of
 the zero-time$\rightarrow$CE mapping as a worked example and extended it to
-every zero-time submission---; what it lacks is the calibrated trade-off inside
+every short-time submission---; what it lacks is the calibrated trade-off inside
 the equivalence cell---the ability to say ``this cell is two thirds compilation
 errors, so I will report CE and accept the loss''. Prompted with three worked
 examples and no prior over the cell, it can only apply the rule or not apply

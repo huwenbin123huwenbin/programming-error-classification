@@ -22,7 +22,11 @@ Covers, in order:
                                    with four false positives, MLE/WA F1 0.95,
                                    the 87.8% share, the 79-of-98 exchange
                                    count, the four execution-based confusions,
-                                   RE recall 0.22 / 94-of-131 / precision 0.66.
+                                   RE recall 0.22 / 94-of-131 / precision 0.66,
+                                   the abstention operating points (floors
+                                   0.60 / 0.50 on the RE posterior), and the
+                                   Section 4.1 minimum detectable
+                                   effect (paired/McNemar convention).
   5. Section 5.4 (robustness)   -- the submitter-disjoint replication numbers
                                    (93.13 / 92.15 / 91.99 / 87.15 and the
                                    per-class F1s) and the corpus homogeneity
@@ -113,6 +117,13 @@ PROTOB_EXPECTED = [
 HOMOGENEITY_EXPECTED = [('n_users', 4005, 0), ('median_subs', 2, 0),
                         ('mean_subs', 3.34, 0.005), ('max_subs', 134, 0)]
 
+# Section 4.1 power analysis: the printed minimum detectable effect (pp)
+MDE_EXPECTED = 2.3
+
+# Discussion (Finding 3) abstention operating points:
+# (posterior floor, flagged submissions as printed, recall % as printed)
+ABSTENTION_EXPECTED = [(0.60, 38, 21), (0.50, 44, 22)]
+
 
 def report(name, good, detail):
     print(f"  [{'PASS' if good else 'FAIL'}] {name:44s} {detail}")
@@ -161,6 +172,22 @@ def main():
     ok &= report('GB vs RF McNemar (chi2=0.00, p=1.00)',
                  abs(mc['chi2']) < 0.005 and abs(mc['p_value'] - 1.0) < 1e-9,
                  f"artifact chi2={mc['chi2']:.2f} p={mc['p_value']:.2f}")
+
+    # --------------------------------------- Section 4.1 power analysis
+    # The manuscript reports the minimum detectable effect of the paired
+    # (McNemar) comparison at n=2,672, alpha=0.05, power 0.80. The MDE of a
+    # paired difference is (z_{alpha/2}+z_beta)*sqrt(psi/n), where psi is the
+    # discordant-pair rate; the recorded GB-vs-DeepSeek run supplies psi.
+    ds = auth['llm']['mcnemar_gb5_vs_deepseek']
+    n_test = auth['llm']['deepseek_fair_rerun_predictions.json']['n_total']
+    psi = (ds['b'] + ds['c']) / n_test
+    z_a, z_b = 1.959963985, 0.841621234
+    mde = (z_a + z_b) * (psi / n_test) ** 0.5 * 100
+    ok &= report('MDE vs DeepSeek (2.3pp, paired)', abs(mde - MDE_EXPECTED) <= 0.05,
+                 f'manuscript {MDE_EXPECTED}  artifact {mde:.3f}pp '
+                 f'(psi={psi:.4f}, n={n_test})')
+    print(f"    (unpaired two-proportion MDE would be 3.9pp; the manuscript "
+          f"uses the paired convention)")
 
     # --------------------------------------- Table 3 + Gini + narrative
     # retrain GB: deterministic, so this both reproduces the artifact and
@@ -268,6 +295,24 @@ def main():
     re_prec = cm['RE']['RE'] / sum(cm[a]['RE'] for a in CLASSES)
     ok &= report('RE precision 0.66', abs(re_prec - 0.66) <= 0.005,
                  f'artifact {re_prec:.4f}')
+
+    # abstention operating points (Discussion, Finding 3): flag a submission
+    # as RE when the RE posterior clears an explicit floor
+    prob = model.predict_proba(X[te])
+    i_re = list(model.classes_).index('RE')
+    p_re = prob[:, i_re]
+    re_true = y[te] == 'RE'
+    n_re = int(re_true.sum())
+    print('RE abstention operating points:')
+    for floor, printed_flag, printed_recall in ABSTENTION_EXPECTED:
+        flag = p_re >= floor
+        n_flag = int(flag.sum())
+        caught = int((flag & re_true).sum())
+        rec = 100.0 * caught / n_re
+        good = n_flag == printed_flag and abs(rec - printed_recall) <= 1.0
+        ok &= report(f'RE floor {floor:.2f}: {printed_flag} flagged, '
+                     f'{printed_recall}% recall', good,
+                     f'artifact {n_flag} flagged, {rec:.0f}% recall')
 
     # ---------------------------------------------- protocol B / homogeneity
     print('\nSubmitter-disjoint replication (protocol B):')

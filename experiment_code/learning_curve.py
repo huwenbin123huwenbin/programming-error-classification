@@ -43,6 +43,10 @@ N_REPEAT = 5
 # figures printed in the manuscript: (n_train, accuracy%, tolerance_pp)
 EXPECTED = [(200, 85.8, 0.15), (400, 87.7, 0.15), (2800, 91.1, 0.15),
             (10688, 91.8, 0.15)]
+# Table 6 (tab:sensitivity) rows -- every printed row must reproduce
+TABLE_EXPECTED = [(200, 85.8, 0.05), (400, 87.7, 0.05), (800, 89.8, 0.05),
+                  (1600, 90.5, 0.05), (2800, 91.1, 0.05), (4200, 91.5, 0.05),
+                  (5600, 91.8, 0.05), (8400, 91.8, 0.05), (10688, 91.77, 0.05)]
 
 
 def main():
@@ -94,6 +98,15 @@ def main():
         print(f"  [{'PASS' if good else 'FAIL'}] n={n:6d}  "
               f"manuscript {printed:.1f}%  artifact {actual:.2f}% "
               f"(+/- {row['accuracy_std']*100:.2f})")
+    # Table 6 (tab:sensitivity): every printed row
+    print('Table 6 rows:')
+    for n, printed, tol in TABLE_EXPECTED:
+        row = next(c for c in curve if c['n_train'] == n)
+        actual = row['accuracy_mean'] * 100
+        good = abs(actual - printed) <= tol
+        ok &= good
+        print(f"  [{'PASS' if good else 'FAIL'}] n={n:6d}  "
+              f"table {printed:.2f}%  artifact {actual:.2f}%")
     # the "gap is not a data-volume artefact" claim: at 400 submissions the
     # model already leads the strongest prompted LLM (76.65%) by > 11 pp
     a400 = next(c for c in curve if c['n_train'] == 400)['accuracy_mean']

@@ -31,6 +31,9 @@ lines):
                                    narrative / Section 5.4 replication and
                                    homogeneity figures (retrains GB for the
                                    prediction-level claims)
+ 13. regenerate_figures_v3.py --check  every figure file is the current output
+                                   of its script (regenerates to a temp dir;
+                                   never touches the repository)
 
 Exit 0 = every check passed.
 """
@@ -55,6 +58,7 @@ CHECKS = [
     ('Latency benchmark (info only)', 'latency_benchmark.py', False),
     ('Ablation study (Table 6)', 'ablation_study.py', True),
     ('Supervised tables / narrative', 'verify_supervised_tables.py', True),
+    ('Figures vs artifacts', 'regenerate_figures_v3.py --check', True),
 ]
 
 # Section 5.3 corpus-level claims, checked against equivalence_spectrum.json
@@ -104,9 +108,10 @@ def main():
         print('=' * 70)
         print(f'== {label}  ({script})')
         print('=' * 70)
-        p = subprocess.run([PY, os.path.join(HERE, script)],
+        parts = script.split()
+        p = subprocess.run([PY, os.path.join(HERE, parts[0])] + parts[1:],
                            capture_output=True, text=True)
-        tail = '\n'.join((p.stdout.strip().split('\n') or [''])[-6:])
+        tail = '\n'.join((p.stdout.strip().split('\n') or [''])[-9:])
         print(tail)
         if p.returncode != 0:
             print('  stderr tail:', (p.stderr.strip().split('\n') or [''])[-3:])

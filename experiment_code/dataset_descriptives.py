@@ -12,6 +12,10 @@ CE 0 ms, MLE 775 ms; 61.7% of TLE at exactly 2,000 ms; 65.3% of MLE at
 computed once and never persisted. This script reproduces all of them from
 the authoritative rows and checks the manuscript figure by figure.
 
+Round 15 added the two remaining unguarded claims of the Dataset Collection /
+Data Cleaning paragraphs: the language distribution and the largest submitter
+share of a fold.
+
 Output: experiment_results/dataset_descriptives.json
 Exit 0 = every manuscript figure reproduces; exit 1 = mismatch.
 """
@@ -50,6 +54,14 @@ EXPECTED = [
     ('tier_gt2000_MLE', 6.6, 0.05),
     ('tier_gt2000_CE', 8.7, 0.05),
     ('platform_encoded_share_pct', 18.5, 0.05),
+    # Dataset Collection paragraph: language distribution
+    ('lang_cpp23_pct', 41.1, 0.05),
+    ('lang_cpp17_pct', 24.1, 0.05),
+    ('lang_cpp20_pct', 19.6, 0.05),
+    ('lang_python_pct', 6.2, 0.05),
+    ('lang_java_pct', 3.3, 0.05),
+    # Data Cleaning paragraph: largest submitter share of a fold
+    ('max_submitter_share_test_pct', 1.1, 0.02),
 ]
 
 
@@ -101,6 +113,44 @@ def main():
 
     encoded = sum(out['by_verdict'][v]['count'] for v in ('CE', 'TLE', 'MLE'))
     out['platform_encoded_share_pct'] = 100.0 * encoded / n
+
+    # language distribution (manuscript, Dataset Collection paragraph).
+    # Version strings are grouped the way the manuscript reports them;
+    # JavaScript is not Java.
+    def lang_bucket(l):
+        if l.startswith('C++23'):
+            return 'cpp23'
+        if l.startswith('C++20'):
+            return 'cpp20'
+        if l.startswith('C++17'):
+            return 'cpp17'
+        if l.startswith('C++14'):
+            return 'cpp14'
+        if l.startswith('GNU C++') or l.startswith('MS C++'):
+            return 'cpp_other'
+        if 'Python' in l or 'PyPy' in l:
+            return 'python'
+        if l.startswith('Java') and not l.startswith('JavaScript'):
+            return 'java'
+        return 'other'
+
+    lc = Counter(lang_bucket(r['language']) for r in rows)
+    for k in ('cpp23', 'cpp17', 'cpp20', 'python', 'java'):
+        out[f'lang_{k}_pct'] = 100.0 * lc.get(k, 0) / n
+    out['lang_cpp_total_pct'] = 100.0 * sum(
+        v for k, v in lc.items() if k.startswith('cpp')) / n
+
+    # largest submitter share of either side of the authoritative partition
+    # (the stratification claim in Data Cleaning)
+    from sklearn.model_selection import train_test_split
+    y = np.array([r['verdict'] for r in rows])
+    idx = np.arange(len(rows))
+    tr, te = train_test_split(idx, test_size=0.2, random_state=pa.SEED, stratify=y)
+    users = np.array([r['user'] for r in rows])
+    out['max_submitter_share_train_pct'] = \
+        100.0 * max(Counter(users[tr]).values()) / len(tr)
+    out['max_submitter_share_test_pct'] = \
+        100.0 * max(Counter(users[te]).values()) / len(te)
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, 'w', encoding='utf-8') as f:

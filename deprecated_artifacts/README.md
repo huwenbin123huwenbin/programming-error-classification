@@ -63,3 +63,28 @@ Produced by `run_ds_v4_fair.py` / `run_ds_v4_final.py` against
 with `random.Random(42).shuffle()` rather than sklearn's stratified split, so
 its partition is not the manuscript's test partition. Not citable; retained
 only because the cost estimate reads its per-call token counts.
+
+## legacy_figures/ (archived 2026-10-18)
+
+Figure files and plotting scripts from earlier manuscript versions. None is
+referenced by `paper_acm.tex`; all were verified unreferenced before the move
+(grep over the tex, the Chinese companion, and the README).
+
+- `fig4_rf_confusion.pdf`, `fig5_gb_confusion.pdf`, `fig7_f1_comparison.pdf`,
+  `fig_feature_importance.pdf` (2026-06-16): pre-v3 figures drawn from the
+  retired feature set (seven fields, including `user_success_rate`).
+- `fig11_lococv.pdf`, `fig12_contest_analysis.pdf`: LOCOCV cross-contest
+  figures from the retired cross-contest experiment.
+- `fig_ablation_chart.png` (2026-07-28): ablation chart superseded by Table 6
+  plus `ablation_study.py`; its augmentation row carried the self-leakage
+  artefact corrected in Round 14.
+- `model_comparison.pdf`: model-comparison chart superseded by
+  `fig_accuracy_chart.png`.
+- `chart_figs/` (4 PNGs): duplicate charts from an intermediate iteration.
+- `generate_figures.py` (2026-06-08): reads
+  `02_预处理数据/preprocessed_data.csv`, a path that no longer exists; five
+  features, RF confusion matrix. Non-runnable as archived.
+- `regenerate_gb_figures.py`: draws GB figures from `final_results_v2.json`
+  with hardcoded `/Users/mac/Desktop/SCI1/...` paths; the current authoritative
+  source is `experiment_code/regenerate_figures_v3.py`, which is chained into
+  the master gate (`verify_paper_numbers.py`, check 13, `--check` mode).

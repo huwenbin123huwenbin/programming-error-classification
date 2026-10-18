@@ -32,9 +32,10 @@ explains most of the Wrong Answer ↔ Runtime Error residual.
 | Qwen2.5:3B, three-shot (5 fields), valid outputs | 35.50% | [33.6, 37.4] | 0.231 | $0.00 |
 | Majority-class rule (always WA) | 76.61% | — | — | — |
 
-Supervised cost is priced from measured single-core inference (RF 11.6 ms,
-GB 4.6 ms, LR 0.2 ms per 1,000; median of five, `latency_benchmark.py`) at
-$0.04 per vCPU-hour; DeepSeek-V3 at standard list pricing (≈215 input +
+Supervised cost is priced from measured single-core inference (RF about 12–23 ms,
+GB about 5–11 ms, LR about 0.2 ms per 1,000; ranges span repeated runs of
+`latency_benchmark.py` under varying host load; at most ≈$3×10⁻⁷ at
+$0.04 per vCPU-hour); DeepSeek-V3 at standard list pricing (≈215 input +
 ≈22 output tokens per eight-item call), half that at the promotional rate
 in effect during data collection.
 
@@ -82,7 +83,7 @@ submissions only, exactly zero once submitters are disjoint).
 │   │                               # arXiv and OpenAlex; exit 0 = all verified
 │   ├── crossref_lookup.py          # resolve a title to its DOI, for maintenance
 │   ├── verify_mcnemar_alignment.py # gate: LLM files align with the partition
-│   ├── verify_paper_numbers.py     # MASTER GATE: chains all twelve checks;
+│   ├── verify_paper_numbers.py     # MASTER GATE: chains all thirteen checks;
 │   │                               # non-zero exit stops submission
 │   ├── user_disjoint_replication_v3.py  # submitter-disjoint replication (§5.1)
 │   ├── regenerate_figures_v3.py    # every figure in the paper
