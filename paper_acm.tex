@@ -159,14 +159,15 @@ Our contributions are:
  \item \textbf{Deployment guidance with a leakage-free protocol.} Execution time
  and memory dominate (a 7.3\,pp drop when time is removed, and 89.0\% of Gini
  importance between the two fields, 81.5\% of it from time alone), a
- submitter-history aggregate does not survive leakage-free
- evaluation, and supervised ensembles lead the strongest prompted LLM by
+ submitter-history aggregate adds no gain that survives correction and is
+ exactly zero when submitters are disjoint, and supervised ensembles lead the
+ strongest prompted LLM by
  15.1\,pp at four to five orders of magnitude lower per-prediction inference
  cost (measured; Table~\ref{tab:llm-results}).
  Dataset and code: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{enumerate}
 
-\paragraph{Student-population disclaimer.} Our dataset comes from competitive programmers (Codeforces rating 800--3,500), a population with substantially different error profiles from CS1/CS2 students. Prior work (Altadmri \& Brown, 2015) reports that 47.6\% of novice compilation events fail to compile (17.7M of 37.2M) against 7.3\% compilation-error verdicts in our dataset, and novices rarely produce TLE or MLE. The 91.8\% accuracy figure reflects competitive-programming error distributions; cross-platform and student-population validation are necessary before drawing conclusions about learning impact. We address this in Section~\ref{sec:skill-tier} (skill-tier analysis) and Section~\ref{sec:threats} (external validity). \textit{Feature-availability caveat:} the six fields we use are computable at first contact with a submission, so the pipeline carries no cold-start penalty; an earlier version of this work included a submitter-history aggregate, which we removed after it failed a leakage-free test (Section~\ref{sec:ablation}).
+\paragraph{Student-population disclaimer.} Our dataset comes from competitive programmers (Codeforces rating 800--3,500), a population with substantially different error profiles from CS1/CS2 students. Prior work (Altadmri \& Brown, 2015) reports that 47.6\% of novice compilation events fail to compile (17.7M of 37.2M) against 7.3\% compilation-error verdicts in our dataset, and novices rarely produce TLE or MLE. The 91.8\% accuracy figure reflects competitive-programming error distributions; cross-platform and student-population validation are necessary before drawing conclusions about learning impact. We address this in Section~\ref{sec:skill-tier} (skill-tier analysis) and Section~\ref{sec:threats} (external validity). \textit{Feature-availability caveat:} the six fields we use are computable at first contact with a submission, so the pipeline carries no cold-start penalty; an earlier version of this work included a submitter-history aggregate, which we removed after its gain proved unreliable---nominal at best, and exactly zero once submitters are disjoint (Section~\ref{sec:ablation}).
 
 
 % ============================================================
@@ -418,10 +419,12 @@ and test sets, only the final submission per (user, problem) pair was
 retained---this ensures that no two submissions in the dataset are from the
 same user solving the same problem. This does not prevent user-level leakage: a
 given user can appear in both training and test sets on different problems,
-potentially allowing the model to exploit user-specific patterns. Because the corpus contains only failing submissions, no aggregate of a
-programmer's verdicts can be formed without including the row's own label, and
-we therefore excluded submitter-level aggregates from the model after testing
-them (Section~\ref{sec:ablation}). Stratified sampling ensures that no single
+potentially allowing the model to exploit user-specific patterns. A
+submitter-level aggregate computed over the whole corpus would let each row's
+own label enter its own predictor; built from earlier training submissions
+only, such a field adds no gain that survives correction
+(Section~\ref{sec:ablation}), so we excluded submitter-level aggregates from
+the model after testing them. Stratified sampling ensures that no single
 submitter dominates any fold (maximum 0.8\% of a fold). To confirm that the
 reported accuracy does not depend on seeing the same person on both sides of the
 partition, we additionally ran a fully submitter-disjoint replication, with zero
@@ -507,12 +510,14 @@ which is indistinguishable from omitting it; we omit it.
 
 \emph{Submitter history.} A user-level aggregate (historical WA rate, or its
 complement, a success rate) summarises proficiency and is the single most common
-feature in grade-prediction work. It is unavailable here for two reasons. The
-corpus contains only failing submissions, so no success rate can be formed from
-it. And if the aggregate is computed over the whole corpus, each row's own label
-enters its own predictor---a textbook target leak. Section~\ref{sec:ablation}
-shows that the leakage-free version, built from training submitters only, costs
-2.1 percentage points. The field is excluded rather than repaired.
+feature in grade-prediction work. No success rate can be formed from this
+corpus, which contains only failing submissions. A WA-rate aggregate can, and
+Section~\ref{sec:ablation} tests it: computed over the whole corpus it appears
+to add 3.7 percentage points, but that is each row's own label entering its own
+predictor; computed from the submitter's earlier training submissions only it
+adds 0.67\,pp, which does not survive correction for the seven comparisons and
+is exactly zero on the submitter-disjoint split. The field is excluded rather
+than repaired.
 
 The restriction has a practical justification as well. A deployed classifier
 sees a submission from a student it has never met, so a field requiring prior
@@ -601,7 +606,7 @@ retrospective power analysis confirms adequate sensitivity: the minimum
 detectable effect at $n=2{,}672$ and $\alpha=0.05$ is approximately 2.5\,pp,
 well below the 15.1\,pp gap. The same analysis shows why the comparison between
 the two tree ensembles is reported as a null result rather than a ranking: their
-0.03\,pp difference is an order of magnitude below the detection floor.
+0.04\,pp difference is an order of magnitude below the detection floor.
 Five-fold cross-validation on the training set yields 92.42\% (SD 0.33), within
 0.7\,pp of the test estimate. Table~\ref{tab:sensitivity} reports accuracy
 against training-set size.
@@ -722,7 +727,7 @@ Classification performance is reported as overall accuracy, per-class
 precision, recall, and F1-score. Confusion matrices are provided for one of the
 two tree ensembles (Gradient Boosting) to reveal class-wise error patterns. The
 two are statistically indistinguishable on accuracy ($\chi^2=0.00$, $p=1.00$;
-Random Forest scores 91.80\%, a difference of 0.03\,pp), and Gradient Boosting
+Random Forest scores 91.80\%, a difference of 0.04\,pp), and Gradient Boosting
 is reported throughout because it carries the marginally higher macro F1
 (0.799 against 0.798) and the tighter cross-validation spread; the matrices
 below are therefore reported for Gradient Boosting, and all per-class
@@ -772,17 +777,18 @@ competitor.
 \toprule
 Model & Test Acc & 95\% CI & CV Mean ($\pm$SD) & Macro F1 \\
 \midrule
-Random Forest & \textbf{91.80\%} & [90.7, 92.8] & 92.36\% ($\pm$0.54) & 0.798 \\
-Gradient Boosting & 91.77\% & [90.7, 92.8] & \textbf{92.42\% ($\pm$0.33)} & \textbf{0.799} \\
+Random Forest & \textbf{91.80\%} & [90.8, 92.8] & 92.36\% ($\pm$0.54) & 0.798 \\
+Gradient Boosting & 91.77\% & [90.6, 92.8] & \textbf{92.42\% ($\pm$0.33)} & \textbf{0.799} \\
 Logistic Regression & 85.63\% & [84.2, 86.9] & 86.03\% ($\pm$0.23) & 0.494 \\
 \bottomrule
 \end{tabular}
 
 \vspace{2mm}
 {\small\textit{Notes:} Balanced accuracy: GB = 0.804, RF = 0.791,
-LR = 0.486. Boosted and bagged trees agree to within 0.03\,pp; the linear
-model trails by 6.1\,pp in accuracy and 0.31 in Macro F1. Models use the six
-fields of Section~\ref{sec:features}.}
+LR = 0.486. Boosted and bagged trees agree to within 0.04\,pp; the linear
+model trails by 6.1\,pp in accuracy and 0.30 in Macro F1. Models use the six
+fields of Section~\ref{sec:features}; intervals are percentile bootstrap
+(1{,}000 resamples, seed 42).}
 \end{table}
 
 The linear baseline fails in a qualitatively different way from the tree
@@ -991,16 +997,18 @@ None (full model) & 91.77 & --- & --- \\
 \texttt{problem\_rating} removed & 91.62 & $-$0.15 & n.s. \\
 \texttt{problem\_type} removed & 91.69 & $-$0.07 & n.s. \\
 \midrule
-\texttt{user\_wa\_rate} added$^{\dagger}$ & 89.63 & $-$2.13 & $<0.001$ \\
+\texttt{user\_wa\_rate} added$^{\dagger}$ & 92.44 & $+$0.67 & 0.039 \\
 \bottomrule
 \end{tabular}
 
 \vspace{2mm}
-{\small\textit{Note:} four of six removals are not significant after
+{\small\textit{Notes:} four of six removals are not significant after
 correction, i.e.\ the model tolerates the loss of any non-execution field.
-$^{\dagger}$Leakage-free aggregate of the submitter's earlier WA rate, computed
-on training users only; the sign is negative, so the field is dropped from the
-final model.}
+$^{\dagger}$The submitter's WA rate over their own submissions that precede
+the row in submission order and fall in the training partition; rows with no
+such submission (957 of 2,672 test rows) take the training prior. The gain
+does not survive correction for seven comparisons and is exactly zero when
+submitters are disjoint, so the field is dropped from the final model.}
 \end{table}
 
 Execution time dominates: removing it costs 7.3 percentage points, more than
@@ -1011,14 +1019,25 @@ are individually expendable---their removal costs between 0.07 and 0.64\,pp and
 only language survives correction at $\alpha'=0.008$ (it does not; $p=0.031$).
 
 The last row of Table~\ref{tab:ablation} addresses a question the earlier
-literature leaves open. Aggregate features describing a submitter's history are
-attractive in learning analytics, and a WA-rate aggregate computed over the
-whole corpus appears to add 3.6 percentage points. Computed without look-ahead,
-on training users only, the same field \emph{costs} 2.1\,pp: for test
-submitters who appear in training the estimate rests on a median of two earlier
-submissions, and for those who do not it collapses to the training mean. We
-report the leakage-free variant and exclude the field. Section~\ref{sec:robust}
-shows that the exclusion changes nothing when submitters are disjoint.
+literature leaves open. Aggregate features describing a submitter's history
+are attractive in learning analytics, and a WA-rate aggregate computed over
+the whole corpus appears to add 3.7 percentage points---95.43\% against the
+91.77\% baseline. That number is an artefact of look-ahead: through the
+aggregate, each row's own verdict feeds its own predictor. Computed without
+look-ahead---each row seeing only its submitter's submissions that precede it
+in submission order and fall in the training partition---the same field adds
+0.67\,pp (92.44\%, $p=0.039$), a nominal gain that does not survive
+correction for the seven comparisons ($\alpha'\approx0.007$). The estimate is
+thin where it exists at all: among test rows whose submitter appears in
+training it rests on a median of three earlier submissions, and 957 of the
+2,672 test rows---new submitters, and submitters whose only earlier
+submissions lie on the test side---collapse to the training prior. We exclude
+the field for the reason that decides it: on the submitter-disjoint split
+every one of the 2,460 test submitters is new, the aggregate is constant on
+the test side, and accuracy holds at 93.13\% (34 of 2,460 predictions flip,
+in balance). A field that pays only where history exists cannot serve the
+cold-start population the platform actually presents; Section~\ref{sec:robust}
+shows the exclusion costs nothing there.
 
 Learning curves confirm that the gap to the LLMs is not a data-volume artefact.
 Accuracy rises from 85.8\% at 200 training submissions to 87.7\% at 400 and
@@ -1048,8 +1067,8 @@ supervised models on the identical test partition.
 \toprule
 Model & Test Acc & 95\% CI & Macro F1 & Cost/1k$^{\dagger}$ \\
 \midrule
-Random Forest & \textbf{91.80\%} & [90.7, 92.8] & 0.798 & $<\$10^{-6}$ \\
-Gradient Boosting & 91.77\% & [90.7, 92.8] & \textbf{0.799} & $<\$10^{-6}$ \\
+Random Forest & \textbf{91.80\%} & [90.8, 92.8] & 0.798 & $<\$10^{-6}$ \\
+Gradient Boosting & 91.77\% & [90.6, 92.8] & \textbf{0.799} & $<\$10^{-6}$ \\
 Gradient Boosting, five fields$^{*}$ & 91.69\% & [90.6, 92.7] & 0.797 & $<\$10^{-6}$ \\
 Logistic Regression & 85.63\% & [84.2, 86.9] & 0.494 & $<\$10^{-6}$ \\
 \midrule
@@ -1105,8 +1124,8 @@ documented failure mode of small local models on a task requiring numeric
 thresholding, not as evidence about ML--LLM ordering in general.
 
 \paragraph{Cost.} Supervised inference is effectively free: on a single CPU
-core a random forest classifies 1,000 submissions in about 11\,ms, gradient
-boosting in about 5\,ms and logistic regression in about 0.3\,ms (median of
+core a random forest classifies 1,000 submissions in about 12\,ms, gradient
+boosting in about 5\,ms and logistic regression in about 0.2\,ms (median of
 five repeats, \texttt{experiment\_code/latency\_benchmark.py}; about
 $\$10^{-7}$ per 1,000 at
 \$0.04 per vCPU-hour), against roughly \$0.01 per thousand predictions for the
@@ -1262,16 +1281,19 @@ what the model knows about a submission is almost entirely what the judge
 measured about it.
 
 The four problem-level fields contribute the rest and are individually
-dispensable (0.07 to 0.64 percentage points). The most interesting negative
+dispensable (0.07 to 0.64 percentage points). The most instructive negative
 result concerns a field we removed. A submitter-history aggregate is the
-standard first feature in grade prediction, and in our first pass it appeared to
-add 3.6 percentage points. Computed without look-ahead---from training
-submitters only---it costs 2.1 percentage points. The apparent gain was the
-row's own label leaking into its own predictor through the aggregate, a failure
-mode that is easy to miss and, in a field where such aggregates are routine,
-worth flagging explicitly. It also happens to be the field that would be
-unavailable for a new student, so removing it improves both the estimate and the
-deployment story.
+standard first feature in grade prediction, and in our first pass it appeared
+to add 3.7 percentage points. Computed without look-ahead---each row seeing
+only its submitter's submissions that precede it in submission order and fall
+in the training partition---the gain shrinks to 0.67\,pp and does not survive
+correction for the seven comparisons; on the submitter-disjoint split it is
+exactly zero, because every test submitter there is new. What looked like
+signal in the first pass was the row's own label leaking into its own
+predictor through the aggregate, a failure mode that is easy to miss and, in a
+field where such aggregates are routine, worth flagging explicitly. It also
+happens to be the field that would be unavailable for a new student, so
+removing it costs nothing and simplifies the deployment story.
 
 \subsection{Finding 3: Why Runtime Error Is Different}
 
@@ -1586,9 +1608,10 @@ not test them. Source-code features~\cite{allamanis2018learning}
 
 \textbf{Breadth Without Depth:} The dataset is broad in programmers (4,005) but
 shallow per programmer (median two submissions). Any user-level quantity
-therefore rests on few observations per person: a WA-rate aggregate computed
-from a median of two earlier submissions is mostly noise, which is why it failed
-the leakage-free test of Section~\ref{sec:ablation}. For the same reason the
+therefore rests on few observations per person: a WA-rate aggregate rests on a
+median of three earlier training submissions where any exist, adds no gain that
+survives correction, and is exactly zero on the submitter-disjoint split
+(Section~\ref{sec:ablation}). For the same reason the
 skill-tier analysis pools programmers by rating band rather than estimating
 individual trajectories.
 Conclusions about individual learners should not be drawn from this dataset; a
@@ -1735,8 +1758,9 @@ cost, and is unchanged under
 submitter-disjoint evaluation (93.13\%), which shows that the estimate does not
 depend on seeing the same person twice. Execution time is the dominant
 predictor (7.3\,pp drop, 81.5\% of Gini importance), and a submitter-history
-aggregate---the standard first feature in this literature---does not survive a
-leakage-free evaluation.
+aggregate---the standard first feature in this literature---adds nothing
+reliable: a nominal 0.67\,pp that does not survive correction, and exactly zero
+when submitters are disjoint.
 
 \paragraph{Future directions.}\label{sec:future} Three next steps follow from the
 equivalence account rather than from the model comparison. First,

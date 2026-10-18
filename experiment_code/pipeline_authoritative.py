@@ -10,10 +10,20 @@ Corrections applied to the earlier analysis
 2. `user_success_rate` removed from the primary model. It was computed over the
    whole dataset, so each row's own label contributed to its own predictor
    (target leakage); the dataset also contains only failing submissions, so a
-   true success rate cannot be formed. A leakage-free variant is retained as an
-   ablation to show that the aggregate does not help.
+   true success rate cannot be formed. A temporally honest variant is retained
+   as an ablation; it adds a small, non-significant gain on the random split
+   and nothing at all on the submitter-disjoint one, so it is not used.
 3. Logistic Regression is standardised before fitting; the earlier run never
    converged on raw features spanning five orders of magnitude.
+4. `user_rate` (the retained submitter-aggregate ablation) uses only the
+   submitter's submissions that PRECEDE the row in `submission_id` order and
+   fall in the training partition. The earlier version averaged over all of
+   the submitter's training submissions, so each training row's own verdict
+   fed its own feature (the same target leakage as correction 2, one level
+   down); that version reported the aggregate as costing 2.1pp, an artefact of
+   the leakage rather than a property of the field. `submission_id` is
+   Codeforces' monotonically increasing submission counter, hence the corpus's
+   only temporal order (CSV row order is not chronological).
 
 Protocols
 ---------
@@ -67,6 +77,7 @@ def load_rows():
             idx = (r['problem_index'] or '').strip().upper()
             rows.append({
                 'user': r['user_handle'],
+                'submission_id': int(r['submission_id']),
                 'problem_rating': pr,
                 'time_consumed_ms': tc,
                 'memory_kb': float(r['memory_kb']) if r['memory_kb'].strip() else 0.0,
@@ -89,7 +100,22 @@ def matrix(rows, feats):
 
 
 def user_rate(rows, train_idx):
-    """Leakage-free user aggregate: computed on training users only."""
+    """Temporally honest user aggregate: the submitter's earlier WA rate.
+
+    For each row the feature is the submitter's WA share over their own
+    submissions that (a) precede this row in `submission_id` order and
+    (b) fall in the training partition. Rows with no such submission (new
+    submitters, and submitters whose only earlier submissions are on the
+    test side) take the training prior, the mean per-submitter training WA
+    rate. No row's own verdict, and no test-side verdict, ever enters the
+    feature -- the version that averaged over all of a submitter's training
+    submissions folded each training row's own label into itself (correction
+    4 in the module docstring).
+    """
+    train_set = set(train_idx)
+    by_user = defaultdict(list)
+    for i in train_idx:
+        by_user[rows[i]['user']].append(i)
     agg = defaultdict(lambda: [0, 0])
     for i in train_idx:
         agg[rows[i]['user']][1] += 1
@@ -97,7 +123,16 @@ def user_rate(rows, train_idx):
             agg[rows[i]['user']][0] += 1
     rate = {u: v[0] / v[1] for u, v in agg.items() if v[1]}
     prior = float(np.mean(list(rate.values())))
-    return np.array([rate.get(r['user'], prior) for r in rows]), prior
+    out = np.empty(len(rows))
+    for i, r in enumerate(rows):
+        sid = r['submission_id']
+        wa = n = 0
+        for j in by_user.get(r['user'], ()):
+            if rows[j]['submission_id'] < sid and j in train_set:
+                n += 1
+                wa += rows[j]['verdict'] == 'WA'
+        out[i] = wa / n if n else prior
+    return out, prior
 
 
 # --------------------------------------------------------------- models ----
@@ -276,17 +311,57 @@ def ablation(rows, tr, te):
         out.append({'removed_feature': f, 'accuracy': round(float(acc), 4),
                     'drop_pp': round(float((base_acc - acc) * 100), 2), 'p_value': r['p_value']})
         print(f"  -{f:20s} acc={acc*100:.2f}% drop={(base_acc-acc)*100:+.2f}pp p={r['p_value']:.2e}")
-    # leakage-free user aggregate added on top of the primary set
+    # temporally honest user aggregate added on top of the primary set
     rate, prior = user_rate(rows, tr)
     X2 = np.column_stack([X, rate])
     m = GradientBoostingClassifier(n_estimators=100, max_depth=3,
                                    learning_rate=0.1, random_state=SEED).fit(X2[tr], y_tr)
-    acc = accuracy_score(y_te, m.predict(X2[te]))
-    out.append({'removed_feature': '+user_wa_rate (added)', 'accuracy': round(float(acc), 4),
-                'drop_pp': round(float((base_acc - acc) * 100), 2), 'p_value': None,
-                'note': 'leakage-free aggregate added to the primary six features'})
-    print(f"  +user_wa_rate (leakage-free) acc={acc*100:.2f}% (prior={prior:.3f})")
-    return out, base_acc
+    p_aug = m.predict(X2[te])
+    acc = accuracy_score(y_te, p_aug)
+    r_aug = mcnemar(base == y_te, p_aug == y_te)
+    # how much history backs each test row's estimate, and how many rows
+    # collapse to the prior?
+    by_user_all = defaultdict(list)
+    for i, r in enumerate(rows):
+        by_user_all[r['user']].append(i)
+    tr_set = set(int(i) for i in tr)
+    backing, prior_rows = [], 0
+    for i in te:
+        sid = rows[i]['submission_id']
+        n_earlier = sum(1 for j in by_user_all[rows[i]['user']]
+                        if rows[j]['submission_id'] < sid and j in tr_set)
+        if n_earlier:
+            backing.append(n_earlier)
+        else:
+            prior_rows += 1
+    # the leaky variant for contrast: whole-corpus aggregate, own label in
+    wa_all = np.array([sum(1 for j in by_user_all[r['user']]
+                           if rows[j]['verdict'] == 'WA') / len(by_user_all[r['user']])
+                       for r in rows])
+    X3 = np.column_stack([X, wa_all])
+    m = GradientBoostingClassifier(n_estimators=100, max_depth=3,
+                                   learning_rate=0.1, random_state=SEED).fit(X3[tr], y_tr)
+    acc_leaky = accuracy_score(y_te, m.predict(X3[te]))
+    aug = {'removed_feature': '+user_wa_rate (added)', 'accuracy': round(float(acc), 4),
+           'drop_pp': round(float((base_acc - acc) * 100), 2), 'p_value': r_aug['p_value'],
+           'note': 'earlier-only aggregate (submission_id order, training side only)'}
+    out.append(aug)
+    diag = {
+        'augmentation_mcnemar_p': r_aug['p_value'],
+        'prior': round(prior, 4),
+        'median_earlier_training_backing': float(np.median(backing)),
+        'test_rows_taking_prior': int(prior_rows),
+        'n_test': int(len(te)),
+        'leaky_variant_accuracy': round(float(acc_leaky), 4),
+        'leaky_variant_gain_pp': round(float((acc_leaky - base_acc) * 100), 2),
+    }
+    print(f"  +user_wa_rate (earlier-only) acc={acc*100:.2f}% "
+          f"({(acc-base_acc)*100:+.2f}pp) p={r_aug['p_value']:.3f} prior={prior:.3f}")
+    print(f"    backing: median {float(np.median(backing)):.0f} earlier training "
+          f"submissions; {prior_rows}/{len(te)} test rows take the prior")
+    print(f"  +user_wa_rate (leaky, whole corpus) acc={acc_leaky*100:.2f}% "
+          f"({(acc_leaky-base_acc)*100:+.2f}pp)")
+    return out, base_acc, diag
 
 
 def sensitivity(X_tr, y_tr, X_te, y_te):
@@ -391,7 +466,8 @@ def main(stage='all'):
         res['collision'] = collision_analysis(rows)
         res['homogeneity'] = homogeneity(rows)
         X, _ = matrix(rows, FEATURES)
-        res['ablation'], res['ablation_base'] = ablation(rows, tr, te)
+        res['ablation'], res['ablation_base'], res['ablation_diagnostics'] = \
+            ablation(rows, tr, te)
         res['sensitivity'] = sensitivity(X[tr], y[tr], X[te], y[te])
         json.dump(res, open(OUT_JSON, 'w'), indent=1, ensure_ascii=False)
         print('-- saved misc')

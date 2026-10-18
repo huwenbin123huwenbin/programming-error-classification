@@ -1,0 +1,64 @@
+{
+ "model": "Gradient Boosting (protocol A, six fields)",
+ "baseline_accuracy": 0.9177,
+ "removals": [
+  {
+   "removed_feature": "problem_rating",
+   "accuracy": 0.9162,
+   "change_pp": -0.15,
+   "p_value": 0.6352562959972483
+  },
+  {
+   "removed_feature": "time_consumed_ms",
+   "accuracy": 0.8447,
+   "change_pp": -7.3,
+   "p_value": 3.1667424949560666e-24
+  },
+  {
+   "removed_feature": "memory_kb",
+   "accuracy": 0.8997,
+   "change_pp": -1.8,
+   "p_value": 1.482178267744686e-07
+  },
+  {
+   "removed_feature": "language_encoded",
+   "accuracy": 0.9113,
+   "change_pp": -0.64,
+   "p_value": 0.03097143165084624
+  },
+  {
+   "removed_feature": "passed_test_count",
+   "accuracy": 0.9154,
+   "change_pp": -0.22,
+   "p_value": 0.5610799295856819
+  },
+  {
+   "removed_feature": "problem_type",
+   "accuracy": 0.9169,
+   "change_pp": -0.07,
+   "p_value": 0.8676323347781927
+  }
+ ],
+ "augmentation_earlier_only": {
+  "accuracy": 0.9244,
+  "change_pp": 0.67,
+  "p_value": 0.03925033046769265,
+  "p_bonferroni_7": 0.2747523132738485,
+  "survives_correction": false,
+  "prior": 0.7862
+ },
+ "augmentation_leaky_whole_corpus": {
+  "accuracy": 0.9543,
+  "gain_pp": 3.67
+ },
+ "median_earlier_training_backing": 3.0,
+ "test_rows_taking_prior": 957,
+ "n_test": 2672,
+ "submitter_disjoint": {
+  "baseline_accuracy": 0.9313,
+  "accuracy_with_aggregate": 0.9313,
+  "test_side_constant": true,
+  "predictions_flipped": 34,
+  "n_test": 2460
+ }
+}

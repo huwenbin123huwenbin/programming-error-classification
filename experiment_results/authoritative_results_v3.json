@@ -815,10 +815,10 @@
   },
   {
    "removed_feature": "+user_wa_rate (added)",
-   "accuracy": 0.8963,
-   "drop_pp": 2.13,
-   "p_value": null,
-   "note": "leakage-free aggregate added to the primary six features"
+   "accuracy": 0.9244,
+   "drop_pp": -0.67,
+   "p_value": 0.03925033046769265,
+   "note": "earlier-only aggregate (submission_id order, training side only)"
   }
  ],
  "ablation_base": 0.9176646706586826,
@@ -11641,5 +11641,14 @@
    "test": "chi2 continuity-corrected",
    "comparison": "GB-5field vs DeepSeek-V3"
   }
+ },
+ "ablation_diagnostics": {
+  "augmentation_mcnemar_p": 0.03925033046769265,
+  "prior": 0.7862,
+  "median_earlier_training_backing": 3.0,
+  "test_rows_taking_prior": 957,
+  "n_test": 2672,
+  "leaky_variant_accuracy": 0.9543,
+  "leaky_variant_gain_pp": 3.67
  }
 }

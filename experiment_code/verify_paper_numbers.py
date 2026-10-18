@@ -23,6 +23,14 @@ lines):
  10. latency_benchmark.py         informational only: machine-dependent, so a
                                    mismatch with the printed value is not a
                                    failure; the artifact is the record.
+ 11. ablation_study.py            Table 6 and the leakage paragraph: the six
+                                   removals, the earlier-only augmentation,
+                                   the whole-corpus variant, the cold-start
+                                   null (re-runs everything, incl. protocol B)
+ 12. verify_supervised_tables.py  Table 2 / Table 3 / Gini caption / Section 4
+                                   narrative / Section 5.4 replication and
+                                   homogeneity figures (retrains GB for the
+                                   prediction-level claims)
 
 Exit 0 = every check passed.
 """
@@ -45,6 +53,8 @@ CHECKS = [
     ('McNemar alignment gate', 'verify_mcnemar_alignment.py', True),
     ('Bibliography registry', 'verify_references.py', True),
     ('Latency benchmark (info only)', 'latency_benchmark.py', False),
+    ('Ablation study (Table 6)', 'ablation_study.py', True),
+    ('Supervised tables / narrative', 'verify_supervised_tables.py', True),
 ]
 
 # Section 5.3 corpus-level claims, checked against equivalence_spectrum.json
