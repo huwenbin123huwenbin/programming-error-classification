@@ -88,7 +88,14 @@ if __name__ == "__main__":
     # Test on first 100 samples for quick validation
     test_subset = test_df.head(100)
     
-    api_key = "sk-cbb3dfb6ea5c4f7c90c8e7b5a6d2f1e3"  # Replace with actual key
+# API key is read from the environment. Never hardcode credentials in this
+# repository: this file previously carried an inline key, and even a disabled
+# key in a pushed repo is a credential-exposure incident. If you ever committed
+# a real key, rotate it at the provider's dashboard.
+import os
+api_key = os.environ.get("DEEPSEEK_API_KEY", "")
+if not api_key:
+    raise SystemExit("DEEPSEEK_API_KEY is not set; export it before running.")
     
     predictions = []
     for idx, row in test_subset.iterrows():

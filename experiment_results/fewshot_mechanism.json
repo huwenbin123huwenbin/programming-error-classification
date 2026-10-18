@@ -1,0 +1,151 @@
+{
+  "test_partition": {
+    "n": 2672,
+    "true_distribution": {
+      "WA": 2047,
+      "RE": 131,
+      "TLE": 258,
+      "MLE": 40,
+      "CE": 196
+    }
+  },
+  "arms": {
+    "zero_shot_single_item": {
+      "file": "deepseek_zero-shot_full_20260620_164311.json",
+      "n_records": 2672,
+      "n_valid": 2672,
+      "n_invalid": 0,
+      "accuracy_all": 0.7829341317365269,
+      "accuracy_valid": 0.7829341317365269,
+      "prediction_distribution": {
+        "CE": 50,
+        "TLE": 6,
+        "MLE": 77,
+        "WA": 2539,
+        "RE": 0
+      },
+      "true_distribution": {
+        "CE": 196,
+        "TLE": 258,
+        "MLE": 40,
+        "WA": 2047,
+        "RE": 131
+      },
+      "prediction_entropy_bits": 0.3446142513993563,
+      "max_entropy_bits": 2.321928094887362,
+      "wa_share_of_predictions": 0.9502245508982036,
+      "per_class": {
+        "CE": {
+          "recall": 0.17857142857142858,
+          "precision": 0.7,
+          "tp": 35,
+          "fp": 15,
+          "fn": 161
+        },
+        "TLE": {
+          "recall": 0.01937984496124031,
+          "precision": 0.8333333333333334,
+          "tp": 5,
+          "fp": 1,
+          "fn": 253
+        },
+        "MLE": {
+          "recall": 0.775,
+          "precision": 0.4025974025974026,
+          "tp": 31,
+          "fp": 46,
+          "fn": 9
+        },
+        "WA": {
+          "recall": 0.9872984855886663,
+          "precision": 0.7959826703426546,
+          "tp": 2021,
+          "fp": 518,
+          "fn": 26
+        },
+        "RE": {
+          "recall": 0.0,
+          "precision": 0.0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 131
+        }
+      }
+    },
+    "three_shot_batch8": {
+      "file": "deepseek_fair_rerun_predictions.json",
+      "n_records": 2672,
+      "n_valid": 2651,
+      "n_invalid": 21,
+      "accuracy_all": 0.7604790419161677,
+      "accuracy_valid": 0.7665032063372312,
+      "prediction_distribution": {
+        "CE": 611,
+        "TLE": 275,
+        "MLE": 97,
+        "WA": 1660,
+        "RE": 8
+      },
+      "true_distribution": {
+        "CE": 196,
+        "TLE": 258,
+        "MLE": 40,
+        "WA": 2047,
+        "RE": 131
+      },
+      "prediction_entropy_bits": 1.4498825381514469,
+      "max_entropy_bits": 2.321928094887362,
+      "wa_share_of_predictions": 0.6261788004526594,
+      "per_class": {
+        "CE": {
+          "recall": 1.0,
+          "precision": 0.32078559738134205,
+          "tp": 196,
+          "fp": 415,
+          "fn": 0
+        },
+        "TLE": {
+          "recall": 0.872093023255814,
+          "precision": 0.8181818181818182,
+          "tp": 225,
+          "fp": 50,
+          "fn": 33
+        },
+        "MLE": {
+          "recall": 0.875,
+          "precision": 0.36082474226804123,
+          "tp": 35,
+          "fp": 62,
+          "fn": 5
+        },
+        "WA": {
+          "recall": 0.7753694581280788,
+          "precision": 0.9481927710843373,
+          "tp": 1574,
+          "fp": 86,
+          "fn": 456
+        },
+        "RE": {
+          "recall": 0.015748031496062992,
+          "precision": 0.25,
+          "tp": 2,
+          "fp": 6,
+          "fn": 125
+        }
+      }
+    }
+  },
+  "mechanism": {
+    "wa_share_zero_shot": 0.9502245508982036,
+    "wa_share_three_shot": 0.6261788004526594,
+    "entropy_ratio": 4.207262271551417,
+    "ce_recall_zero_shot": 0.17857142857142858,
+    "ce_recall_three_shot": 1.0,
+    "ce_precision_zero_shot": 0.7,
+    "ce_precision_three_shot": 0.32078559738134205,
+    "accuracy_delta_pp": -1.6430925399295693,
+    "re_recall_zero_shot": 0.0,
+    "re_recall_three_shot": 0.015748031496062992
+  },
+  "confound": "example count (0 vs 3) co-varies with call format (single-item vs batch of 8); direction and size are established, a controlled dose-response is not"
+}

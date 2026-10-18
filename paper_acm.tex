@@ -1031,7 +1031,7 @@ supervised models on the identical test partition.
 \small
 \caption{Model performance on the shared test partition ($n=2{,}672$).
  ML rows use the six fields of Section~\ref{sec:features}; the LLM rows use the
- five fields of the prompt template in the appendix.}
+ five fields of the prompt-template subsection.}
 \label{tab:llm-results}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccc@{}}
@@ -1353,6 +1353,28 @@ LLMs is unchanged (78.29\% $<$ 91.77\%). The batched three-shot results are
 reported throughout; the episode illustrates why protocol details must be
 fixed before LLM comparisons are quoted.
 
+\textit{What the worked examples do.} The two superseded single-item runs and
+the three-shot evaluation share one test partition, which lets the examples'
+effect be measured rather than asserted. Without examples, DeepSeek-V3 answers
+Wrong Answer for 95.0\% of submissions (2,539 of 2,672; prediction entropy
+0.35 bits), recovering only 17.9\% of compilation errors and 1.9\% of
+time-limit verdicts---the platform encoding is present in the features but the
+model never applies it. With three worked examples the same model applies the
+encoding immediately: compilation-error recall rises to 1.00 and the
+prediction distribution spreads to 62.6\% Wrong Answer (entropy 1.45 bits,
+$4.2\times$ the no-example value), at the price of precision on the
+equivalence cell (0.32) and 1.6\,pp of accuracy, because Wrong Answer is
+usually the right answer and the examples buy coverage of the
+execution-defined classes, not calibration of the prior inside the all-zero
+cell. The examples thus select \emph{whether} the encoding is applied; they do
+not supply the calibrated prior that the cell would require. The two runs
+differ in call format as well as in example count (single-item versus eight
+per call), so the comparison fixes the mechanism's direction and size on this
+pair of runs rather than a controlled dose-response; a 15-example arm at fixed
+batching is the natural confirmation and is left to future work.
+(\texttt{experiment\_code/fewshot\_mechanism\_analysis.py} reproduces every
+figure quoted here from the archived prediction files.)
+
 \begin{table}[htbp]
 \centering
 \caption{Per-class behaviour of the two LLMs on the shared test partition
@@ -1509,7 +1531,7 @@ acknowledged.
 
 We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under an identical three-shot
 protocol (Section~\ref{sec:llm-eval}); recent benchmarks~\cite{denny2024prompt}
-confirm substantial LLM family variation, and alternative model families (GPT-4o, Claude-3.5 Sonnet) would increase inference cost substantially---at standard list prices (\$2.50/\$10.00 and \$3.00/\$15.00 per million input/output tokens) the same eight-item protocol runs about $9\times$ and $12\times$ DeepSeek-V3 per 1{,}000 predictions.
+confirm substantial LLM family variation, and alternative model families (GPT-4o, Claude-3.5 Sonnet) would increase inference cost substantially---at standard list prices (\$2.50/\$10.00 and \$3.00/\$15.00 per million input/output tokens) the same eight-item protocol runs about $9\times$ and $12\times$ DeepSeek-V3 per 1{,}000 predictions. The three-example dose is itself a limitation: the worked examples decide whether the platform encoding is applied at all (Section~\ref{sec:llm-analysis}), but the no-example arm differs from the reported arm in call format as well as example count, and a 15-example arm at fixed batching---the natural dose-response confirmation---was not run for lack of an API key at the time of writing.
 
 \textbf{Student-population validation (critical gap):} Our dataset consists of competitive
 programmers (rating 800--3,500), not novice students. CS1/CS2 error distributions differ substantially: in the largest novice corpus, 47.6\% of compilation events fail to compile~\cite{altadmri2015most}, against 7.3\% compilation-error verdicts in ours, and that corpus records compilation events only, so it offers no runtime-verdict figure to set beside our 4.9\% RE share. Before classroom deployment, three validations are needed: (1) CE/TLE/MLE accuracy on student submissions; (2) WA$\leftrightarrow$RE boundary behavior with novice error profiles; (3) whether automated classification translates to improved learning outcomes (randomized controlled trial). We provide a theoretical CS1 projection (Section~\ref{sec:cs1-projection}) and skill-tier analysis (Section~\ref{sec:skill-tier}) as partial evidence, but these do not substitute for direct student-population validation.

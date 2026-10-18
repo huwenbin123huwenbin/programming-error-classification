@@ -24,6 +24,17 @@ three-shot run) is directionally consistent with the manuscript's argument,
 but it needs a re-run on the authoritative split before it can be cited.
 Re-run requires a DeepSeek API key (`DEEPSEEK_API_KEY`).
 
+**Superseded 2026-10-18.** The mechanism the reviews asked for is now
+established from artifact-verified runs instead, by
+`experiment_code/fewshot_mechanism_analysis.py` (output:
+`experiment_results/fewshot_mechanism.json`). On the shared authoritative
+2,672-item partition, the no-example run answers WA for 95.0% of submissions
+(entropy 0.35 bits; CE recall 0.179) while the three-shot run spreads to 62.6%
+WA (entropy 1.45 bits; CE recall 1.000 at precision 0.321): the examples decide
+whether the platform encoding is applied at all. The two arms differ in call
+format as well as example count, so a controlled 15-example dose-response
+remains open; that arm still needs an API key.
+
 ## ds_v4_predictions.json (top level, not moved)
 
 Produced by `run_ds_v4_fair.py` / `run_ds_v4_final.py` against

@@ -172,3 +172,62 @@ version" table). The other two items turned up something bigger.
 - [x] Recompiled after the §5.1 edits; all gates re-run green
   (`verify_references.py` 48/49 with the two known exceptions,
   `audit_llm_numbers.py` PASSED, `verify_mcnemar_alignment.py` PASSED).
+
+---
+
+## Round 11 audit (2026-10-18, 11:45–12:30) — credential hygiene, M5 closure, §5.3 re-verification
+
+Three deferred items were worked; the first was not on any review's list and
+outranks all of them.
+
+- [x] **Credential exposure found and contained (not a review item — found by
+  scanning the run scripts).** `run_deepseek_fewshot.py` carried a hardcoded
+  `sk-`-format API key. The key itself is invalid (authentication fails), but
+  the commit that introduced it (`da417d3`) has been pushed to the **public**
+  remote, and the key is still present in the current remote HEAD. Replaced
+  with a `DEEPSEEK_API_KEY` environment read; README gained a credential-
+  hygiene note. Separately, the git remote URL embeds a **live GitHub PAT**
+  (admin:org / delete_repo / repo / workflow scopes, verified authenticating
+  as the repo owner) in `.git/config`. Not pushed (`.git/config` never is),
+  but it is a plaintext live token on disk: the owner should rotate it at
+  github.com/settings/tokens and move to a credential helper. History purge
+  (`git filter-repo` + force push) was NOT performed — destructive, needs the
+  owner's decision; the invalid API key makes the residual risk low.
+- [x] **Review item M5 closed mechanistically, without an API key.** The
+  archived 64.55% file cannot answer "what do the examples do" (wrong test
+  set, no producing script), and the 15-shot re-run needs a key. But the two
+  runs the manuscript already documents share the authoritative 2,672-item
+  partition (both verified row-for-row by the alignment gate), which is
+  enough to measure the mechanism: with no worked examples DeepSeek-V3
+  answers WA for 95.0% of submissions (entropy 0.35 bits; CE recall 0.179,
+  TLE 0.019) — the platform encoding is in the features but never applied;
+  with three examples CE recall is 1.000 at precision 0.321, predictions
+  spread to 62.6% WA (entropy 1.45 bits, 4.2x), accuracy -1.6 pp. New
+  `experiment_code/fewshot_mechanism_analysis.py` reproduces every figure;
+  the batch-format confound (single-item vs eight per call) is stated in the
+  paper, and the 15-example dose-response is named as the open arm.
+- [x] **§5.3 re-verified end to end** (corpus and test-partition claims):
+  `equivalence_spectrum.py` reproduces 95 mixed groups / 8,653 rows (64.8%),
+  25 low-entropy groups / 6,761 rows (50.6%), 70 high-entropy groups /
+  1,892 rows (14.2%), modal-rule recalls CE/TLE/MLE 1.00, WA 0.95, RE 0.44,
+  6.6% error; a GB re-fit on the authoritative split reproduces the test
+  partition's all-zero cell (315 = 196 CE + 111 WA + 8 RE), all 261 CE
+  predictions inside it, 85 wrong ones (79 WA + 6 RE), CE precision
+  0.674 / recall 0.898 / F1 0.770, and 53-of-94 (45 in cells >= 5)
+  RE->WA errors in WA-sharing cells. Zero discrepancies.
+- [x] **README stale items fixed** (the paper was corrected in round 9 but the
+  README was not): "zero-shot" -> three-shot in the results table; DeepSeek
+  cost $0.10 -> $0.01 and supervised $0.01 -> $0.0002 (measured basis, as in
+  Table 7); repository tree and reproduction section updated with the four
+  scripts added in rounds 10-11.
+- [x] **Table 7 caption dangling reference fixed**: "the prompt template in
+  the appendix" -> "the prompt-template subsection" (the paper has no formal
+  \appendix; the template is a starred subsection at the end).
+- [x] Chinese companion synced (mechanism paragraph in §5.4).
+- [x] Recompiled: 34 pages, 0 errors, 0 overfull, 0 undefined references.
+  All gates green: `verify_references.py` 49/49 (0 need attention),
+  `audit_llm_numbers.py` PASSED (Table 8 chi-squares reproduce),
+  `verify_mcnemar_alignment.py` PASSED (4/4 files).
+- Environment note: the analysis venv (`~/.workbuddy/binaries/python/envs/
+  default`) now carries numpy/pandas/scikit-learn/scipy/pypdf; the machine's
+  system python has no scientific stack.
