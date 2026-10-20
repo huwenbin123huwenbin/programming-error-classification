@@ -7,19 +7,19 @@
   "price_per_vcpu_hour_usd": 0.04,
   "models": {
     "Random Forest": {
-      "median_ms_per_1000": 14.6,
-      "best_ms_per_1000": 12.7,
-      "usd_per_1000": 1.63e-07
+      "median_ms_per_1000": 11.0,
+      "best_ms_per_1000": 10.9,
+      "usd_per_1000": 1.22e-07
     },
     "Gradient Boosting": {
-      "median_ms_per_1000": 4.7,
-      "best_ms_per_1000": 4.6,
-      "usd_per_1000": 5.2e-08
+      "median_ms_per_1000": 4.6,
+      "best_ms_per_1000": 4.4,
+      "usd_per_1000": 5.1e-08
     },
     "Logistic Regression": {
       "median_ms_per_1000": 0.2,
       "best_ms_per_1000": 0.2,
-      "usd_per_1000": 3e-09
+      "usd_per_1000": 2e-09
     }
   }
 }

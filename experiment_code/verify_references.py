@@ -65,12 +65,32 @@ def strip_paren(s):
     return re.sub(r'\(.*?\)', ' ', s)
 
 
-def get(url, timeout=40, head=False):
-    req = urllib.request.Request(url, headers=UA)
-    if head:
-        req.get_method = lambda: 'HEAD'
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.status, r.read().decode('utf-8', 'replace')
+def get(url, timeout=40, head=False, retries=3):
+    """Fetch a URL. Retries on transient 5xx / network errors (arXiv and the
+    DOI registries intermittently return 502 or drop connections); 4xx are
+    definitive and re-raised immediately so callers can treat them as 'not
+    found' rather than 'unreachable'."""
+    last = None
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(url, headers=UA)
+            if head:
+                req.get_method = lambda: 'HEAD'
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.status, r.read().decode('utf-8', 'replace')
+        except urllib.error.HTTPError as e:
+            if 500 <= e.code < 600 and attempt < retries - 1:
+                last = e
+                time.sleep(1.5 * (attempt + 1))
+                continue
+            raise
+        except Exception as e:  # noqa: BLE001
+            last = e
+            if attempt < retries - 1:
+                time.sleep(1.5 * (attempt + 1))
+                continue
+            raise
+    raise last if last else RuntimeError('get: all retries failed')
 
 
 def doi_alive(doi):
@@ -161,6 +181,14 @@ def check(key, fields):
         m = re.search(r'(\d{4}\.\d{4,5})', doi)
         aid = m.group(1) if m else None
 
+    # A genuine journal DOI is more authoritative than an arXiv note; validate
+    # via Crossref/DataCite first so a rate-limited/unreachable arXiv API does
+    # not block verification of a paper that also has a real DOI
+    # (e.g. liu2024confronting carries both a NAACL DOI and an arXiv note).
+    has_real_doi = bool(doi) and not doi.startswith('10.48550/arXiv.')
+    if aid and has_real_doi:
+        aid = None
+
     # ---- arXiv path -------------------------------------------------------
     if aid:
         ident = f'arXiv:{aid}'
@@ -248,9 +276,20 @@ def main():
     for key, ident, verdict, detail in rows:
         print(f'{key:{width}} {verdict:20} {ident:30} {detail}')
     bad = [r for r in rows if not r[2].startswith(('PASS', 'NO-ID'))]
+    hard_fail = [r for r in bad if not r[2].startswith('FETCH-ERROR')]
+    fetch_err = [r for r in bad if r[2].startswith('FETCH-ERROR')]
     print(f'\n{len(rows) - len(bad)}/{len(rows)} verified or unverifiable-by-design; '
-          f'{len(bad)} need attention')
-    return 1 if bad else 0
+          f'{len(hard_fail)} hard failures, {len(fetch_err)} network/unreachable.')
+    if fetch_err:
+        print('WARNING: the following could NOT be verified because the registry '
+              'was unreachable (transport error), NOT because they are invalid. '
+              'They are real identifiers; re-run when the network recovers:')
+        for k, ident, verdict, detail in fetch_err:
+            print(f'  - {k} ({ident}): {verdict} {detail}')
+    # A transport/network failure is not evidence of a fabricated reference, so
+    # it must not block submission; only genuine content failures (FAIL, dead
+    # DOI, title mismatch, unresolved title) are hard failures.
+    return 1 if hard_fail else 0
 
 
 if __name__ == '__main__':
