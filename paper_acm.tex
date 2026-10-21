@@ -723,8 +723,8 @@ McNemar's test~\cite{mcnemar1947note} ($\alpha = 0.05$), a non-parametric test
 for paired nominal data appropriate for comparing classifiers on the same test
 set. Feature ablation was conducted by removing each field in turn,
 retraining GB on the remaining five, and measuring the accuracy drop on the same
-test partition. Six ablations were run; the Bonferroni threshold for this family
-is $\alpha' = 0.05/6 \approx 0.008$, and we report uncorrected $p$-values while
+test partition. Seven comparisons were run (six field removals plus one augmentation); the Bonferroni threshold for this family
+is $\alpha' = 0.05/7 \approx 0.007$, and we report uncorrected $p$-values while
 noting which survive it. Ablation is exploratory; the primary
 multiple-comparison correction is applied to the ten pairwise model comparisons
 in Table~\ref{tab:mcnemar} (Bonferroni $\alpha' = 0.005$).
@@ -989,7 +989,7 @@ the remaining five.
 \centering
 \caption{Ablation: accuracy after removing each field and retraining
  (Gradient Boosting, test set $n=2{,}672$). Six ablated comparisons plus one
- augmentation; Bonferroni threshold $\alpha'=0.05/6\approx0.008$.}
+ Seven comparisons (six field removals plus one augmentation); Bonferroni threshold $\alpha'=0.05/7\approx0.007$.}
 \label{tab:ablation}
 \begin{tabular}{@{}lccc@{}}
 \toprule
@@ -1001,7 +1001,7 @@ None (full model) & 91.77 & --- & --- \\
 \texttt{language\_encoded} removed & 91.13 & $-$0.64 & 0.031 \\
 \texttt{passed\_test\_count} removed & 91.54 & $-$0.22 & n.s. \\
 \texttt{problem\_rating} removed & 91.62 & $-$0.15 & n.s. \\
-\texttt{problem\_type} removed & 91.69 & $-$0.07 & n.s. \\
+\texttt{problem\_slot} removed & 91.69 & $-$0.07 & n.s. \\
 \midrule
 \texttt{user\_wa\_rate} added$^{\dagger}$ & 92.44 & $+$0.67 & 0.039 \\
 \bottomrule

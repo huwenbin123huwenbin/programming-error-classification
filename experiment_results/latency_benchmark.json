@@ -13,7 +13,7 @@
     },
     "Gradient Boosting": {
       "median_ms_per_1000": 4.6,
-      "best_ms_per_1000": 4.4,
+      "best_ms_per_1000": 4.5,
       "usd_per_1000": 5.1e-08
     },
     "Logistic Regression": {
