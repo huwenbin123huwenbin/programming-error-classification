@@ -708,7 +708,7 @@ training samples and 2,672 test samples, preserving class proportions across
 both sets.
 
 For traditional ML models, five-fold stratified cross-validation was performed
-on the training set (10,688 training per fold) to assess
+on the 10,688-sample training set to assess
 stability, and final test-set accuracy was reported. For LLM-based methods, the test set of 2,672 samples was classified directly
 using three-shot prompting: no fine-tuning, but three worked examples (one each for CE, TLE and MLE) prepended to every request, with eight submissions classified per call.
 Unlike ML models, LLMs do not have a training phase in our protocol; we therefore
