@@ -1199,7 +1199,11 @@ submitter-disjoint partition (GroupShuffleSplit over \texttt{user\_handle},
 zero overlap, $n_{\text{train}}=10{,}900$, $n_{\text{test}}=2{,}460$).
 Gradient Boosting scores 93.13\% (CV 92.15\%), Random Forest 91.99\% and
 Logistic Regression 87.15\%: no degradation relative to the random split, and
-no rank change. The per-class structure is preserved---CE 0.788, TLE 1.000,
+no rank change. The two partitions draw test sets of different size and class
+composition (2,460 vs.\ 2,672 submissions), so this is not a like-for-like drop;
+the claim is the preservation of rank order and per-class structure, and RE's
+further fall to 0.256 confirms the estimate reflects the boundary rather than
+submitter memorization. The per-class structure is preserved---CE 0.788, TLE 1.000,
 MLE 0.988, WA 0.957---with RE falling further to 0.256, as expected when the
 boundary is exercised by unfamiliar submitters. Because the final model carries
 no submitter-level aggregate, the cold-start setting requires no re-engineering.
@@ -1755,8 +1759,8 @@ reference number identifies the determination only.
 
 This study asks how much verdict information a submission log carries. The
 answer is not a single accuracy figure but a decomposition. Of the 13,360
-submissions, 18.5\% are decided by measurements the platform already
-publishes: Time Limit Exceeded (F1 0.99) and Memory Limit Exceeded (0.95) are
+submissions, 18.5\% fall in the three platform-measured verdict classes---Time
+Limit Exceeded (F1 0.99) and Memory Limit Exceeded (0.95) are fully
 recoverable because the judge's own thresholds define them, while Compilation
 Error (0.77) is recoverable only up to the point where its zero-millisecond
 signature coincides with an early crash or a first-test wrong answer. That
