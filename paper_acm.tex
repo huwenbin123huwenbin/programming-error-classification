@@ -167,7 +167,7 @@ Our contributions are:
  Dataset and code: \url{https://github.com/huwenbin123huwenbin/programming-error-classification}.
 \end{enumerate}
 
-\paragraph{Student-population disclaimer.} Our dataset comes from competitive programmers (Codeforces rating 800--3,500), a population with substantially different error profiles from CS1/CS2 students. Prior work (Altadmri \& Brown, 2015) reports that 47.6\% of novice compilation events fail to compile (17.7M of 37.2M) against 7.3\% compilation-error verdicts in our dataset, and novices rarely produce TLE or MLE. The 91.8\% accuracy figure reflects competitive-programming error distributions; cross-platform and student-population validation are necessary before drawing conclusions about learning impact. We address this in Section~\ref{sec:skill-tier} (skill-tier analysis) and Section~\ref{sec:threats} (external validity). \textit{Feature-availability caveat:} the six fields we use are computable at first contact with a submission, so the pipeline carries no cold-start penalty; an earlier version of this work included a submitter-history aggregate, which we removed after its gain proved unreliable---nominal at best, and exactly zero once submitters are disjoint (Section~\ref{sec:ablation}).
+\paragraph{Student-population disclaimer.} Our dataset comes from competitive programmers (Codeforces rating 800--3,500), a population with substantially different error profiles from CS1/CS2 students. Prior work (Altadmri \& Brown, 2015) reports that 47.6\% of novice compilation events fail to compile (17.7M of 37.2M) against 7.3\% compilation-error verdicts in our dataset, and novices rarely produce TLE or MLE. The 91.8\% accuracy figure reflects competitive-programming error distributions; cross-platform and student-population validation are necessary before drawing conclusions about learning impact. We scope these limits in Section~\ref{sec:skill-tier} (an internal difficulty-tier analysis) and Section~\ref{sec:threats} (external validity), where the student-population gap remains open. \textit{Feature-availability caveat:} the six fields we use are computable at first contact with a submission, so the pipeline carries no cold-start penalty; an earlier version of this work included a submitter-history aggregate, which we removed after its gain proved unreliable---nominal at best, and exactly zero once submitters are disjoint (Section~\ref{sec:ablation}).
 
 
 % ============================================================
@@ -280,7 +280,7 @@ Jadud~\cite{jadud2006methods} introduced the error quotient, a measure of how
 efficiently a student clears syntax errors, and reported that it correlates
 significantly with conventional indicators of academic progress. The Blackbox
 project~\cite{brown2014blackbox} scaled the approach to a perpetual worldwide
-collection from BlueJ users---over one hundred thousand opted in within its
+collection from BlueJ users---eventually enlisting more than one hundred thousand within its
 first year---and released the data for re-use, establishing behavioural metadata
 (compilation sequences, time-on-task, submission frequency) as a rich and
 continuously available signal for educational data mining.
