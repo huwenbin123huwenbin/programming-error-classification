@@ -230,8 +230,10 @@ metadata only---no source-code access, no code-feature extraction
 pipeline---and reaches 91.8\% accuracy on a five-class verdict task, a
 practical screening layer for platform-scale deployment. Allamanis et al.~\cite{allamanis2018learning} demonstrated that
 graph-based representations of program structure capture semantically
-meaningful features for code-related prediction tasks, motivating the
-incorporation of such learned representations into verdict classification.
+meaningful features for code-related prediction tasks; such representations
+require source-code access, whereas our metadata-only path asks what a
+submission log conveys without it---a complementary data-access layer rather
+than a competing representation.
 
 Alnahhas and Mourtada~\cite{alnahhas2020predicting} predicted the
 performance of competitive programming contestants using account-level
@@ -260,7 +262,7 @@ unattended.
 Feng et al.~\cite{feng2020codebert} showed that CodeBERT achieves state-of-the-art performance on natural-language code search and code documentation generation, but is evaluated on source-code inputs; its effectiveness on submission metadata alone remains unclear. Evaluations of
 LLM-generated feedback caution that such feedback can be flawed or
 misleading---and therefore detrimental to learning---and that the automated
-judges used to score it can be systematically over-optimistic~\cite{koutcheme2024opensource}---directly relevant to our finding that RE remains the most challenging category, where \texttt{Qwen2.5:3B} also struggled.
+judges used to score it can be systematically over-optimistic~\cite{koutcheme2024opensource}; a 2025 evaluation of four LLMs on 45 student solutions found that 37\% of feedback hints contained mistakes~\cite{silva2025assessing}---directly relevant to our finding that RE remains the most challenging category, where \texttt{Qwen2.5:3B} also struggled.
 
 Recent work has examined how programmers and novices interact with LLM code
 generators~\cite{barke2023grounded,becker2023programming,finnie2022robots}, and how
