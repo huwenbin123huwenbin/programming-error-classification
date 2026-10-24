@@ -1039,7 +1039,7 @@ training it rests on a median of three earlier submissions, and 957 of the
 2,672 test rows---new submitters, and submitters whose only earlier
 submissions lie on the test side---collapse to the training prior. We exclude
 the field for the reason that decides it: on the submitter-disjoint split
-every one of the 2,460 test submitters is new, the aggregate is constant on
+every one of the 2,460 test submissions comes from a submitter unseen in training, so the aggregate is constant on
 the test side, and accuracy holds at 93.13\% (34 of 2,460 predictions flip,
 in balance). A field that pays only where history exists cannot serve the
 cold-start population the platform actually presents; Section~\ref{sec:robust}
@@ -1075,7 +1075,7 @@ Model & Test Acc & 95\% CI & Macro F1 & Cost/1k$^{\dagger}$ \\
 \midrule
 Random Forest & \textbf{91.80\%} & [90.8, 92.8] & 0.798 & $<\$10^{-6}$ \\
 Gradient Boosting & 91.77\% & [90.6, 92.8] & \textbf{0.799} & $<\$10^{-6}$ \\
-Gradient Boosting, five fields$^{*}$ & 91.69\% & [90.6, 92.7] & 0.797 & $<\$10^{-6}$ \\
+Gradient Boosting, five fields$^{*}$ & 91.69\% & [90.6, 92.7] & 0.794 & $<\$10^{-6}$ \\
 Logistic Regression & 85.63\% & [84.2, 86.9] & 0.494 & $<\$10^{-6}$ \\
 \midrule
 \multicolumn{5}{l}{\textit{LLMs, three-shot on the five prompt fields (eight submissions per call)}} \\
@@ -1493,7 +1493,7 @@ Second, the cost gap between traditional ML and frontier API models---four to
 six orders of magnitude per prediction at list prices---has practical
 significance for resource-constrained educational contexts. A semester-long
 deployment for 500 students generating approximately 500,000 submissions would
-cost approximately \$0.06 in Random Forest inference (about 11\,ms per thousand on a
+cost approximately \$0.0001 (well under one cent) in Random Forest inference (about 17\,ms per thousand on a
 single core) against roughly \$5 in DeepSeek-V3 API calls and \$47 at GPT-4o
 list prices; local Ollama inference has near-zero marginal cost (no API
 fees, only electricity) but requires upfront hardware investment, so the
