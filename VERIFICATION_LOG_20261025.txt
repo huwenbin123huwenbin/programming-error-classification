@@ -1,0 +1,172 @@
+======================================================================
+== Table 1 / footnote / Figure 2  (dataset_descriptives.py)
+======================================================================
+  [PASS] lang_cpp23_pct             manuscript     41.1  artifact 41.06
+  [PASS] lang_cpp17_pct             manuscript     24.1  artifact 24.15
+  [PASS] lang_cpp20_pct             manuscript     19.6  artifact 19.61
+  [PASS] lang_python_pct            manuscript      6.2  artifact 6.213
+  [PASS] lang_java_pct              manuscript      3.3  artifact 3.256
+  [PASS] max_submitter_share_test_pct manuscript      1.1  artifact 1.085
+====================================================================
+DATASET DESCRIPTIVES PASSED
+====================================================================
+======================================================================
+== Difficulty tiers (§5.5)  (difficulty_tier_analysis.py)
+======================================================================
+  [PASS] novice        mle_share      manuscript     == 0.2  artifact 0.2049
+  [PASS] advanced      tle_share      manuscript    == 17.5  artifact 17.51
+  [PASS] advanced      mle_share      manuscript     == 5.5  artifact 5.485
+  [PASS] novice        re_share       manuscript     == 4.1  artifact 4.098
+  [PASS] advanced      re_share       manuscript    == 10.3  artifact 10.34
+  [PASS] intermediate  re_count       manuscript      == 22  artifact 22
+====================================================================
+DIFFICULTY TIERS PASSED
+====================================================================
+======================================================================
+== Clustering diagnostic (§5.1)  (clustering_diagnostic.py)
+======================================================================
+  [PASS] icc_max        manuscript     0.53  artifact 0.5255
+  [PASS] icc_mean       manuscript    0.483  artifact 0.4828
+  [PASS] deff           manuscript     2.13  artifact 2.128
+  [PASS] n_eff          manuscript     6300  artifact 6279
+  [PASS] modal_share    manuscript     0.92  artifact 0.9202
+  [PASS] entropy_ratio  manuscript    0.181  artifact 0.1808
+============================================================
+CLUSTERING PASSED
+============================================================
+======================================================================
+== Learning curve (§4.4)  (learning_curve.py)
+======================================================================
+  [PASS] n=   800  table 89.80%  artifact 89.78%
+  [PASS] n=  1600  table 90.50%  artifact 90.55%
+  [PASS] n=  2800  table 91.10%  artifact 91.12%
+  [PASS] n=  4200  table 91.50%  artifact 91.47%
+  [PASS] n=  5600  table 91.80%  artifact 91.79%
+  [PASS] n=  8400  table 91.80%  artifact 91.77%
+  [PASS] n= 10688  table 91.77%  artifact 91.77%
+  [PASS] lead over DeepSeek-V3 at n=400 >= 11.0pp: artifact 11.07pp
+LEARNING CURVE OK
+======================================================================
+== Few-shot mechanism (§5)  (fewshot_mechanism_analysis.py)
+======================================================================
+
+  == mechanism ==
+     WA share of predictions: 95.0% -> 62.6%
+     prediction entropy x4.21
+     CE recall 0.179 -> 1.000; CE precision 0.700 -> 0.321
+     RE recall 0.000 -> 0.016
+     accuracy (valid basis): -1.64 pp
+
+  wrote /Users/mac/Desktop/SCI1/06_论文定稿/experiment_results/fewshot_mechanism.json
+======================================================================
+== LLM numbers audit  (audit_llm_numbers.py)
+======================================================================
+  Logistic Regression  vs DeepSeek-V3 : chi2=   92.37  b= 480 c= 224 p=4.96e-22
+  Gradient Boosting    vs Qwen2.5:3B   : chi2= 1531.86  b=1633 c=  34 p=0.00e+00
+  Random Forest        vs Qwen2.5:3B   : chi2= 1521.91  b=1640 c=  40 p=0.00e+00
+  Logistic Regression  vs Qwen2.5:3B   : chi2= 1263.89  b=1531 c=  96 p=0.00e+00
+  DeepSeek-V3          vs Qwen2.5:3B   : chi2= 1052.07  b=1249 c=  70 p=1.25e-279
+
+====================================================================
+AUDIT PASSED
+====================================================================
+======================================================================
+== McNemar alignment gate  (verify_mcnemar_alignment.py)
+======================================================================
+LLM file alignment against the authoritative test partition
+  partition: n=2672 classes=['CE', 'MLE', 'RE', 'TLE', 'WA']
+  [PASS] deepseek_fair_rerun_predictions.json (idx-sorted): n=2672 verdict_diff=0 rating_diff=0 language_diff=0
+  [PASS] qwen25_fair_rerun_predictions.json (idx-sorted): n=2672 verdict_diff=0 rating_diff=0 language_diff=0
+  [PASS] deepseek_zero-shot_full_20260620_164311.json (file-order): n=2672 verdict_diff=0 rating_diff=0 language_diff=0
+  [PASS] qwen25_3b_zeroshot_full_20260620_181736.json (file-order): n=2672 verdict_diff=0 rating_diff=0 language_diff=0
+====================================================================
+ALIGNMENT PASSED
+====================================================================
+======================================================================
+== Bibliography registry  (verify_references.py)
+======================================================================
+monperrus2018automatic    PASS                 10.1145/3105906                crossref year 2019 vs bib 2018
+prather2024instructors    PASS                 10.1145/3649405.3659534        crossref: 'how instructors incorporate generative ai into tea'
+koutcheme2024opensource   PASS                 10.1145/3649217.3653612        crossref: 'open source language models can provide feedback e'
+silva2025assessing        PASS (by title)      10.48550/arxiv.2503.14630      openalex: 'assessing large language models for automated feed'
+leinonen2023llm           PASS                 10.1145/3545945.3569770        crossref: 'using large language models to enhance programming'
+petersen2015exploration   PASS                 10.1145/2828959.2828966        crossref: 'an exploration of error quotient in multiple conte'
+liu2024confronting        PASS                 10.18653/v1/2024.naacl-long.198 crossref: 'confronting llms with traditional ml rethinking th'
+
+50/50 verified or unverifiable-by-design; 0 hard failures, 0 network/unreachable.
+======================================================================
+== Latency benchmark (info only)  (latency_benchmark.py)
+======================================================================
+Inference latency on Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz (single core)
+  Random Forest             19.0 ms / 1,000 (median)   $2.11e-07 / 1,000
+  Gradient Boosting         10.2 ms / 1,000 (median)   $1.13e-07 / 1,000
+  Logistic Regression        0.2 ms / 1,000 (median)   $2.36e-09 / 1,000
+
+wrote /Users/mac/Desktop/SCI1/06_论文定稿/experiment_results/latency_benchmark.json
+======================================================================
+== Ablation study (Table 6)  (ablation_study.py)
+======================================================================
+  [PASS] -passed_test_count                     manuscript 91.54%/-0.22pp/ns     artifact 91.54%/-0.22pp/ns
+  [PASS] -problem_rating                        manuscript 91.62%/-0.15pp/ns     artifact 91.62%/-0.15pp/ns
+  [PASS] -problem_type                          manuscript 91.69%/-0.07pp/ns     artifact 91.69%/-0.07pp/ns
+  [PASS] +user_wa_rate (earlier-only)           manuscript 92.44%/+0.67pp/p=0.039 (n.s. after correction)  artifact 92.44%/+0.67pp/p=0.039
+  [PASS] leaky variant gain                     manuscript +3.7pp  artifact +3.67pp
+  [PASS] median backing submissions             manuscript 3  artifact 3.0
+  [PASS] test rows taking the prior             manuscript 957  artifact 957
+  [PASS] submitter-disjoint unchanged           manuscript 93.13%, test side constant  artifact 93.13%, constant=True, 34/2460 flip
+ABLATION OK
+======================================================================
+== Supervised tables / narrative  (verify_supervised_tables.py)
+======================================================================
+  [PASS] B Logistic Regression test_accuracy          manuscript 87.15  artifact 87.15
+  [PASS] B split sizes / zero overlap                 artifact 10900/2460, overlap 0
+
+Corpus homogeneity (Section 5.4):
+  [PASS] n_users                                      manuscript 4005  artifact 4005
+  [PASS] median_subs                                  manuscript 2  artifact 2
+  [PASS] mean_subs                                    manuscript 3.34  artifact 3.336
+  [PASS] max_subs                                     manuscript 134  artifact 134
+SUPERVISED TABLES OK
+======================================================================
+== Figures vs artifacts  (regenerate_figures_v3.py --check)
+======================================================================
+PASS fig_accuracy_chart.png
+PASS fig_class_f1_chart.png
+PASS fig_feature_importance_chart.png
+PASS fig_roc_curves.pdf
+PASS fig_pr_curves.pdf
+PASS figures/correlation_heatmap.pdf
+PASS figures/error_by_difficulty.pdf
+FIGURE CHECK: PASS
+======================================================================
+== Section 5.3 corpus claims (equivalence_spectrum.py artifact)
+======================================================================
+Section 5.3 corpus claims vs equivalence_spectrum.json:
+  [PASS] n_mixed_groups                             manuscript       95  artifact 95
+  [PASS] rows_in_mixed_groups                       manuscript     8653  artifact 8653
+  [PASS] share_in_mixed_groups                      manuscript    0.648  artifact 0.6477
+  [PASS] high_entropy_groups/n                      manuscript       70  artifact 70
+  [PASS] high_entropy_groups/rows                   manuscript     1892  artifact 1892
+  [PASS] low_entropy_groups/n                       manuscript       25  artifact 25
+  [PASS] low_entropy_groups/rows                    manuscript     6761  artifact 6761
+  [PASS] modal_rule_signature_only/error_rate       manuscript    0.066  artifact 0.0662
+  [PASS] collision/largest_group_signature/size     manuscript     1738  artifact 1738
+======================================================================
+SUMMARY
+======================================================================
+  [PASS] Table 1 / footnote / Figure 2
+  [PASS] Difficulty tiers (§5.5)
+  [PASS] Clustering diagnostic (§5.1)
+  [PASS] Learning curve (§4.4)
+  [PASS] Few-shot mechanism (§5)
+  [PASS] LLM numbers audit
+  [PASS] McNemar alignment gate
+  [PASS] Bibliography registry
+  [PASS] Latency benchmark (info only)
+  [PASS] Ablation study (Table 6)
+  [PASS] Supervised tables / narrative
+  [PASS] Figures vs artifacts
+  [PASS] Section 5.3 corpus claims
+======================================================================
+ALL PAPER NUMBERS VERIFIED
+======================================================================
