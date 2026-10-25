@@ -1586,7 +1586,7 @@ acknowledged.
 
 We tested two LLM configurations (DeepSeek-V3 and \texttt{Qwen2.5:3B}) under an identical three-shot
 protocol (Section~\ref{sec:llm-eval}); recent benchmarks~\cite{denny2024prompt}
-confirm substantial LLM family variation, and alternative model families (GPT-4o, Claude-3.5 Sonnet) would increase inference cost substantially---at standard list prices (\$2.50/\$10.00 and \$3.00/\$15.00 per million input/output tokens) the same eight-item protocol runs about $9\times$ and $12\times$ DeepSeek-V3 per 1{,}000 predictions. The three-example dose is itself a limitation: the worked examples decide whether the platform encoding is applied at all (Section~\ref{sec:llm-analysis}), but the no-example arm differs from the reported arm in call format as well as example count, and a 15-example arm at fixed batching---the natural dose-response confirmation---was not run for lack of an API key at the time of writing.
+confirm substantial LLM family variation, and alternative model families (GPT-4o, Claude-3.5 Sonnet) would increase inference cost substantially---at standard list prices (\$2.50/\$10.00 and \$3.00/\$15.00 per million input/output tokens) the same eight-item protocol runs about $9\times$ and $12\times$ DeepSeek-V3 per 1{,}000 predictions. The three-example dose is itself a limitation: the worked examples decide whether the platform encoding is applied at all (Section~\ref{sec:llm-analysis}), but the no-example arm differs from the reported arm in call format as well as example count, and a 15-example arm at fixed batching---the natural dose-response confirmation---was not run for lack of additional API budget at the time of writing.
 
 \textbf{Student-population validation (critical gap):} Our dataset consists of competitive
 programmers (rating 800--3,500), not novice students. CS1/CS2 error distributions differ substantially: in the largest novice corpus, 47.6\% of compilation events fail to compile~\cite{altadmri2015most}, against 7.3\% compilation-error verdicts in ours, and that corpus records compilation events only, so it offers no runtime-verdict figure to set beside our 4.9\% RE share. Before classroom deployment, three validations are needed: (1) CE/TLE/MLE accuracy on student submissions; (2) WA$\leftrightarrow$RE boundary behavior with novice error profiles; (3) whether automated classification translates to improved learning outcomes (randomized controlled trial). We provide a theoretical CS1 projection (Section~\ref{sec:cs1-projection}) and skill-tier analysis (Section~\ref{sec:skill-tier}) as partial evidence, but these do not substitute for direct student-population validation.
@@ -1650,7 +1650,7 @@ under-resourced institutions---large sections, fewer teaching assistants, limite
 office-hour access---rely disproportionately on automated feedback because they
 have fewer human buffers to catch classification errors. A false positive that a
 well-resourced peer would immediately overturn in a staffed lab may persist
-uncorrected for a under-resourced student across an entire assignment cycle.
+uncorrected for an under-resourced student across an entire assignment cycle.
 Third, the platform-encoding boundary (Section~3.2) means models learn
 platform-specific submission thresholds; transferring a classifier trained on one
 institution's population to a demographically or pedagogically distinct
@@ -1681,7 +1681,7 @@ drop but non-zero residual accuracy, confirming complementary signals.
 
 \textbf{External Validity:} Our data comes from competitive programmers
 (median Codeforces rating below 1,400), and student error patterns differ
-(more CE, fewer complex RE). We evaluate cross-population generalizability via a
+(more CE, fewer complex RE). We evaluate within-dataset, difficulty-tier generalizability via a
 skill-tier analysis (Section~\ref{sec:skill-tier}); the full gap analysis and
 validation agenda appear in Section~\ref{sec:limitations}.
 
