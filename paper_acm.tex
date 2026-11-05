@@ -136,7 +136,7 @@ we therefore do not treat that ranking as our contribution. A ranking answers
 which model wins on one dataset; it does not tell an instructor which feedback can
 be automated and which cannot. What we contribute is the decomposition itself:
 where the boundary falls, what sets it, how much of the headline accuracy it
-accounts for (18.5\% of submissions), and what the residue implies for the
+accounts for (18.5\% of submissions, the three platform-encoded verdict classes CE, TLE, and MLE), and what the residue implies for the
 design of automated feedback.
 
 Our contributions are:
@@ -158,7 +158,7 @@ Our contributions are:
  submitter-disjoint replication.
  \item \textbf{Deployment guidance with a leakage-free protocol.} Execution time
  and memory dominate (a 7.3\,pp drop when time is removed, and 89.0\% of Gini
- importance between the two fields, 81.5\% of it from time alone), a
+ importance between the two fields, 81.5\% of total Gini importance from time alone), a
  submitter-history aggregate adds no gain that survives correction and is
  exactly zero when submitters are disjoint, and supervised ensembles lead the
  strongest prompted LLM by
@@ -1289,8 +1289,7 @@ Execution time is the dominant predictor: removing it costs 7.3 percentage
 points, four times the effect of the next field, and it carries 81.5\% of the
 Gini importance. Peak memory contributes 1.8 percentage points and 7.5\% of
 importance. Together the two fields the judge writes while running the program
-account for 89.0\% of the model's decisions and for 11.1\% of the corpus being
-recoverable at all. This is the platform-encoding account stated numerically:
+account for 89.0\% of the model's decisions. The remaining 11.1\% of the corpus --- the Time Limit Exceeded and Memory Limit Exceeded verdicts, whose outcomes the judge's thresholds define --- are recoverable deterministically from the two execution fields alone. This is the platform-encoding account stated numerically:
 what the model knows about a submission is almost entirely what the judge
 measured about it.
 
@@ -1492,7 +1491,7 @@ due to privacy policies (e.g., proctored exams, IRB constraints) can
 still deploy effective verdict classification systems.
 
 Second, the cost gap between traditional ML and frontier API models, four to
-six orders of magnitude per prediction at list prices, has practical
+five orders of magnitude per prediction at list prices, has practical
 significance for resource-constrained educational contexts. A semester-long
 deployment for 500 students generating approximately 500,000 submissions would
 cost approximately \$0.0001 (well under one cent) in Random Forest inference (about 17\,ms per thousand on a
