@@ -812,7 +812,7 @@ structure, not as a competitive method.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.78\textwidth]{fig_accuracy_chart.png}
+\includegraphics[width=0.78\textwidth]{fig_accuracy_chart.pdf}
 \Description{Bar chart of test accuracy (invalid LLM outputs counted as errors): Gradient Boosting 91.8\%, Random Forest 91.8\%, Logistic Regression 85.6\%, DeepSeek-V3 76.0\%, Qwen2.5:3B 31.9\%, against a majority-class reference of 76.6\%.}
 \caption{Test-set accuracy across five models ($n=2{,}672$; LLM bars count
  invalid outputs as errors). The dotted line
@@ -932,7 +932,7 @@ class of Section~5.3; all 261 CE predictions carry the all-zero signature.}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.62\textwidth]{fig_class_f1_chart.png}
+\includegraphics[width=0.62\textwidth]{fig_class_f1_chart.pdf}
 \Description{Class-wise F1 scores for Gradient Boosting: TLE 0.99, MLE 0.95, WA 0.95, CE 0.77, RE 0.33. The dashed line marks the CE limit of 0.77 imposed by the all-zero signature.}
 \caption{Per-class F1 (Gradient Boosting, $n=2{,}672$). The dashed line is the
  F1 attainable on CE by assigning the entire all-zero signature cell to CE
@@ -963,7 +963,7 @@ Figure~\ref{fig:importance} reports Gini importance for the six fields.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.68\textwidth]{fig_feature_importance_chart.png}
+\includegraphics[width=0.68\textwidth]{fig_feature_importance_chart.pdf}
 \Description{Bar chart of Gini importance: execution time 81.5\%, peak memory 7.5\%, problem rating 3.5\%, language 3.5\%, tests passed 3.2\%, problem slot 0.9\%.}
 \caption{Gini importance, Gradient Boosting (six fields). Execution time alone
  accounts for 81.5\% of the impurity reduction; the two execution-derived
