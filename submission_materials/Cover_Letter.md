@@ -2,7 +2,7 @@
 
 **To:** Editor-in-Chief, ACM Transactions on Computing Education
 **From:** Wenbin Hu, School of Computer Science, Xijing University
-**Date:** October 17, 2026
+**Date:** November 9, 2026
 **Subject:** Manuscript Submission — "Where the Metadata Ends: Observational Equivalence and the Limits of Verdict Classification from Submission Logs"
 
 ---
@@ -25,7 +25,7 @@ This reframes the practical question from *which classifier is better* to *what 
 
 2. **A systematic comparison under a shared protocol.** Three supervised models and two LLM configurations on one test partition and a common feature vocabulary, with five-fold cross-validation, per-field ablation, ten Bonferroni-corrected McNemar tests, and a submitter-disjoint replication. We are explicit that supervised ML beating a prompted LLM is a replication of known behaviour (Liu et al., NAACL 2024), not a discovery; what we analyse is the structure of the gap.
 
-3. **Deployment guidance with a leakage-free protocol.** Execution time carries 81.5% of Gini importance and costs 7.3 percentage points when removed; a submitter-history aggregate — the standard first feature in this literature — *loses* 2.1 points once computed without look-ahead, and is excluded. The final model uses six fields, all available at first contact with a submission, so it carries no cold-start penalty.
+3. **Deployment guidance with a leakage-free protocol.** Execution time carries 81.5% of Gini importance and costs 7.3 percentage points when removed. A submitter-history aggregate — the standard first feature in this literature — appears to add 3.7 percentage points only because each row's own label leaks into its own predictor; computed without look-ahead it adds a nominal 0.67 points that does not survive correction for multiple comparisons, and nothing at all for new submitters. It is excluded. The final model uses six fields, all available at first contact with a submission, so it carries no cold-start penalty.
 
 4. **Dataset, pipeline and figures released**, with a single script that regenerates every number in the paper: https://github.com/huwenbin123huwenbin/programming-error-classification
 
@@ -33,10 +33,10 @@ This reframes the practical question from *which classifier is better* to *what 
 
 | Approach | Test accuracy | 95% CI | Macro F1 | Cost / 1K |
 |---|---|---|---|---|
-| Random Forest (6 fields) | 91.80% | [90.7, 92.8] | 0.798 | $0.0002 |
-| Gradient Boosting (6 fields) | 91.77% | [90.7, 92.8] | 0.799 | $0.0002 |
-| Gradient Boosting (5 fields, LLM-comparable) | 91.69% | [90.6, 92.7] | 0.797 | $0.0002 |
-| Logistic Regression | 85.63% | [84.2, 86.9] | 0.494 | $0.0002 |
+| Random Forest (6 fields) | 91.80% | [90.8, 92.8] | 0.798 | `<$10^-6` |
+| Gradient Boosting (6 fields) | 91.77% | [90.6, 92.8] | 0.799 | `<$10^-6` |
+| Gradient Boosting (5 fields, LLM-comparable) | 91.69% | [90.6, 92.7] | 0.794 | `<$10^-6` |
+| Logistic Regression | 85.63% | [84.2, 86.9] | 0.494 | `<$10^-6` |
 | DeepSeek-V3 (three-shot), valid outputs | 76.65% | [75.0, 78.2] | 0.545 | $0.01 |
 | Qwen2.5:3B (three-shot), valid outputs | 35.50% | [33.6, 37.4] | 0.231 | $0.00 |
 
@@ -50,11 +50,11 @@ The majority-class rule scores 76.61%, so DeepSeek-V3's headline accuracy is ind
 
 ## Submission materials
 
-- Manuscript: 32 pages, 10 tables, 6 figures
+- Manuscript: 35 pages, 10 tables, 6 figures
 - Highlights: 5 items
 - Supplementary: per-class precision/recall/F1 for every model, balanced accuracy, confusion matrices, all pairwise tests with p-values, learning curves, and the full prompt template
 
-We confirm this manuscript is original, has not been published elsewhere, and is not under review at any other venue. All authors have approved the submitted version. The research uses only publicly available data; the institutional review determined it exempt (reference 2024-AI-003), and no approval number is claimed because an exemption determination does not issue one.
+We confirm this manuscript is original, has not been published elsewhere, and is not under review at any other venue. All authors have approved the submitted version. The research uses only publicly available data and involves no human subjects; it is exempt from IRB review in line with standard practice for secondary analysis of publicly available data, and no approval number is claimed.
 
 Thank you for considering our submission.
 

@@ -54,7 +54,7 @@
 ## ⏳ 待用户处理（非代码）
 
 1. **（安全，最高优先）** 轮换 qclaw 明文暴露的密钥：DeepSeek 控制台吊销、GitHub `github.com/settings/tokens` 作废 `ghp_…` 与 `github_pat_…`，并清理 `~/.qclaw/workspace/` 中明文行。
-2. **IRB 事实确认**：现稿断言西京学院 IRB 出具了 2024-AI-003 豁免裁定（exempt，非批准、无批准号）。需作者确认真实性。
+2. **IRB 事实确认（已解决 2026-11-09）**：作者确认从未出具过任何 IRB 裁定；现稿三处已改为"依公开二次数据分析的通行惯例属豁免范畴、不声明批准号"，中文版与全部投稿材料同步修正。
 3. **可选实验**：15 样例臂（固定批处理、仅变示例数）需 DeepSeek API key 余额；写作时无 key 未跑（见 `experiment_code/fewshot_mechanism_analysis.py`）。
 
 ---

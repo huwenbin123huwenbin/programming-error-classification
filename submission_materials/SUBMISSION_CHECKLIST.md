@@ -1,6 +1,6 @@
 # Submission Checklist for ACM TOCE
 
-**Last Updated: 2026-10-18** (supersedes 2026-10-17)
+**Last Updated: 2026-11-09** (supersedes 2026-10-18)
 
 ## Manuscript
 
@@ -10,7 +10,7 @@
 - [x] Abstract structured per JARS: Context / Objectives / Participants / Study Methods / Findings / Implications
 - [x] Keywords (6): programming verdict classification, observational equivalence, platform encoding, metadata-based classification, machine learning, large language models
 - [x] CCS category: Social and professional topics ~ Computing education
-- [x] Ethics statement: publicly available data only; institutional review determined the study **exempt** (reference 2024-AI-003). No approval number is claimed — an exemption determination does not issue one. The three in-text statements are now consistent with each other.
+- [x] Ethics statement: publicly available data only, no human subjects; the study is exempt from IRB review **in line with standard practice** for secondary analysis of publicly available data. No IRB determination was issued and no approval number is claimed. The three in-text statements are consistent with each other (R29/R30 removed a previously stated reference number that was never issued).
 - [x] Data and code availability: GitHub URL in the Reproducibility Statement and in the Cover Letter
 - [x] Conflicts of interest and funding: Xijing University Research Fund, Grant No. XJ-2025-001; body had no role in the study
 - [x] Preregistration statement: not preregistered, stated as a limitation
@@ -47,12 +47,12 @@
 - [x] **Round 14 correction — four printed figures did not match the declared method.** The methods section declares accuracy intervals as 1,000-sample percentile bootstrap; the printed values were not the bootstrap values. Corrected to the artifact: RF CI [90.8, 92.8] (was [90.7, 92.8]), GB CI [90.6, 92.8] (was [90.7, 92.8]), in both Table 2 and the LLM comparison table; "agree to within 0.03pp" → 0.04pp (actual 0.0374) in three places; "0.31 in Macro F1" → 0.30 (actual 0.3046). The CI method is now also named in the table note.
 - [x] **Round 14 security — the GitHub PAT was still live and is no longer in the config.** `.git/config` carried a full-scope PAT (`delete_repo`, `admin:org`, `workflow`, …) in the remote URL; it tested valid against the API on 2026-10-18 and had never entered git history. The remote URL is now token-free and pushes authenticate through the `gh` CLI keyring (verified with a read-only `ls-remote`). The token itself remains valid until the user rotates it at github.com/settings/tokens — **rotation is still outstanding and is the only open action item**.
 - [x] Prompt template for both LLMs is in the appendix
-- [x] Pushed to GitHub `main` — all commits are on `origin/main` as of 2026-10-17 21:58 (`3290887..e741cc8`). Three push attempts failed on a proxy 502 before it went through; nothing is pending.
+- [x] Pushed to GitHub `main` — all commits are on `origin/main` as of 2026-11-09 21:10 (`c9154c1..9ed8862`). R32 + R33 went up after a proxy 502 outage cleared; nothing is pending.
 
 ## Submission materials
 
-- [x] `Cover_Letter.md` / `.tex` / `.pdf` — rewritten 2026-10-17, recompiled with no errors
-- [x] `Highlights.md` / `.tex` / `.pdf` — rewritten 2026-10-17, five items, all numbers from the authoritative results
+- [x] `Cover_Letter.md` / `.tex` / `.pdf` — synced to the current manuscript 2026-11-09, recompiled with no errors
+- [x] `Highlights.md` / `.tex` / `.pdf` — synced 2026-11-09, five items, all numbers from the authoritative results
 - [x] `SUBMISSION_CHECKLIST.md` (this file)
 - [x] `SCHOLARONE_GUIDE.md` — title updated
 
@@ -88,10 +88,10 @@ These were claimed in the August checklist but are no longer in the paper, and t
 
 | Approach | Test accuracy | 95% CI | Macro F1 | Cost/1K |
 |---|---|---|---|---|
-| Random Forest (6 fields) | 91.80% | [90.7, 92.8] | 0.798 | $0.0002 |
-| Gradient Boosting (6 fields) | 91.77% | [90.7, 92.8] | 0.799 | $0.0002 |
-| Gradient Boosting (5 fields) | 91.69% | [90.6, 92.7] | 0.797 | $0.0002 |
-| Logistic Regression | 85.63% | [84.2, 86.9] | 0.494 | $0.0002 |
+| Random Forest (6 fields) | 91.80% | [90.8, 92.8] | 0.798 | `<$10^-6` |
+| Gradient Boosting (6 fields) | 91.77% | [90.6, 92.8] | 0.799 | `<$10^-6` |
+| Gradient Boosting (5 fields) | 91.69% | [90.6, 92.7] | 0.794 | `<$10^-6` |
+| Logistic Regression | 85.63% | [84.2, 86.9] | 0.494 | `<$10^-6` |
 | DeepSeek-V3 (three-shot), valid outputs | 76.65% | [75.0, 78.2] | 0.545 | $0.01 |
 | Qwen2.5:3B, valid outputs | 35.50% | [33.6, 37.4] | 0.231 | $0.00 |
 
@@ -100,7 +100,7 @@ These were claimed in the August checklist but are no longer in the paper, and t
 - GB vs RF: χ² = 0.00, p = 1.00 — reported as a null result, not a ranking
 - Observational equivalence: all-zero cell 1,504 rows (11.3%), CE F1 cap 0.767, model 0.770
 - Execution-encoded classes (CE + TLE + MLE): 18.5% of submissions
-- Ablation: time −7.30 pp, memory −1.80 pp, leakage-free history aggregate −2.13 pp
+- Ablation: time −7.30 pp, memory −1.80 pp; submitter-history aggregate +0.67 pp nominal (92.44%, p=0.039, not surviving correction for seven comparisons) and exactly zero on the submitter-disjoint split — excluded on the cold-start argument. The whole-corpus look-ahead variant appeared to add 3.7 pp (95.43%).
 
 ---
 
@@ -375,3 +375,45 @@ was imprecise, and one more section had no producing script.
   learning-curve sentence in §4.5; its related-work section is condensed and
   carried none of the wrong claims).
 - [x] Recompiled: 34 pages, 0 errors, 0 overfull, 0 undefined references.
+
+---
+
+## 2026-11-09 submission-materials consistency pass
+
+The manuscript advanced through R29–R33 while the submission materials in
+`submission_materials/` still carried the October wording. A line-by-line
+comparison against the compiled manuscript found seven drift classes; all are
+now fixed in both the `.md` and `.tex` sources, and both PDFs were recompiled
+(the previous PDFs were dated 2026-10-17, i.e. older than their own sources).
+
+- [x] **Ethics / IRB.** Cover Letter and checklist still asserted an exemption
+  determination with an IRB reference number. No such determination was ever issued
+  (author confirmation); R29/R30 had already removed it from the manuscript,
+  replacing it with "exempt ... in line with standard practice". Materials now
+  match: no determination claimed, no approval number, no human subjects.
+- [x] **Ablation result.** Materials said the leakage-free submitter-history
+  aggregate "*loses* 2.1 points" / "appears to add 3.6 pp". R14 rebuilt that
+  row: whole-corpus look-ahead variant 3.7 pp (95.43%), temporally honest
+  variant +0.67 pp (92.44%, p=0.039, nominal only, not surviving correction
+  for seven comparisons), exactly zero on the submitter-disjoint split. Both
+  Cover Letter and Highlights now use this wording and the cold-start reason
+  for exclusion.
+- [x] **Confidence intervals.** RF [90.8, 92.8] and GB [90.6, 92.8] (R14
+  corrected from the printed [90.7, 92.8]); materials now match Table 2/7.
+- [x] **Five-field macro F1.** 0.794 in the manuscript, 0.797 in the materials;
+  fixed.
+- [x] **Inference cost.** R12 replaced "$0.0002 per 1,000" with the measured
+  `<$10^-6` (Table 7); materials now match.
+- [x] **Manuscript length** 32 → 35 pages (10 tables, 6 figures unchanged).
+- [x] **Date** on the Cover Letter updated to the submission date.
+- [x] **Key-numbers block** in this checklist synced to the same values.
+- [x] `Cover_Letter.pdf` and `Highlights.pdf` recompiled from the corrected
+  `.tex` sources; the stale 2026-10-17 PDFs are replaced.
+- [x] Manuscript gate `verify_paper_numbers.py` re-run after R33: 13/13 PASS.
+  All 49 bibliography entries: 47 verified OK, 0 fabricated, 2 unverifiable
+  and non-fabricated (book without DOI; zenodo DOI blocked by the sandbox).
+
+Note: the historical Round 9–13 sections above deliberately retain their
+original wording (including values since superseded) as an audit trail; the
+"Key numbers for the submission form" block and the items above are the
+current source of truth.
